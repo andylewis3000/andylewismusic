@@ -1,0 +1,4 @@
+# CMS image uploads land here.
+# Referenced in content as /src/assets/images/uploads/<file>, then optimized
+# at build time (AVIF/WebP, responsive srcset) by Astro's image pipeline.
+# See docs/IMAGE-GUIDELINES.md.

@@ -1,0 +1,401 @@
+# ─────────────────────────────────────────────────────────────────────────
+#  Sveltia CMS configuration — Andy Lewis Music
+# ─────────────────────────────────────────────────────────────────────────
+#  Every field here mirrors a Zod schema in src/content.config.ts or
+#  src/lib/settings.ts. Keep the two in sync: the schema is the guardrail
+#  (a bad value fails the build); this file is the friendly editing form.
+#
+#  Editing locally:  run `npx @sveltia/cms-proxy-server` in one terminal and
+#  `npm run dev` in another, then open http://localhost:4321/admin/ — with
+#  `local_backend: true` you can edit without any GitHub login.
+#
+#  Editing in production: visit https://andylewismusic.com/admin/ and sign in
+#  with GitHub (repo access). Saves commit to the branch below.
+# ─────────────────────────────────────────────────────────────────────────
+
+backend:
+  name: github
+  repo: andylewis/andylewismusic # ← update to the real GitHub owner/repo
+  branch: main
+  # Sveltia handles GitHub OAuth via its hosted auth, or your own — see docs.
+
+# Lets you run the CMS against local files during development.
+local_backend: true
+
+# Where uploaded images are written, and how their path is stored in content.
+# We store a project-root path so Astro's build-time image resolver can find
+# and optimize them (see src/lib/images.ts + docs/IMAGE-GUIDELINES.md).
+media_folder: 'src/assets/images/uploads'
+public_folder: '/src/assets/images/uploads'
+
+# Saved edits open a PR-free direct commit (simple) — switch to editorial
+# workflow later if you want draft/review/publish states in the CMS UI.
+publish_mode: simple
+
+site_url: 'https://andylewismusic.com'
+display_url: 'https://andylewismusic.com'
+logo_url: '/src/assets/images/uploads/logo.svg'
+
+collections:
+  # ── DISCOGRAPHY ────────────────────────────────────────────────────────
+  - name: albums
+    label: 'Music — Albums, EPs & Singles'
+    label_singular: 'Release'
+    folder: 'src/content/albums'
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    summary: '{{title}} ({{type}}, {{releaseDate | date("YYYY")}})'
+    sortable_fields: [order, releaseDate, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - {
+          label: Type,
+          name: type,
+          widget: select,
+          options: [album, ep, single],
+          default: single,
+        }
+      - { label: 'Release date', name: releaseDate, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { label: 'Cover image', name: cover, widget: image }
+      - { label: 'Cover alt text', name: coverAlt, widget: string, hint: 'Describe the artwork for screen readers' }
+      - { label: Description, name: description, widget: text, pattern: ['^.{0,280}$', 'Keep under 280 characters'] }
+      - { label: Artist, name: artist, widget: string, default: 'Andy Lewis' }
+      - { label: Label, name: label, widget: string, required: false }
+      - {
+          label: 'Andy’s roles',
+          name: roles,
+          widget: select,
+          multiple: true,
+          required: false,
+          options: [drums, guitar, composition, production, mixing, programming],
+        }
+      - label: Tracklist
+        name: tracklist
+        widget: list
+        required: false
+        summary: '{{fields.title}} {{fields.duration}}'
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Duration, name: duration, widget: string, required: false, hint: 'm:ss e.g. 4:07' }
+      - label: Credits
+        name: credits
+        widget: list
+        required: false
+        fields:
+          - { label: Role, name: role, widget: string }
+          - { label: Name, name: name, widget: string }
+      - label: 'Streaming links'
+        name: links
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Spotify, name: spotify, widget: string, required: false }
+          - { label: 'Apple Music', name: appleMusic, widget: string, required: false }
+          - { label: Bandcamp, name: bandcamp, widget: string, required: false }
+          - { label: YouTube, name: youtube, widget: string, required: false }
+          - { label: SoundCloud, name: soundcloud, widget: string, required: false }
+      - { label: 'Feature on homepage', name: featured, widget: boolean, default: false }
+      - { label: 'Sort order', name: order, widget: number, default: 0, value_type: int }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: 'Liner notes', name: body, widget: markdown, required: false }
+
+  # ── VIDEOS ─────────────────────────────────────────────────────────────
+  - name: videos
+    label: Videos
+    folder: 'src/content/videos'
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    summary: '{{title}} — {{category}}'
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: 'YouTube video ID', name: youtubeId, widget: string, hint: 'The 11-char ID from the URL, e.g. dQw4w9WgXcQ', pattern: ['^[\w-]{11}$', 'Must be an 11-character YouTube ID'] }
+      - {
+          label: Category,
+          name: category,
+          widget: select,
+          options: [live, music-video, session, playthrough, interview, lesson],
+          default: live,
+        }
+      - { label: Date, name: date, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { label: Description, name: description, widget: text, required: false }
+      - { label: 'Custom thumbnail', name: thumbnail, widget: image, required: false, hint: 'Optional — defaults to the YouTube thumbnail' }
+      - { label: 'Thumbnail alt text', name: thumbnailAlt, widget: string, required: false }
+      - { label: 'Feature on homepage', name: featured, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+
+  # ── EVENTS ─────────────────────────────────────────────────────────────
+  - name: events
+    label: Events
+    folder: 'src/content/events'
+    create: true
+    slug: '{{fields.date | date("YYYY-MM-DD")}}-{{title}}'
+    extension: md
+    format: frontmatter
+    summary: '{{title}} — {{venue}}, {{city}} ({{fields.date | date("DD MMM YYYY")}})'
+    sortable_fields: [date, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Venue, name: venue, widget: string }
+      - { label: City, name: city, widget: string }
+      - { label: Country, name: country, widget: string, default: 'United Kingdom' }
+      - { label: 'Date & time', name: date, widget: datetime, hint: 'Show start time, local timezone' }
+      - { label: 'Doors label', name: doorsTime, widget: string, required: false, hint: 'e.g. Doors 7:30pm' }
+      - { label: 'Andy’s role', name: role, widget: string, required: false }
+      - { label: Lineup, name: lineup, widget: list, required: false, field: { label: Act, name: act, widget: string } }
+      - { label: 'Ticket URL', name: ticketUrl, widget: string, required: false }
+      - { label: Price, name: price, widget: string, required: false }
+      - { label: 'Sold out', name: soldOut, widget: boolean, default: false }
+      - { label: Cancelled, name: cancelled, widget: boolean, default: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: 'Image alt text', name: imageAlt, widget: string, required: false }
+      - { label: Description, name: description, widget: text, required: false }
+      - { label: 'Feature on homepage', name: featured, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: 'Extra details', name: body, widget: markdown, required: false }
+
+  # ── BLOG / NEWS ────────────────────────────────────────────────────────
+  - name: posts
+    label: 'News & Blog'
+    label_singular: 'Post'
+    folder: 'src/content/posts'
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    summary: '{{title}} ({{fields.publishDate | date("DD MMM YYYY")}})'
+    sortable_fields: [publishDate, title]
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text, hint: 'Used for SEO & cards (max 200 chars)', pattern: ['^.{0,200}$', 'Keep under 200 characters'] }
+      - { label: 'Publish date', name: publishDate, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false }
+      - { label: 'Updated date', name: updatedDate, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, required: false }
+      - { label: Author, name: author, widget: string, default: 'Andy Lewis' }
+      - {
+          label: Category,
+          name: category,
+          widget: select,
+          options: [news, releases, tour, studio, gear, reflections],
+          default: news,
+        }
+      - { label: Tags, name: tags, widget: list, required: false, field: { label: Tag, name: tag, widget: string } }
+      - { label: 'Hero image', name: heroImage, widget: image, required: false }
+      - { label: 'Hero image alt text', name: heroImageAlt, widget: string, required: false }
+      - { label: 'Feature on homepage', name: featured, widget: boolean, default: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Body, name: body, widget: markdown }
+
+  # ── GEAR ───────────────────────────────────────────────────────────────
+  - name: gear
+    label: Gear
+    folder: 'src/content/gear'
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    summary: '{{name}} — {{category}}'
+    sortable_fields: [order, name, category]
+    fields:
+      - { label: Name, name: name, widget: string }
+      - {
+          label: Category,
+          name: category,
+          widget: select,
+          options: [drums, guitars, amps, studio, software, accessories],
+        }
+      - { label: Brand, name: brand, widget: string, required: false }
+      - { label: Image, name: image, widget: image, required: false }
+      - { label: 'Image alt text', name: imageAlt, widget: string, required: false }
+      - { label: Description, name: description, widget: text }
+      - { label: 'Feature on Gear page', name: featured, widget: boolean, default: false }
+      - { label: 'Sort order', name: order, widget: number, default: 0, value_type: int }
+      - { label: 'Product link', name: link, widget: string, required: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+
+  # ── SITE SETTINGS (singletons) ─────────────────────────────────────────
+  - name: settings
+    label: 'Site Settings'
+    editor: { preview: false }
+    files:
+      # ---- About page ----
+      - name: about
+        label: 'About page'
+        file: 'src/content/about/about.md'
+        format: frontmatter
+        fields:
+          - { label: Title, name: title, widget: string, default: About }
+          - { label: Headline, name: headline, widget: string }
+          - { label: Portrait, name: portrait, widget: image }
+          - { label: 'Portrait alt text', name: portraitAlt, widget: string }
+          - label: Highlights
+            name: highlights
+            widget: list
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Value, name: value, widget: string }
+          - { label: Influences, name: influences, widget: list, field: { label: Influence, name: influence, widget: string } }
+          - label: 'Experience timeline'
+            name: experience
+            widget: list
+            fields:
+              - { label: Year, name: year, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Detail, name: detail, widget: string, required: false }
+          - label: 'Equipment highlights'
+            name: equipment
+            widget: list
+            fields:
+              - { label: Group, name: label, widget: string }
+              - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
+          - { label: Biography, name: body, widget: markdown }
+
+      # ---- Global settings ----
+      - name: site
+        label: 'Global (site-wide)'
+        file: 'src/content/settings/site.json'
+        fields:
+          - { label: 'Site name', name: name, widget: string }
+          - { label: 'Short name', name: shortName, widget: string }
+          - { label: Tagline, name: tagline, widget: string }
+          - { label: 'Meta description', name: description, widget: text }
+          - { label: 'Site URL', name: url, widget: string }
+          - { label: Locale, name: locale, widget: string, default: en_GB }
+          - { label: Location, name: location, widget: string }
+          - { label: 'Contact email', name: email, widget: string }
+          - { label: 'Booking email', name: bookingEmail, widget: string }
+          - { label: Phone, name: phone, widget: string, required: false }
+          - { label: 'Default social image', name: defaultOgImage, widget: image }
+          - { label: Logo, name: logo, widget: image, required: false }
+          - { label: 'Theme colour', name: themeColor, widget: color, default: '#0a0a0b' }
+          - label: Founder
+            name: founder
+            widget: object
+            fields:
+              - { label: Name, name: name, widget: string }
+              - { label: 'Job titles', name: jobTitles, widget: list, field: { label: Title, name: title, widget: string } }
+              - { label: 'Profile URLs (sameAs)', name: sameAs, widget: list, required: false, field: { label: URL, name: url, widget: string } }
+          - label: Analytics
+            name: analytics
+            widget: object
+            fields:
+              - { label: 'Cloudflare Analytics token', name: cloudflareToken, widget: string, required: false }
+          - label: Forms
+            name: forms
+            widget: object
+            fields:
+              - { label: 'Form endpoint', name: endpoint, widget: string, default: '/form.php' }
+              - { label: 'Turnstile site key', name: turnstileSiteKey, widget: string, required: false }
+
+      # ---- Homepage ----
+      - name: home
+        label: 'Homepage'
+        file: 'src/content/settings/home.json'
+        fields:
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Kicker, name: kicker, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Subheading, name: subheading, widget: text }
+              - { label: 'Background image', name: backgroundImage, widget: image }
+              - { label: 'Background alt text', name: backgroundAlt, widget: string }
+              - { label: 'Primary button', name: primaryCta, widget: object, fields: &cta_fields [
+                    { label: Label, name: label, widget: string },
+                    { label: Link, name: href, widget: string },
+                    { label: Style, name: style, widget: select, options: [primary, secondary, ghost], default: primary },
+                  ] }
+              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
+          - label: Intro
+            name: intro
+            widget: object
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body, name: body, widget: text }
+          - label: 'Homepage sections'
+            name: sections
+            widget: list
+            summary: '{{fields.id}} ({{fields.enabled}})'
+            fields:
+              - { label: Section, name: id, widget: select, options: [featured-music, latest-video, events, news, instagram, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Subheading, name: subheading, widget: string, required: false }
+          - label: Instagram
+            name: instagram
+            widget: object
+            fields:
+              - { label: Handle, name: handle, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string, default: 'On the road' }
+          - label: 'Call to action'
+            name: cta
+            widget: object
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body, name: body, widget: text }
+              - { label: 'Primary button', name: primaryCta, widget: object, fields: *cta_fields }
+              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
+
+      # ---- Navigation ----
+      - name: navigation
+        label: 'Navigation menu'
+        file: 'src/content/settings/navigation.json'
+        fields:
+          - label: 'Primary menu'
+            name: primary
+            widget: list
+            summary: '{{fields.label}}'
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Link, name: href, widget: string }
+          - { label: 'Header button', name: cta, widget: object, required: false, fields: *cta_fields }
+
+      # ---- Footer ----
+      - name: footer
+        label: 'Footer'
+        file: 'src/content/settings/footer.json'
+        fields:
+          - { label: Blurb, name: blurb, widget: text }
+          - label: Columns
+            name: columns
+            widget: list
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - label: Links
+                name: links
+                widget: list
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Link, name: href, widget: string }
+          - label: 'Legal links'
+            name: legal
+            widget: list
+            required: false
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Link, name: href, widget: string }
+          - { label: Copyright, name: copyright, widget: string }
+
+      # ---- Social links ----
+      - name: social
+        label: 'Social links'
+        file: 'src/content/settings/social.json'
+        fields:
+          - label: Links
+            name: links
+            widget: list
+            summary: '{{fields.label}}'
+            fields:
+              - {
+                  label: Platform,
+                  name: platform,
+                  widget: select,
+                  options: [instagram, youtube, spotify, appleMusic, bandcamp, soundcloud, tiktok, facebook, x, email],
+                }
+              - { label: Label, name: label, widget: string }
+              - { label: URL, name: url, widget: string }

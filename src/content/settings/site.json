@@ -1,0 +1,31 @@
+{
+  "name": "Andy Lewis",
+  "shortName": "Andy Lewis Music",
+  "tagline": "Drummer · Guitarist · Composer",
+  "description": "Andy Lewis is a professional drummer, guitarist and composer available for performances, sessions, collaborations and bookings.",
+  "url": "https://andylewismusic.com",
+  "locale": "en_GB",
+  "location": "United Kingdom",
+  "email": "hello@andylewismusic.com",
+  "bookingEmail": "booking@andylewismusic.com",
+  "phone": "",
+  "defaultOgImage": "/src/assets/images/uploads/og-default.jpg",
+  "logo": "/src/assets/images/uploads/logo.svg",
+  "themeColor": "#0a0a0b",
+  "founder": {
+    "name": "Andy Lewis",
+    "jobTitles": ["Drummer", "Guitarist", "Composer"],
+    "sameAs": [
+      "https://instagram.com/andylewismusic",
+      "https://youtube.com/@andylewismusic",
+      "https://open.spotify.com/artist/000000000000"
+    ]
+  },
+  "analytics": {
+    "cloudflareToken": ""
+  },
+  "forms": {
+    "endpoint": "/form.php",
+    "turnstileSiteKey": ""
+  }
+}

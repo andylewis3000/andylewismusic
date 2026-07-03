@@ -1,0 +1,27 @@
+{
+  "blurb": "Drummer, guitarist and composer. Performances, sessions, scoring and collaboration — worldwide.",
+  "columns": [
+    {
+      "heading": "Explore",
+      "links": [
+        { "label": "About", "href": "/about/" },
+        { "label": "Music", "href": "/music/" },
+        { "label": "Videos", "href": "/videos/" },
+        { "label": "Gear", "href": "/gear/" }
+      ]
+    },
+    {
+      "heading": "Connect",
+      "links": [
+        { "label": "Upcoming Shows", "href": "/events/" },
+        { "label": "News", "href": "/blog/" },
+        { "label": "Booking", "href": "/contact/" },
+        { "label": "RSS Feed", "href": "/rss.xml" }
+      ]
+    }
+  ],
+  "legal": [
+    { "label": "Privacy", "href": "/privacy/" }
+  ],
+  "copyright": "Andy Lewis. All rights reserved."
+}

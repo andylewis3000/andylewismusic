@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "kicker": "Drummer · Guitarist · Composer",
+    "heading": "Rhythm with intent. Music with a pulse.",
+    "subheading": "Two decades behind the kit and the guitar — scoring, sessions and stages. Available for performances, recording and collaboration.",
+    "backgroundImage": "/src/assets/images/uploads/hero-live.jpg",
+    "backgroundAlt": "Andy Lewis performing live, lit in deep red stage light",
+    "primaryCta": { "label": "Book Andy", "href": "/contact/", "style": "primary" },
+    "secondaryCta": { "label": "Listen", "href": "/music/", "style": "ghost" }
+  },
+  "intro": {
+    "heading": "A musician for the moments that matter",
+    "body": "From the driving backbone of a live set to the quiet detail of a film cue, I bring feel, precision and a producer's ear to every project — whether that's a stadium support slot, a session date, or a score that needs to breathe."
+  },
+  "sections": [
+    { "id": "featured-music", "enabled": true, "heading": "Featured Music", "subheading": "Recent releases & selected work" },
+    { "id": "latest-video", "enabled": true, "heading": "Latest Video" },
+    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live" },
+    { "id": "news", "enabled": true, "heading": "Latest News" },
+    { "id": "instagram", "enabled": true, "heading": "On the Road" },
+    { "id": "cta", "enabled": true }
+  ],
+  "instagram": {
+    "handle": "andylewismusic",
+    "heading": "On the Road"
+  },
+  "cta": {
+    "heading": "Let's make something worth hearing",
+    "body": "Booking a show, planning a session, or scoring a project? Tell me what you're building.",
+    "primaryCta": { "label": "Start a Booking", "href": "/contact/", "style": "primary" },
+    "secondaryCta": { "label": "Read the story", "href": "/about/", "style": "ghost" }
+  }
+}

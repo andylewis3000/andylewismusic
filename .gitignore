@@ -1,0 +1,27 @@
+# build output
+dist/
+.output/
+
+# dependencies
+node_modules/
+
+# astro
+.astro/
+
+# pagefind
+public/pagefind/
+
+# generated
+.DS_Store
+*.log
+npm-debug.log*
+
+# env
+.env
+.env.production
+.env.*.local
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
