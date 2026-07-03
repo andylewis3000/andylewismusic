@@ -1,0 +1,325 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ANDY LEWIS MUSIC — Design System
+   Cinematic · dark · moody · premium.
+
+   Structure:
+     1. Fonts (self-hosted, no external requests)
+     2. Tailwind + @theme tokens (generate utilities: bg-surface, text-accent…)
+     3. Root tokens that aren't utilities (motion, glass, layout rhythm)
+     4. Base layer (resets, typography defaults, a11y focus, reduced motion)
+     5. Reusable component primitives (buttons, cards, kickers)
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* 1 ─ Fonts ─────────────────────────────────────────────────────────── */
+/* Variable fonts, self-hosted via Fontsource. Display = Fraunces (cinematic,
+   high-contrast serif). Text = Inter (clean, legible). Swapped in the layout
+   too, but importing here guarantees the styleguide renders standalone. */
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/inter';
+
+/* 2 ─ Tailwind + theme tokens ───────────────────────────────────────── */
+@import 'tailwindcss';
+
+/* Respect the OS "reduce motion" setting for all our animation utilities. */
+@custom-variant motion-safe (@media (prefers-reduced-motion: no-preference));
+
+@theme {
+  /* — Color: surfaces (near-black, faintly warm) — */
+  --color-bg: #0a0a0b;
+  --color-bg-elevated: #111114;
+  --color-surface: #16161a;
+  --color-surface-2: #1e1e24;
+  --color-line: rgba(244, 242, 238, 0.09);
+  --color-line-strong: rgba(244, 242, 238, 0.16);
+
+  /* — Color: text (warm off-white → warm grays) — */
+  --color-ink: #f4f2ee;
+  --color-ink-muted: #b8b3ab;
+  --color-ink-faint: #7c776e;
+
+  /* — Color: signature accent (crimson → ember) — */
+  --color-accent: #e63946;
+  --color-accent-hover: #f04b57;
+  --color-accent-ember: #f26a3d;
+  --color-accent-contrast: #0a0a0b;
+  --color-accent-soft: rgba(230, 57, 70, 0.14);
+
+  /* — Color: functional — */
+  --color-focus: #7cc7ff;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+
+  /* — Typography families — */
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* — Fluid type scale (min → max via viewport) — */
+  --text-caption: 0.8125rem;
+  --text-small: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lead: clamp(1.15rem, 1.02rem + 0.55vw, 1.4rem);
+  --text-h4: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --text-h3: clamp(1.4rem, 1.15rem + 1.1vw, 1.9rem);
+  --text-h2: clamp(1.85rem, 1.35rem + 2.3vw, 3rem);
+  --text-h1: clamp(2.4rem, 1.6rem + 3.8vw, 4.25rem);
+  --text-display: clamp(2.9rem, 1.4rem + 7vw, 6.5rem);
+
+  /* — Radii — */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  /* — Elevation (soft, layered, cinematic) — */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 60px -12px rgba(230, 57, 70, 0.45);
+
+  /* — Motion easings — */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+
+  /* — Named breakpoint for the content container — */
+  --breakpoint-3xl: 100rem;
+}
+
+/* 3 ─ Non-utility root tokens ───────────────────────────────────────── */
+:root {
+  /* Motion durations */
+  --dur-fast: 150ms;
+  --dur-base: 260ms;
+  --dur-slow: 420ms;
+  --dur-slower: 640ms;
+
+  /* Glass treatment (used sparingly: sticky nav, overlays) */
+  --glass-bg: rgba(16, 16, 20, 0.6);
+  --glass-border: rgba(244, 242, 238, 0.1);
+  --glass-blur: 14px;
+
+  /* Vertical rhythm for page sections */
+  --space-section: clamp(4rem, 2rem + 9vw, 9rem);
+
+  /* Content width */
+  --container: 76rem;
+  --container-pad: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+
+  color-scheme: dark;
+}
+
+/* 4 ─ Base layer ────────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    /* Offset anchor scrolling for the sticky header. */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.65;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Subtle cinematic vignette so photography sits in atmosphere, not a flat field. */
+    background-image:
+      radial-gradient(120% 80% at 50% -10%, rgba(230, 57, 70, 0.06), transparent 60%),
+      radial-gradient(90% 60% at 100% 0%, rgba(242, 106, 61, 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  picture,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+
+  /* Visible, high-contrast focus ring for keyboard users only. */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Honour reduced-motion: strip transitions/animations, keep functionality. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* 5 ─ Component primitives ──────────────────────────────────────────── */
+@layer components {
+  /* Centered content container with fluid gutters. */
+  .container-page {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--container-pad);
+  }
+
+  /* Small uppercase label used above headings ("kicker"). */
+  .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6em;
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+  .kicker::before {
+    content: '';
+    width: 1.75rem;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  /* Buttons ---------------------------------------------------------- */
+  .btn {
+    --btn-bg: transparent;
+    --btn-fg: var(--color-ink);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55em;
+    padding: 0.85em 1.6em;
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    border-radius: var(--radius-md);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary {
+    --btn-bg: var(--color-accent);
+    --btn-fg: var(--color-accent-contrast);
+    box-shadow: var(--shadow-md);
+  }
+  .btn-primary:hover {
+    --btn-bg: var(--color-accent-hover);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-secondary {
+    --btn-bg: var(--color-surface-2);
+    --btn-fg: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .btn-secondary:hover {
+    border-color: var(--color-ink-faint);
+  }
+
+  .btn-ghost {
+    --btn-fg: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .btn-ghost:hover {
+    --btn-bg: rgba(244, 242, 238, 0.04);
+    border-color: var(--color-ink-faint);
+  }
+
+  /* Surface card ----------------------------------------------------- */
+  .card {
+    background: linear-gradient(180deg, var(--color-surface), var(--color-bg-elevated));
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+  .card:hover {
+    border-color: var(--color-line-strong);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Glass surface (sticky nav, overlays) ----------------------------- */
+  .glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Accent gradient text for hero flourishes ------------------------- */
+  .text-gradient {
+    background: linear-gradient(120deg, var(--color-ink) 30%, var(--color-accent-ember));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}

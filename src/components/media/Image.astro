@@ -1,0 +1,90 @@
+---
+/**
+ * Image — the single optimized-image primitive for the whole site.
+ *
+ * Takes a CMS-stored path string, resolves it to Astro's image pipeline, and
+ * emits responsive AVIF/WebP with a proper `srcset`, lazy loading and async
+ * decoding. When no asset exists yet, renders an accessible, on-brand
+ * placeholder instead of breaking the build.
+ *
+ * Usage:
+ *   <Image path={album.data.cover} alt={album.data.coverAlt} aspect="1/1" />
+ *   <Image path={hero} alt={alt} loading="eager" fetchpriority="high"
+ *          sizes="100vw" widths={[768, 1280, 1920, 2560]} />
+ */
+import { Picture } from 'astro:assets';
+import { resolveImage } from '@lib/images';
+
+interface Props {
+  path?: string | null;
+  alt: string;
+  /** Candidate widths for the responsive srcset. */
+  widths?: number[];
+  /** `sizes` attribute; defaults to a sensible content-column value. */
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  /** CSS aspect-ratio, e.g. "16/9", "1/1", "4/5". Prevents layout shift. */
+  aspect?: string;
+  class?: string;
+  /** Placeholder caption (defaults to the alt text's spirit). */
+  placeholderLabel?: string;
+}
+
+const {
+  path,
+  alt,
+  widths = [480, 768, 1080, 1600],
+  sizes = '(max-width: 768px) 100vw, 800px',
+  loading = 'lazy',
+  fetchpriority,
+  aspect,
+  class: className,
+  placeholderLabel = 'Andy Lewis',
+} = Astro.props;
+
+const img = resolveImage(path);
+const style = aspect ? `aspect-ratio:${aspect};` : undefined;
+---
+
+{
+  img ? (
+    <Picture
+      src={img}
+      formats={['avif', 'webp']}
+      widths={widths}
+      sizes={sizes}
+      alt={alt}
+      loading={loading}
+      fetchpriority={fetchpriority}
+      decoding="async"
+      class={className}
+      style={style}
+    />
+  ) : (
+    <div class:list={['media-placeholder', className]} style={style} role="img" aria-label={alt}>
+      <span aria-hidden="true">{placeholderLabel}</span>
+    </div>
+  )
+}
+
+<style>
+  .media-placeholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    min-height: 8rem;
+    background:
+      radial-gradient(120% 120% at 30% 20%, rgba(230, 57, 70, 0.16), transparent 55%),
+      linear-gradient(150deg, var(--color-surface-2), var(--color-bg));
+    color: var(--color-ink-faint);
+    font-family: var(--font-display);
+    font-size: var(--text-h4);
+    letter-spacing: 0.04em;
+    border: 1px solid var(--color-line);
+  }
+  .media-placeholder span {
+    opacity: 0.5;
+    user-select: none;
+  }
+</style>

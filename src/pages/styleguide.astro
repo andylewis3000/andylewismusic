@@ -1,0 +1,133 @@
+---
+/**
+ * DEV-ONLY style guide — a living reference for the design system.
+ * Not linked in navigation; remove or `noindex` before launch (Phase 8).
+ * Lets us (and Andy) review tokens rendered in a real browser.
+ */
+import '@styles/global.css';
+import Image from '@components/media/Image.astro';
+
+const swatches = [
+  ['--color-bg', 'Background'],
+  ['--color-bg-elevated', 'Elevated'],
+  ['--color-surface', 'Surface'],
+  ['--color-surface-2', 'Surface 2'],
+  ['--color-ink', 'Ink'],
+  ['--color-ink-muted', 'Ink muted'],
+  ['--color-ink-faint', 'Ink faint'],
+  ['--color-accent', 'Accent'],
+  ['--color-accent-ember', 'Ember'],
+  ['--color-focus', 'Focus'],
+];
+
+const typeScale = [
+  ['display', 'Rhythm with intent'],
+  ['h1', 'Music with a pulse'],
+  ['h2', 'A darker, moodier evolution'],
+  ['h3', 'Cinematic by design'],
+  ['h4', 'Restrained motion, real depth'],
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Design System · Andy Lewis Music</title>
+  </head>
+  <body>
+    <main class="container-page" style="padding-block: var(--space-section); display:grid; gap:5rem;">
+      <header style="display:grid; gap:1rem;">
+        <span class="kicker">Design System</span>
+        <h1 class="text-display" style="font-size:var(--text-display)">
+          Andy Lewis <span class="text-gradient">Music</span>
+        </h1>
+        <p class="text-lead" style="font-size:var(--text-lead); color:var(--color-ink-muted); max-width:48ch;">
+          Cinematic, dark and premium — a soundtrack for the eye. This page renders every
+          token so we can sign off the look before building pages.
+        </p>
+      </header>
+
+      <!-- Colour -->
+      <section style="display:grid; gap:1.5rem;">
+        <h2 style="font-size:var(--text-h2)">Colour</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:1rem;">
+          {
+            swatches.map(([token, label]) => (
+              <div class="card" style="padding:0;">
+                <div style={`height:88px; background:var(${token});`}></div>
+                <div style="padding:0.75rem 0.9rem; display:grid; gap:0.15rem;">
+                  <strong style="font-size:var(--text-small)">{label}</strong>
+                  <code style="font-size:var(--text-caption); color:var(--color-ink-faint)">{token}</code>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <!-- Typography -->
+      <section style="display:grid; gap:1.5rem;">
+        <h2 style="font-size:var(--text-h2)">Typography</h2>
+        <p class="kicker">Fraunces (display) · Inter (text)</p>
+        <div style="display:grid; gap:1rem;">
+          {
+            typeScale.map(([size, text]) => (
+              <div style="display:grid; gap:0.25rem; border-bottom:1px solid var(--color-line); padding-bottom:1rem;">
+                <code style="font-size:var(--text-caption); color:var(--color-ink-faint)">text-{size}</code>
+                <span style={`font-family:var(--font-display); font-weight:600; line-height:1.05; letter-spacing:-0.02em; font-size:var(--text-${size});`}>
+                  {text}
+                </span>
+              </div>
+            ))
+          }
+          <p style="max-width:60ch; color:var(--color-ink-muted)">
+            Body copy in Inter. From the driving backbone of a live set to the quiet detail of a
+            film cue, the type stays legible, warm and confident — never shouting over the imagery
+            it shares the stage with.
+          </p>
+        </div>
+      </section>
+
+      <!-- Buttons -->
+      <section style="display:grid; gap:1.5rem;">
+        <h2 style="font-size:var(--text-h2)">Buttons</h2>
+        <div style="display:flex; flex-wrap:wrap; gap:1rem; align-items:center;">
+          <button class="btn btn-primary">Book Andy</button>
+          <button class="btn btn-secondary">Listen</button>
+          <button class="btn btn-ghost">Read more</button>
+        </div>
+      </section>
+
+      <!-- Cards + media -->
+      <section style="display:grid; gap:1.5rem;">
+        <h2 style="font-size:var(--text-h2)">Cards &amp; media</h2>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.5rem;">
+          <article class="card">
+            <Image path={null} alt="Placeholder cover art" aspect="1/1" placeholderLabel="Nightshift" />
+            <div style="padding:1.1rem 1.2rem; display:grid; gap:0.35rem;">
+              <span class="kicker">Album · 2025</span>
+              <h3 style="font-size:var(--text-h4)">Nightshift</h3>
+              <p style="font-size:var(--text-small); color:var(--color-ink-muted)">
+                A nocturnal instrumental record built around live drums and analogue textures.
+              </p>
+            </div>
+          </article>
+          <article class="glass" style="border-radius:var(--radius-lg); padding:1.4rem;">
+            <span class="kicker">Glass surface</span>
+            <p style="margin-top:0.6rem; color:var(--color-ink-muted)">
+              Used sparingly — the sticky header and overlays only.
+            </p>
+          </article>
+          <article class="card" style="padding:1.4rem; display:grid; gap:0.5rem; align-content:start;">
+            <span style="box-shadow:var(--shadow-glow); width:2.5rem; height:2.5rem; border-radius:999px; background:var(--color-accent)"></span>
+            <h3 style="font-size:var(--text-h4); margin-top:0.5rem;">Accent glow</h3>
+            <p style="font-size:var(--text-small); color:var(--color-ink-muted)">The signature crimson, used with restraint.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
