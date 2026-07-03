@@ -11,10 +11,10 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* 1 ─ Fonts ─────────────────────────────────────────────────────────── */
-/* Variable fonts, self-hosted via Fontsource. Display = Fraunces (cinematic,
-   high-contrast serif). Text = Inter (clean, legible). Swapped in the layout
-   too, but importing here guarantees the styleguide renders standalone. */
-@import '@fontsource-variable/fraunces';
+/* Variable fonts, self-hosted via Fontsource. Display = Outfit (geometric
+   sans, used heavy at weight 900). Text = Inter (clean, legible).
+   Importing here guarantees the styleguide renders standalone. */
+@import '@fontsource-variable/outfit';
 @import '@fontsource-variable/inter';
 
 /* 2 ─ Tailwind + theme tokens ───────────────────────────────────────── */
@@ -37,12 +37,12 @@
   --color-ink-muted: #b8b3ab;
   --color-ink-faint: #7c776e;
 
-  /* — Color: signature accent (crimson → ember) — */
-  --color-accent: #e63946;
-  --color-accent-hover: #f04b57;
-  --color-accent-ember: #f26a3d;
+  /* — Color: signature accent (brand lime → bright chartreuse) — */
+  --color-accent: #9acd33;
+  --color-accent-hover: #abdb46;
+  --color-accent-ember: #cfe84a;
   --color-accent-contrast: #0a0a0b;
-  --color-accent-soft: rgba(230, 57, 70, 0.14);
+  --color-accent-soft: rgba(154, 205, 51, 0.14);
 
   /* — Color: functional — */
   --color-focus: #7cc7ff;
@@ -50,7 +50,7 @@
   --color-danger: #f87171;
 
   /* — Typography families — */
-  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+  --font-display: 'Outfit Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans:
     'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -76,7 +76,7 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 60px -12px rgba(230, 57, 70, 0.45);
+  --shadow-glow: 0 0 60px -12px rgba(154, 205, 51, 0.4);
 
   /* — Motion easings — */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -138,8 +138,8 @@
     -moz-osx-font-smoothing: grayscale;
     /* Subtle cinematic vignette so photography sits in atmosphere, not a flat field. */
     background-image:
-      radial-gradient(120% 80% at 50% -10%, rgba(230, 57, 70, 0.06), transparent 60%),
-      radial-gradient(90% 60% at 100% 0%, rgba(242, 106, 61, 0.05), transparent 55%);
+      radial-gradient(120% 80% at 50% -10%, rgba(154, 205, 51, 0.07), transparent 60%),
+      radial-gradient(90% 60% at 100% 0%, rgba(154, 205, 51, 0.04), transparent 55%);
     background-attachment: fixed;
   }
 
@@ -148,9 +148,9 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 600;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-weight: 900;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
     text-wrap: balance;
     margin: 0;
   }
