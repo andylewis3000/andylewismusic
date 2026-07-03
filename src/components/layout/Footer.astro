@@ -1,0 +1,165 @@
+---
+/**
+ * Footer — CMS-driven blurb, link columns, social links, legal + copyright.
+ * The wordmark and column contents come from the footer/site/social singletons.
+ */
+import { footer, site } from '@lib/settings';
+import SocialLinks from '@components/ui/SocialLinks.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container-page footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="wordmark" aria-label={`${site.name} — home`}>
+        {site.name}<span class="wordmark-dot" aria-hidden="true">.</span>
+      </a>
+      <p class="footer-blurb">{footer.blurb}</p>
+      <SocialLinks />
+    </div>
+
+    <nav class="footer-cols" aria-label="Footer">
+      {
+        footer.columns.map((col) => (
+          <div class="footer-col">
+            <h2 class="footer-col-title">{col.heading}</h2>
+            <ul>
+              {col.links.map((link) => {
+                const external = /^https?:\/\//.test(link.href);
+                return (
+                  <li>
+                    <a
+                      href={link.href}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noopener noreferrer' : undefined}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="container-page footer-bottom">
+    <p class="copyright">© {year} {footer.copyright}</p>
+    {
+      footer.legal.length > 0 && (
+        <ul class="legal">
+          {footer.legal.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-section);
+    padding-block: clamp(3rem, 1.5rem + 5vw, 5rem) 2rem;
+    border-top: 1px solid var(--color-line);
+    background: linear-gradient(180deg, transparent, rgba(154, 205, 51, 0.03));
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: 3rem;
+  }
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .footer-brand {
+    display: grid;
+    gap: 1.1rem;
+    max-width: 32ch;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+    color: var(--color-ink);
+  }
+  .wordmark-dot {
+    color: var(--color-accent);
+  }
+  .footer-blurb {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    line-height: 1.6;
+  }
+
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+  .footer-col-title {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+    margin: 0 0 1rem;
+  }
+  .footer-col ul,
+  .legal {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-col li {
+    margin-bottom: 0.6rem;
+  }
+  .footer-col a {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    transition: color var(--dur-base) var(--ease-standard);
+  }
+  .footer-col a:hover {
+    color: var(--color-accent);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .copyright {
+    margin: 0;
+    color: var(--color-ink-faint);
+    font-size: var(--text-caption);
+  }
+  .legal {
+    display: flex;
+    gap: 1.25rem;
+  }
+  .legal a {
+    color: var(--color-ink-faint);
+    font-size: var(--text-caption);
+    transition: color var(--dur-base) var(--ease-standard);
+  }
+  .legal a:hover {
+    color: var(--color-ink);
+  }
+</style>

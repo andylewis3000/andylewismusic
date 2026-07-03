@@ -1,0 +1,86 @@
+---
+/**
+ * SEO — the <head> metadata block: title, description, canonical, Open Graph,
+ * Twitter cards, robots, and a resolved absolute OG image URL.
+ *
+ * Structured data (schema.org JSON-LD) is layered in during Phase 8 via
+ * dedicated schema components; this handles the core meta every page needs.
+ */
+import { getImage } from 'astro:assets';
+import { resolveImage } from '@lib/images';
+import { site } from '@lib/settings';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** CMS image path or public URL for social sharing. */
+  image?: string;
+  /** Path for canonical URL; defaults to the current route. */
+  path?: string;
+  type?: 'website' | 'article' | 'profile' | 'music.album';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+}
+
+const {
+  title,
+  description = site.description,
+  image,
+  path = Astro.url.pathname,
+  type = 'website',
+  noindex = false,
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(path, site.url).href;
+
+/** Resolve any stored image path to an absolute, social-ready URL. */
+async function resolveOgImage(img?: string): Promise<string | undefined> {
+  const candidate = img ?? site.defaultOgImage;
+  const meta = resolveImage(candidate);
+  if (meta) {
+    const optimized = await getImage({ src: meta, width: 1200, format: 'jpg' });
+    return new URL(optimized.src, site.url).href;
+  }
+  // Not an optimizable src asset — treat a public-root path as a direct URL.
+  if (candidate.startsWith('/') && !candidate.startsWith('/src')) {
+    return new URL(candidate, site.url).href;
+  }
+  return undefined;
+}
+const ogImage = await resolveOgImage(image);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta name="theme-color" content={site.themeColor} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+{/* Open Graph */}
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={site.locale} />
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />}
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+{/* Twitter */}
+<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+{/* Feeds */}
+<link rel="alternate" type="application/rss+xml" title={`${site.name} — News`} href="/rss.xml" />

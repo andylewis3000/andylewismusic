@@ -1,0 +1,53 @@
+---
+/**
+ * BaseLayout — the shell every page inherits.
+ *
+ * Responsibilities:
+ *  - Load the global stylesheet + fonts once.
+ *  - Render <head> SEO/meta via the SEO component.
+ *  - Enable animated, accessible page transitions (<ClientRouter/>).
+ *  - Provide semantic landmarks: skip-link → header → main → footer.
+ *
+ * Page-specific SEO is passed straight through to <SEO/>.
+ */
+import '@styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import SEO from '@components/seo/SEO.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import { site } from '@lib/settings';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  path?: string;
+  type?: 'website' | 'article' | 'profile' | 'music.album';
+  noindex?: boolean;
+  publishedTime?: string;
+  modifiedTime?: string;
+  /** Extra class on <main>, e.g. for full-bleed pages. */
+  mainClass?: string;
+}
+
+const { mainClass, ...seo } = Astro.props;
+const lang = site.locale.replace('_', '-');
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <SEO {...seo} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <ClientRouter />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">Skip to content</a>
+    <Header />
+    <main id="main" class={mainClass}>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

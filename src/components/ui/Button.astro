@@ -1,0 +1,46 @@
+---
+/**
+ * Button — renders an <a> when `href` is set, otherwise a <button>.
+ * Variants map to the .btn-* primitives in global.css. External links get
+ * safe rel/target automatically.
+ */
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  type?: 'button' | 'submit' | 'reset';
+  icon?: IconName;
+  iconPosition?: 'start' | 'end';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  variant = 'primary',
+  type = 'button',
+  icon,
+  iconPosition = 'end',
+  class: className,
+  ...rest
+} = Astro.props;
+
+const isExternal = typeof href === 'string' && /^https?:\/\//.test(href);
+const external = isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {};
+const classes = ['btn', `btn-${variant}`, className].filter(Boolean).join(' ');
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+  class={classes}
+  href={href}
+  type={href ? undefined : type}
+  {...external}
+  {...rest}
+>
+  {icon && iconPosition === 'start' && <Icon name={icon} size={18} />}
+  <slot />
+  {icon && iconPosition === 'end' && <Icon name={icon} size={18} />}
+</Tag>

@@ -1,0 +1,81 @@
+---
+/**
+ * SocialLinks — renders the CMS-managed social/streaming links as icon buttons.
+ * Each link is properly labelled for screen readers. Platform names map to
+ * icons; unknown platforms fall back gracefully.
+ */
+import { social } from '@lib/settings';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+interface Props {
+  size?: number;
+  class?: string;
+}
+const { size = 20, class: className } = Astro.props;
+
+const ICONS: Record<string, IconName> = {
+  instagram: 'instagram',
+  youtube: 'youtube',
+  spotify: 'spotify',
+  appleMusic: 'appleMusic',
+  bandcamp: 'bandcamp',
+  soundcloud: 'soundcloud',
+  tiktok: 'tiktok',
+  facebook: 'facebook',
+  x: 'x',
+  email: 'email',
+};
+---
+
+<ul class:list={['social', className]}>
+  {
+    social.links.map((link) => {
+      const icon = ICONS[link.platform];
+      const isExternal = /^https?:\/\//.test(link.url);
+      return (
+        <li>
+          <a
+            href={link.url}
+            aria-label={link.label}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener noreferrer' : undefined}
+          >
+            {icon ? <Icon name={icon} size={size} /> : <span>{link.label}</span>}
+          </a>
+        </li>
+      );
+    })
+  }
+</ul>
+
+<style>
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .social a {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md);
+    color: var(--color-ink-muted);
+    border: 1px solid transparent;
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .social a:hover {
+    color: var(--color-accent);
+    background: var(--color-accent-soft);
+    border-color: var(--color-line);
+    transform: translateY(-2px);
+  }
+</style>

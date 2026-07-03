@@ -1,0 +1,160 @@
+---
+/**
+ * Header — sticky, glass navigation. Desktop shows inline nav + CTA; below
+ * 900px the MobileMenu island takes over. Becomes more opaque once scrolled.
+ * All content is CMS-driven via the navigation + site singletons.
+ */
+import { navigation, site } from '@lib/settings';
+import Button from '@components/ui/Button.astro';
+import MobileMenu from './MobileMenu.tsx';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="site-header glass" data-header>
+  <div class="container-page header-inner">
+    <a href="/" class="wordmark" aria-label={`${site.name} — home`}>
+      {site.name}<span class="wordmark-dot" aria-hidden="true">.</span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        {
+          navigation.primary.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      {
+        navigation.cta && (
+          <Button href={navigation.cta.href} variant="primary" class="header-cta">
+            {navigation.cta.label}
+          </Button>
+        )
+      }
+      <MobileMenu
+        client:idle
+        links={navigation.primary}
+        cta={navigation.cta ?? null}
+        currentPath={path}
+      />
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  // Toggle a "scrolled" state for the glass header. Re-bound after each
+  // view transition so it keeps working during SPA-style navigation.
+  (function () {
+    function bind() {
+      const header = document.querySelector('[data-header]');
+      if (!header) return;
+      const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+    }
+    bind();
+    document.addEventListener('astro:after-swap', bind);
+  })();
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 1px solid transparent;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    transition:
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard),
+      backdrop-filter var(--dur-base) var(--ease-standard);
+  }
+  /* Glass only kicks in once scrolled, so the hero sits flush at the top. */
+  .site-header.is-scrolled {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+    border-bottom-color: var(--color-line);
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: 4.5rem;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.25rem;
+    letter-spacing: -0.04em;
+    color: var(--color-ink);
+    white-space: nowrap;
+  }
+  .wordmark-dot {
+    color: var(--color-accent);
+  }
+
+  .primary-nav {
+    display: none;
+  }
+  .primary-nav ul {
+    display: flex;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .primary-nav a {
+    display: inline-block;
+    padding: 0.5rem 0.9rem;
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-ink-muted);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      background-color var(--dur-base) var(--ease-standard);
+  }
+  .primary-nav a:hover {
+    color: var(--color-ink);
+    background: rgba(244, 242, 238, 0.04);
+  }
+  .primary-nav a[aria-current='page'] {
+    color: var(--color-accent);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .header-cta {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .primary-nav {
+      display: block;
+    }
+    .header-cta {
+      display: inline-flex;
+    }
+  }
+</style>

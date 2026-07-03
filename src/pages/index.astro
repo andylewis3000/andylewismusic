@@ -1,0 +1,60 @@
+---
+/**
+ * Home — TEMPORARY placeholder to exercise the core layout in Phase 4.
+ * The full composed homepage (hero, featured music, video, events, news,
+ * Instagram, CTA) is built in Phase 5.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+import { home } from '@lib/settings';
+---
+
+<BaseLayout description={home.intro.body}>
+  <section class="container-page hero-lite">
+    <span class="kicker">{home.hero.kicker}</span>
+    <h1>{home.hero.heading.split(' ').slice(0, -2).join(' ')} <span class="text-gradient">{home.hero.heading.split(' ').slice(-2).join(' ')}</span></h1>
+    <p class="lede">{home.hero.subheading}</p>
+    <div class="actions">
+      <Button href={home.hero.primaryCta.href} variant="primary" icon="arrow-right">
+        {home.hero.primaryCta.label}
+      </Button>
+      {
+        home.hero.secondaryCta && (
+          <Button href={home.hero.secondaryCta.href} variant="ghost">
+            {home.hero.secondaryCta.label}
+          </Button>
+        )
+      }
+    </div>
+    <p class="phase-note">Core layout online — full homepage lands in Phase 5.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero-lite {
+    padding-block: clamp(4rem, 2rem + 10vw, 9rem);
+    display: grid;
+    gap: 1.5rem;
+    max-width: 60rem;
+  }
+  .hero-lite h1 {
+    font-size: var(--text-display);
+  }
+  .lede {
+    font-size: var(--text-lead);
+    color: var(--color-ink-muted);
+    max-width: 52ch;
+    margin: 0;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  .phase-note {
+    margin-top: 2rem;
+    font-size: var(--text-caption);
+    color: var(--color-ink-faint);
+  }
+</style>

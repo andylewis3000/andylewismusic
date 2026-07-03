@@ -1,0 +1,34 @@
+---
+/**
+ * Icon — inline SVG icon. Uses `currentColor` so it inherits text colour.
+ * Decorative by default (aria-hidden); pass a `title` for a labelled graphic.
+ * Type + path data live in ./icons.ts.
+ */
+import { iconBodies, solidIcons, type IconName } from './icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  title?: string;
+  class?: string;
+}
+
+const { name, size = 24, title, class: className } = Astro.props;
+const solid = solidIcons.has(name);
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  fill={solid ? 'currentColor' : 'none'}
+  stroke={solid ? 'none' : 'currentColor'}
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  class={className}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  aria-label={title}
+  set:html={(title ? `<title>${title}</title>` : '') + iconBodies[name]}
+/>
