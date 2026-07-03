@@ -1,0 +1,119 @@
+---
+/**
+ * YouTubeLite — a lightweight click-to-load YouTube facade. Ships zero iframe
+ * (and none of YouTube's ~1MB of JS) until the user clicks, then swaps in a
+ * privacy-friendly nocookie embed. A single delegated listener handles every
+ * instance on the page, and survives view transitions.
+ */
+interface Props {
+  id: string;
+  title: string;
+  /** Optional thumbnail URL override; defaults to YouTube's own. */
+  poster?: string;
+  class?: string;
+}
+const { id, title, poster, class: className } = Astro.props;
+const thumb = poster ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+---
+
+<button
+  class:list={['yt-lite', className]}
+  data-yt-id={id}
+  data-yt-title={title}
+  type="button"
+  aria-label={`Play video: ${title}`}
+>
+  <img class="yt-thumb" src={thumb} alt="" loading="lazy" decoding="async" width="480" height="360" />
+  <span class="yt-play" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5l11 6.5-11 6.5z" /></svg>
+  </span>
+</button>
+
+<script>
+  // Delegated once per page; persists across Astro view transitions because
+  // the listener is attached to `document`, which is never swapped.
+  if (!(window as any).__ytLiteBound) {
+    (window as any).__ytLiteBound = true;
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const btn = target.closest<HTMLButtonElement>('.yt-lite[data-yt-id]');
+      if (!btn || btn.dataset.loaded) return;
+      const id = btn.dataset.ytId;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+      iframe.title = btn.dataset.ytTitle || 'YouTube video';
+      iframe.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.loading = 'lazy';
+      iframe.className = 'yt-frame';
+      btn.dataset.loaded = '1';
+      btn.replaceChildren(iframe);
+    });
+  }
+</script>
+
+<style>
+  .yt-lite {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    cursor: pointer;
+    background: var(--color-surface-2);
+  }
+  .yt-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform var(--dur-slow) var(--ease-out),
+      filter var(--dur-base) var(--ease-standard);
+  }
+  .yt-lite::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(10, 10, 11, 0.5));
+    pointer-events: none;
+  }
+  .yt-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+    box-shadow: var(--shadow-glow);
+    transition: transform var(--dur-base) var(--ease-out);
+    z-index: 1;
+  }
+  .yt-lite:hover .yt-thumb {
+    transform: scale(1.05);
+  }
+  .yt-lite:hover .yt-play {
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .yt-lite :global(.yt-frame) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .yt-thumb,
+    .yt-play {
+      transition: none;
+    }
+  }
+</style>

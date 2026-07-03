@@ -1,0 +1,46 @@
+---
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import YouTubeLite from '@components/embeds/YouTubeLite.astro';
+import { getFeaturedVideo } from '@lib/content';
+
+interface Props {
+  heading?: string;
+  subheading?: string;
+}
+const { heading = 'Latest Video', subheading } = Astro.props;
+const video = await getFeaturedVideo();
+---
+
+{
+  video && (
+    <section class="section">
+      <div class="container-page">
+        <SectionHeader
+          kicker="Watch"
+          heading={heading}
+          subheading={subheading}
+          href="/videos/"
+        />
+        <div class="latest-video">
+          <YouTubeLite id={video.data.youtubeId} title={video.data.title} />
+          <p class="latest-video-title">{video.data.title}</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .latest-video {
+    max-width: 60rem;
+    margin-inline: auto;
+    display: grid;
+    gap: 1rem;
+  }
+  .latest-video-title {
+    margin: 0;
+    text-align: center;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+</style>

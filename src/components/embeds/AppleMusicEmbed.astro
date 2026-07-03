@@ -1,0 +1,39 @@
+---
+/**
+ * AppleMusicEmbed — lazy Apple Music player from a music.apple.com URL.
+ * Swaps the host to embed.music.apple.com and lazy-loads the iframe.
+ */
+interface Props {
+  url: string;
+  title?: string;
+}
+const { url, title = 'Apple Music player' } = Astro.props;
+
+const isApple = /music\.apple\.com/.test(url);
+const embedUrl = isApple ? url.replace('music.apple.com', 'embed.music.apple.com') : null;
+---
+
+{
+  embedUrl && (
+    <iframe
+      class="apple-embed"
+      src={embedUrl}
+      title={title}
+      height="450"
+      loading="lazy"
+      allow="autoplay *; encrypted-media *; clipboard-write"
+      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+    />
+  )
+}
+
+<style>
+  .apple-embed {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+  }
+</style>

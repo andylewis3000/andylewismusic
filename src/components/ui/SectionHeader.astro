@@ -1,0 +1,87 @@
+---
+/**
+ * SectionHeader — kicker + heading (+ optional subheading and a "view all" link).
+ * Used to introduce every homepage and index section consistently.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  kicker?: string;
+  heading: string;
+  subheading?: string;
+  href?: string;
+  linkLabel?: string;
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+}
+const {
+  kicker,
+  heading,
+  subheading,
+  href,
+  linkLabel = 'View all',
+  as = 'h2',
+  class: className,
+} = Astro.props as Props;
+const Heading = as;
+---
+
+<div class:list={['section-header', className]}>
+  <div class="section-header-text">
+    {kicker && <span class="kicker">{kicker}</span>}
+    <Heading class="section-heading">{heading}</Heading>
+    {subheading && <p class="section-sub">{subheading}</p>}
+  </div>
+  {
+    href && (
+      <a class="section-link" href={href}>
+        {linkLabel}
+        <Icon name="arrow-right" size={18} />
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin-bottom: clamp(1.75rem, 1rem + 2vw, 3rem);
+  }
+  .section-header-text {
+    display: grid;
+    gap: 0.85rem;
+    max-width: 52ch;
+  }
+  .section-heading {
+    font-size: var(--text-h2);
+  }
+  .section-sub {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+  }
+  .section-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    color: var(--color-ink);
+    font-weight: 600;
+    font-size: var(--text-small);
+    white-space: nowrap;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--color-line-strong);
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      gap var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .section-link:hover {
+    color: var(--color-accent);
+    gap: 0.85em;
+    border-color: var(--color-accent);
+  }
+</style>

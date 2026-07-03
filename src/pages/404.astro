@@ -1,0 +1,49 @@
+---
+/**
+ * 404 — friendly, on-brand not-found page.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Button from '@components/ui/Button.astro';
+---
+
+<BaseLayout title="Page not found" noindex>
+  <section class="section notfound">
+    <div class="container-page">
+      <span class="kicker">Error 404</span>
+      <h1 class="nf-code">Off the setlist</h1>
+      <p class="nf-body">
+        That page didn't make the cut — it may have moved or never existed. Let's get you back to
+        the music.
+      </p>
+      <div class="nf-actions">
+        <Button href="/" variant="primary" icon="arrow-right">Back home</Button>
+        <Button href="/music/" variant="ghost">Browse music</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound > div {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 46rem;
+    min-height: 46vh;
+    align-content: center;
+  }
+  .nf-code {
+    font-size: var(--text-display);
+  }
+  .nf-body {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+    max-width: 46ch;
+  }
+  .nf-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+</style>

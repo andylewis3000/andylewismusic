@@ -1,0 +1,85 @@
+---
+/**
+ * InstagramSection — a tasteful "on the road" strip linking to the profile.
+ *
+ * Instagram's official embed API requires access tokens and long-lived auth
+ * that don't fit a static, token-free build. Rather than ship a fragile
+ * scraper, we present an on-brand grid (photography placeholders until real
+ * images are added) with a strong follow CTA. Swap the tiles for real posts
+ * later via a build-time fetch if a token is provisioned.
+ */
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import Icon from '@components/ui/Icon.astro';
+import { home } from '@lib/settings';
+
+const handle = home.instagram.handle;
+const url = handle ? `https://instagram.com/${handle}` : '#';
+const tiles = Array.from({ length: 6 });
+---
+
+<section class="section instagram">
+  <div class="container-page">
+    <SectionHeader
+      kicker="Instagram"
+      heading={home.instagram.heading}
+      subheading={handle ? `@${handle}` : undefined}
+      href={url}
+      linkLabel="Follow"
+    />
+    <ul class="ig-grid">
+      {
+        tiles.map(() => (
+          <li>
+            <a
+              class="ig-tile"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${handle ? '@' + handle : 'Andy Lewis'} on Instagram`}
+            >
+              <span class="ig-icon" aria-hidden="true">
+                <Icon name="instagram" size={22} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .ig-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .ig-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  .ig-tile {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    background:
+      radial-gradient(120% 120% at 30% 20%, rgba(154, 205, 51, 0.12), transparent 55%),
+      linear-gradient(150deg, var(--color-surface-2), var(--color-bg));
+    color: var(--color-ink-faint);
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .ig-tile:hover {
+    color: var(--color-accent);
+    border-color: var(--color-line-strong);
+    transform: translateY(-3px);
+  }
+</style>

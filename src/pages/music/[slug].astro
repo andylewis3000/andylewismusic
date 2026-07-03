@@ -1,0 +1,321 @@
+---
+/**
+ * Music detail — a single release: artwork, metadata, streaming embeds,
+ * tracklist, credits and liner notes. Static page per album.
+ */
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Image from '@components/media/Image.astro';
+import Button from '@components/ui/Button.astro';
+import Icon from '@components/ui/Icon.astro';
+import SpotifyEmbed from '@components/embeds/SpotifyEmbed.astro';
+import AppleMusicEmbed from '@components/embeds/AppleMusicEmbed.astro';
+import CTASection from '@components/sections/CTASection.astro';
+import { getAlbums } from '@lib/content';
+import { formatDate, year } from '@lib/format';
+import type { IconName } from '@components/ui/icons';
+
+export const getStaticPaths = (async () => {
+  const albums = await getAlbums();
+  return albums.map((album) => ({ params: { slug: album.id }, props: { album } }));
+}) satisfies GetStaticPaths;
+
+const { album } = Astro.props;
+const d = album.data;
+const { Content } = await render(album);
+const typeLabel = d.type === 'ep' ? 'EP' : d.type.charAt(0).toUpperCase() + d.type.slice(1);
+const hasBody = (album.body ?? '').trim().length > 0;
+
+const linkDefs: { key: keyof typeof d.links; label: string; icon: IconName }[] = [
+  { key: 'spotify', label: 'Spotify', icon: 'spotify' },
+  { key: 'appleMusic', label: 'Apple Music', icon: 'appleMusic' },
+  { key: 'bandcamp', label: 'Bandcamp', icon: 'bandcamp' },
+  { key: 'youtube', label: 'YouTube', icon: 'youtube' },
+  { key: 'soundcloud', label: 'SoundCloud', icon: 'soundcloud' },
+];
+const links = linkDefs.filter((l) => d.links[l.key]);
+---
+
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  image={d.cover}
+  type="music.album"
+>
+  <article class="section-tight">
+    <div class="container-page release">
+      <div class="release-cover">
+        <Image
+          path={d.cover}
+          alt={d.coverAlt}
+          aspect="1/1"
+          sizes="(max-width: 900px) 90vw, 420px"
+          loading="eager"
+          fetchpriority="high"
+          placeholderLabel={d.title}
+        />
+      </div>
+
+      <div class="release-info">
+        <a class="back" href="/music/">
+          <Icon name="arrow-right" size={16} class="flip" /> All music
+        </a>
+        <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
+        <h1 class="release-title">{d.title}</h1>
+        <p class="release-artist">{d.artist}</p>
+        <p class="release-desc">{d.description}</p>
+
+        <dl class="release-facts">
+          <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
+          {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
+          {
+            d.roles.length > 0 && (
+              <div>
+                <dt>Andy plays</dt>
+                <dd>{d.roles.join(', ')}</dd>
+              </div>
+            )
+          }
+        </dl>
+
+        {
+          links.length > 0 && (
+            <div class="release-links">
+              {links.map((l) => (
+                <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
+                  {l.label}
+                </Button>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </article>
+
+  {
+    (d.links.spotify || d.links.appleMusic) && (
+      <section class="section-tight players">
+        <div class="container-page player-grid">
+          {d.links.spotify && <SpotifyEmbed url={d.links.spotify} title={`${d.title} on Spotify`} />}
+          {d.links.appleMusic && (
+            <AppleMusicEmbed url={d.links.appleMusic} title={`${d.title} on Apple Music`} />
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section-tight">
+    <div class="container-page detail-cols">
+      {
+        d.tracklist.length > 0 && (
+          <div class="tracklist-wrap">
+            <h2 class="detail-h">Tracklist</h2>
+            <ol class="tracklist">
+              {d.tracklist.map((track, i) => (
+                <li>
+                  <span class="track-no">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="track-title">{track.title}</span>
+                  {track.duration && <span class="track-dur">{track.duration}</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )
+      }
+
+      <div class="detail-side">
+        {
+          hasBody && (
+            <div class="liner prose">
+              <h2 class="detail-h">Liner notes</h2>
+              <Content />
+            </div>
+          )
+        }
+        {
+          d.credits.length > 0 && (
+            <div class="credits">
+              <h2 class="detail-h">Credits</h2>
+              <dl>
+                {d.credits.map((c) => (
+                  <div class="credit">
+                    <dt>{c.role}</dt>
+                    <dd>{c.name}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <CTASection />
+</BaseLayout>
+
+<style>
+  .release {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .release {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 3.5rem;
+    }
+  }
+  .release-cover :global(img),
+  .release-cover :global(.media-placeholder) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-lg);
+  }
+  .release-info {
+    display: grid;
+    gap: 0.85rem;
+    align-content: start;
+  }
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    width: fit-content;
+  }
+  .back:hover {
+    color: var(--color-accent);
+  }
+  .flip {
+    transform: rotate(180deg);
+  }
+  .release-title {
+    font-size: var(--text-h1);
+  }
+  .release-artist {
+    margin: 0;
+    color: var(--color-ink-muted);
+  }
+  .release-desc {
+    margin: 0.25rem 0 0;
+    font-size: var(--text-lead);
+    color: var(--color-ink);
+    max-width: 48ch;
+  }
+  .release-facts {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0.5rem 0 0;
+    padding: 1.1rem 0;
+    border-block: 1px solid var(--color-line);
+  }
+  .release-facts div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+  }
+  .release-facts dt {
+    color: var(--color-ink-faint);
+    font-size: var(--text-small);
+  }
+  .release-facts dd {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-small);
+    text-transform: capitalize;
+  }
+  .release-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  .player-grid {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .player-grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+  }
+
+  .detail-cols {
+    display: grid;
+    gap: 2.5rem;
+  }
+  @media (min-width: 900px) {
+    .detail-cols {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 4rem;
+    }
+  }
+  .detail-h {
+    font-size: var(--text-h3);
+    margin-bottom: 1.25rem;
+  }
+  .tracklist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tracklist li {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .tracklist li:first-child {
+    border-top: 0;
+  }
+  .track-no {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--text-small);
+  }
+  .track-title {
+    color: var(--color-ink);
+  }
+  .track-dur {
+    color: var(--color-ink-faint);
+    font-size: var(--text-small);
+    font-variant-numeric: tabular-nums;
+  }
+  .detail-side {
+    display: grid;
+    gap: 2.5rem;
+    align-content: start;
+  }
+  .credits dl {
+    margin: 0;
+    display: grid;
+    gap: 0.65rem;
+  }
+  .credit {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .credit dt {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .credit dd {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-small);
+  }
+</style>

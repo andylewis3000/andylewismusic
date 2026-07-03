@@ -1,0 +1,107 @@
+---
+/**
+ * Pagination — previous/next + numbered links for paginated collections.
+ * Accepts Astro's `page` object from getStaticPaths({ paginate }).
+ */
+import type { Page } from 'astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  page: Page;
+  base: string; // e.g. "/blog"
+}
+const { page, base } = Astro.props;
+
+const href = (n: number) => (n === 1 ? `${base}/` : `${base}/${n}/`);
+const pages = Array.from({ length: page.lastPage }, (_, i) => i + 1);
+---
+
+{
+  page.lastPage > 1 && (
+    <nav class="pagination" aria-label="Pagination">
+      <a
+        class:list={['page-arrow', !page.url.prev && 'is-disabled']}
+        href={page.url.prev ?? undefined}
+        aria-disabled={!page.url.prev}
+        rel="prev"
+      >
+        <Icon name="arrow-right" size={18} class="flip" />
+        <span class="sr-only">Previous page</span>
+      </a>
+
+      <ul class="page-numbers">
+        {pages.map((n) => (
+          <li>
+            <a
+              href={href(n)}
+              aria-current={n === page.currentPage ? 'page' : undefined}
+              class:list={['page-number', n === page.currentPage && 'is-current']}
+            >
+              {n}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        class:list={['page-arrow', !page.url.next && 'is-disabled']}
+        href={page.url.next ?? undefined}
+        aria-disabled={!page.url.next}
+        rel="next"
+      >
+        <Icon name="arrow-right" size={18} />
+        <span class="sr-only">Next page</span>
+      </a>
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 3rem;
+  }
+  .page-numbers {
+    display: flex;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .page-number,
+  .page-arrow {
+    display: grid;
+    place-items: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding-inline: 0.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-line);
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .page-number:hover,
+  .page-arrow:hover {
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+  .page-number.is-current {
+    color: var(--color-accent-contrast);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .page-arrow.is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .flip {
+    transform: rotate(180deg);
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import EventCard from '@components/cards/EventCard.astro';
+import { getEvents } from '@lib/content';
+
+interface Props {
+  heading?: string;
+  subheading?: string;
+}
+const { heading = 'Upcoming Shows', subheading } = Astro.props;
+const { upcoming } = await getEvents();
+const shows = upcoming.slice(0, 4);
+---
+
+<section class="section">
+  <div class="container-page">
+    <SectionHeader
+      kicker="Live"
+      heading={heading}
+      subheading={subheading}
+      href="/events/"
+    />
+    {
+      shows.length > 0 ? (
+        <div class="event-list">
+          {shows.map((event) => (
+            <EventCard event={event} variant="upcoming" />
+          ))}
+        </div>
+      ) : (
+        <p class="no-shows">No dates on the calendar right now — new shows announced here first.</p>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .event-list {
+    display: grid;
+    gap: 1rem;
+  }
+  .no-shows {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+  }
+</style>

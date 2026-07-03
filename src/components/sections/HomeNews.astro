@@ -1,0 +1,40 @@
+---
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import BlogCard from '@components/cards/BlogCard.astro';
+import { getFeaturedPosts } from '@lib/content';
+
+interface Props {
+  heading?: string;
+  subheading?: string;
+}
+const { heading = 'Latest News', subheading } = Astro.props;
+const posts = await getFeaturedPosts(3);
+---
+
+{
+  posts.length > 0 && (
+    <section class="section">
+      <div class="container-page">
+        <SectionHeader
+          kicker="Journal"
+          heading={heading}
+          subheading={subheading}
+          href="/blog/"
+        />
+        <div class="grid-news">
+          {posts.map((post) => (
+            <BlogCard post={post} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .grid-news {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+</style>

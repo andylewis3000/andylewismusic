@@ -1,0 +1,102 @@
+---
+/**
+ * Hero — the homepage opener. Full-bleed background photograph under a dark
+ * cinematic gradient, with headline, sub and CTAs. The background image loads
+ * eagerly with high priority (it's the LCP element).
+ */
+import Image from '@components/media/Image.astro';
+import Button from '@components/ui/Button.astro';
+import { home } from '@lib/settings';
+
+const h = home.hero;
+// Split the heading so the final two words can take the accent gradient.
+const words = h.heading.split(' ');
+const head = words.slice(0, -2).join(' ');
+const tail = words.slice(-2).join(' ');
+---
+
+<section class="hero" aria-label="Introduction">
+  <div class="hero-bg">
+    <Image
+      path={h.backgroundImage}
+      alt={h.backgroundAlt}
+      loading="eager"
+      fetchpriority="high"
+      widths={[768, 1280, 1920, 2560]}
+      sizes="100vw"
+      placeholderLabel="Andy Lewis"
+    />
+    <div class="hero-scrim" aria-hidden="true"></div>
+  </div>
+
+  <div class="container-page hero-inner">
+    {h.kicker && <span class="kicker">{h.kicker}</span>}
+    <h1 class="hero-heading">
+      {head} <span class="text-gradient">{tail}</span>
+    </h1>
+    <p class="hero-sub">{h.subheading}</p>
+    <div class="hero-actions">
+      <Button href={h.primaryCta.href} variant="primary" icon="arrow-right">
+        {h.primaryCta.label}
+      </Button>
+      {
+        h.secondaryCta && (
+          <Button href={h.secondaryCta.href} variant="ghost">
+            {h.secondaryCta.label}
+          </Button>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(88vh, 900px);
+    padding-block: clamp(4rem, 2rem + 12vh, 9rem);
+    margin-top: -4.5rem; /* slide under the transparent sticky header */
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero-bg :global(img),
+  .hero-bg :global(.media-placeholder) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(10, 10, 11, 0.55) 0%, transparent 30%, rgba(10, 10, 11, 0.65) 78%, var(--color-bg) 100%),
+      linear-gradient(90deg, rgba(10, 10, 11, 0.75), transparent 65%);
+  }
+  .hero-inner {
+    display: grid;
+    gap: 1.35rem;
+    max-width: 60rem;
+  }
+  .hero-heading {
+    font-size: var(--text-display);
+    max-width: 16ch;
+  }
+  .hero-sub {
+    margin: 0;
+    max-width: 46ch;
+    font-size: var(--text-lead);
+    color: var(--color-ink-muted);
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+</style>

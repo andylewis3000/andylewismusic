@@ -1,0 +1,99 @@
+---
+/**
+ * Blog index — paginated news listing with client-side search (Pagefind).
+ * Page 1 lives at /blog/, subsequent pages at /blog/2/ etc.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import BlogCard from '@components/cards/BlogCard.astro';
+import Pagination from '@components/ui/Pagination.astro';
+import Search from '@components/ui/Search.astro';
+import { getPosts, getPostTaxonomies } from '@lib/content';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  return paginate(posts, { pageSize: 6 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { categories } = await getPostTaxonomies();
+---
+
+<BaseLayout
+  title="News"
+  description="News, releases, tour updates and studio notes from Andy Lewis."
+  path="/blog/"
+>
+  <PageHero
+    kicker="Journal"
+    title="News"
+    intro="Releases, tour updates, studio notes and the occasional tangent."
+  />
+
+  <section class="section-tight">
+    <div class="container-page">
+      <div class="blog-toolbar">
+        {
+          categories.length > 0 && (
+            <nav class="cat-nav" aria-label="Post categories">
+              <a href="/blog/" class="cat is-active">All</a>
+              {categories.map((c) => (
+                <a href={`/blog/category/${c}/`} class="cat">
+                  {c}
+                </a>
+              ))}
+            </nav>
+          )
+        }
+        <Search />
+      </div>
+
+      <div class="grid-news">
+        {page.data.map((post) => <BlogCard post={post} />)}
+      </div>
+
+      <Pagination page={page} base="/blog" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .cat-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .cat {
+    padding: 0.4em 0.95em;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    text-transform: capitalize;
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .cat:hover {
+    color: var(--color-ink);
+  }
+  .cat.is-active {
+    color: var(--color-accent-contrast);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .grid-news {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+/**
+ * SpotifyEmbed — lazy Spotify player from a normal open.spotify.com URL.
+ * Accepts album/track/playlist/artist links. Iframe is lazy-loaded.
+ */
+interface Props {
+  url: string;
+  title?: string;
+  compact?: boolean;
+}
+const { url, title = 'Spotify player', compact = false } = Astro.props;
+
+// https://open.spotify.com/album/ID  →  https://open.spotify.com/embed/album/ID
+const match = url.match(/open\.spotify\.com\/(album|track|playlist|artist)\/([A-Za-z0-9]+)/);
+const embedUrl = match
+  ? `https://open.spotify.com/embed/${match[1]}/${match[2]}?theme=0`
+  : null;
+const height = compact ? 152 : match?.[1] === 'track' ? 152 : 352;
+---
+
+{
+  embedUrl && (
+    <iframe
+      class="spotify-embed"
+      src={embedUrl}
+      title={title}
+      height={height}
+      loading="lazy"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      allowfullscreen
+    />
+  )
+}
+
+<style>
+  .spotify-embed {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    color-scheme: normal;
+  }
+</style>

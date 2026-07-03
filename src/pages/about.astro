@@ -1,0 +1,265 @@
+---
+/**
+ * About — biography (Markdown body), portrait, career highlights, influences,
+ * an experience timeline and equipment highlights. Fully CMS-editable.
+ */
+import { render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import Image from '@components/media/Image.astro';
+import CTASection from '@components/sections/CTASection.astro';
+import { getAbout } from '@lib/content';
+
+const about = await getAbout();
+if (!about) throw new Error('About content is missing (src/content/about/about.md).');
+const d = about.data;
+const { Content } = await render(about);
+---
+
+<BaseLayout title={d.title} description={d.seo.description ?? d.headline} image={d.portrait}>
+  <PageHero kicker="About" title={d.headline} />
+
+  <section class="section-tight">
+    <div class="container-page about-grid">
+      <div class="about-portrait">
+        <Image
+          path={d.portrait}
+          alt={d.portraitAlt}
+          aspect="4/5"
+          sizes="(max-width: 900px) 90vw, 440px"
+          placeholderLabel="Andy Lewis"
+        />
+      </div>
+      <div class="about-bio prose">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  {
+    d.highlights.length > 0 && (
+      <section class="section-tight highlights">
+        <div class="container-page">
+          <dl class="highlight-grid">
+            {d.highlights.map((h) => (
+              <div class="highlight">
+                <dt>{h.value}</dt>
+                <dd>{h.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    d.experience.length > 0 && (
+      <section class="section-tight">
+        <div class="container-page two-col">
+          <h2 class="col-title">Experience</h2>
+          <ol class="timeline">
+            {d.experience.map((item) => (
+              <li class="timeline-item">
+                <span class="timeline-year">{item.year}</span>
+                <div>
+                  <h3 class="timeline-title">{item.title}</h3>
+                  {item.detail && <p class="timeline-detail">{item.detail}</p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    d.influences.length > 0 && (
+      <section class="section-tight">
+        <div class="container-page two-col">
+          <h2 class="col-title">Influences</h2>
+          <ul class="chips">
+            {d.influences.map((name) => (
+              <li class="chip">{name}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    d.equipment.length > 0 && (
+      <section class="section-tight">
+        <div class="container-page two-col">
+          <h2 class="col-title">Equipment</h2>
+          <div class="equip-groups">
+            {d.equipment.map((group) => (
+              <div class="equip-group">
+                <h3 class="equip-label">{group.label}</h3>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTASection />
+</BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4rem;
+    }
+    .about-portrait {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+  .about-portrait :global(img),
+  .about-portrait :global(.media-placeholder) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+  }
+  .about-bio {
+    max-width: none;
+  }
+
+  .highlights {
+    border-block: 1px solid var(--color-line);
+  }
+  .highlight-grid {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1rem;
+  }
+  @media (min-width: 720px) {
+    .highlight-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .highlight dt {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2rem, 1.4rem + 2.5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    color: var(--color-accent);
+    line-height: 1;
+  }
+  .highlight dd {
+    margin: 0.5rem 0 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+
+  .two-col {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .two-col {
+      grid-template-columns: 14rem 1fr;
+      gap: 3rem;
+    }
+  }
+  .col-title {
+    font-size: var(--text-h3);
+  }
+
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 1.5rem;
+    padding: 1.4rem 0;
+    border-top: 1px solid var(--color-line);
+  }
+  .timeline-item:first-child {
+    border-top: 0;
+  }
+  .timeline-year {
+    color: var(--color-accent);
+    font-weight: 600;
+    font-size: var(--text-small);
+    padding-top: 0.2rem;
+  }
+  .timeline-title {
+    font-size: var(--text-h4);
+  }
+  .timeline-detail {
+    margin: 0.35rem 0 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .chip {
+    padding: 0.5em 1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-ink);
+    font-size: var(--text-small);
+  }
+
+  .equip-groups {
+    display: grid;
+    gap: 2rem;
+  }
+  @media (min-width: 640px) {
+    .equip-groups {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .equip-label {
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-ink-faint);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .equip-group ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .equip-group li {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+</style>

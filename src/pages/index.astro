@@ -1,60 +1,69 @@
 ---
 /**
- * Home — TEMPORARY placeholder to exercise the core layout in Phase 4.
- * The full composed homepage (hero, featured music, video, events, news,
- * Instagram, CTA) is built in Phase 5.
+ * Home — hero, a short intro statement, then the CMS-ordered, toggleable
+ * homepage sections (featured music, latest video, events, news, Instagram,
+ * closing CTA).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Button from '@components/ui/Button.astro';
+import Hero from '@components/sections/Hero.astro';
+import HomeFeaturedMusic from '@components/sections/HomeFeaturedMusic.astro';
+import HomeLatestVideo from '@components/sections/HomeLatestVideo.astro';
+import HomeEvents from '@components/sections/HomeEvents.astro';
+import HomeNews from '@components/sections/HomeNews.astro';
+import InstagramSection from '@components/sections/InstagramSection.astro';
+import CTASection from '@components/sections/CTASection.astro';
 import { home } from '@lib/settings';
+
+const sections = home.sections.filter((s) => s.enabled);
 ---
 
 <BaseLayout description={home.intro.body}>
-  <section class="container-page hero-lite">
-    <span class="kicker">{home.hero.kicker}</span>
-    <h1>{home.hero.heading.split(' ').slice(0, -2).join(' ')} <span class="text-gradient">{home.hero.heading.split(' ').slice(-2).join(' ')}</span></h1>
-    <p class="lede">{home.hero.subheading}</p>
-    <div class="actions">
-      <Button href={home.hero.primaryCta.href} variant="primary" icon="arrow-right">
-        {home.hero.primaryCta.label}
-      </Button>
-      {
-        home.hero.secondaryCta && (
-          <Button href={home.hero.secondaryCta.href} variant="ghost">
-            {home.hero.secondaryCta.label}
-          </Button>
-        )
-      }
+  <Hero />
+
+  <section class="section-tight intro">
+    <div class="container-page">
+      <p class="kicker">Introduction</p>
+      <h2 class="intro-heading">{home.intro.heading}</h2>
+      <p class="intro-body">{home.intro.body}</p>
     </div>
-    <p class="phase-note">Core layout online — full homepage lands in Phase 5.</p>
   </section>
+
+  {
+    sections.map((s) => {
+      switch (s.id) {
+        case 'featured-music':
+          return <HomeFeaturedMusic heading={s.heading} subheading={s.subheading} />;
+        case 'latest-video':
+          return <HomeLatestVideo heading={s.heading} subheading={s.subheading} />;
+        case 'events':
+          return <HomeEvents heading={s.heading} subheading={s.subheading} />;
+        case 'news':
+          return <HomeNews heading={s.heading} subheading={s.subheading} />;
+        case 'instagram':
+          return <InstagramSection />;
+        case 'cta':
+          return <CTASection />;
+        default:
+          return null;
+      }
+    })
+  }
 </BaseLayout>
 
 <style>
-  .hero-lite {
-    padding-block: clamp(4rem, 2rem + 10vw, 9rem);
+  .intro > div {
     display: grid;
-    gap: 1.5rem;
-    max-width: 60rem;
+    gap: 1.1rem;
+    max-width: 62rem;
   }
-  .hero-lite h1 {
-    font-size: var(--text-display);
+  .intro-heading {
+    font-size: var(--text-h2);
+    max-width: 20ch;
   }
-  .lede {
+  .intro-body {
+    margin: 0;
+    max-width: 62ch;
     font-size: var(--text-lead);
     color: var(--color-ink-muted);
-    max-width: 52ch;
-    margin: 0;
-  }
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
-  .phase-note {
-    margin-top: 2rem;
-    font-size: var(--text-caption);
-    color: var(--color-ink-faint);
   }
 </style>

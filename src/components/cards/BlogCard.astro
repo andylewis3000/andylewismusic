@@ -1,0 +1,72 @@
+---
+/**
+ * BlogCard — a post preview for news listings and related-article grids.
+ */
+import type { Post } from '@lib/content';
+import Image from '@components/media/Image.astro';
+import { formatDate, isoDate } from '@lib/format';
+
+interface Props {
+  post: Post;
+  featured?: boolean;
+}
+const { post, featured = false } = Astro.props;
+const d = post.data;
+---
+
+<article class:list={['card blog-card', featured && 'is-featured']}>
+  <a class="blog-link" href={`/blog/${post.id}/`}>
+    <div class="blog-media">
+      <Image
+        path={d.heroImage}
+        alt={d.heroImageAlt ?? d.title}
+        aspect={featured ? '16/9' : '3/2'}
+        sizes={featured ? '(max-width: 960px) 100vw, 900px' : '(max-width: 640px) 90vw, 400px'}
+        placeholderLabel="News"
+      />
+    </div>
+    <div class="blog-body">
+      <span class="kicker">
+        {d.category} · <time datetime={isoDate(d.publishDate)}>{formatDate(d.publishDate)}</time>
+      </span>
+      <h3 class="blog-title">{d.title}</h3>
+      <p class="blog-desc">{d.description}</p>
+    </div>
+  </a>
+</article>
+
+<style>
+  .blog-link {
+    display: block;
+    height: 100%;
+  }
+  .blog-media :global(img),
+  .blog-media :global(.media-placeholder) {
+    width: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .blog-card:hover .blog-media :global(img) {
+    transform: scale(1.04);
+  }
+  .blog-body {
+    padding: 1.1rem 1.25rem 1.4rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .blog-title {
+    font-size: var(--text-h4);
+  }
+  .is-featured .blog-title {
+    font-size: var(--text-h3);
+  }
+  .blog-desc {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    line-height: 1.6;
+  }
+  .kicker time {
+    color: inherit;
+  }
+</style>

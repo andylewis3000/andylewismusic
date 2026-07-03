@@ -1,0 +1,62 @@
+---
+/**
+ * Blog category archive — all posts in one category.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import BlogCard from '@components/cards/BlogCard.astro';
+import Icon from '@components/ui/Icon.astro';
+import { getPosts, getPostTaxonomies } from '@lib/content';
+
+export const getStaticPaths = (async () => {
+  const { categories } = await getPostTaxonomies();
+  const posts = await getPosts();
+  return categories.map((category) => ({
+    params: { category },
+    props: { posts: posts.filter((p) => p.data.category === category), category },
+  }));
+}) satisfies GetStaticPaths;
+
+const { posts, category } = Astro.props;
+---
+
+<BaseLayout title={`${category} — News`} description={`Posts in the ${category} category.`}>
+  <PageHero kicker="Category" title={category} />
+
+  <section class="section-tight">
+    <div class="container-page">
+      <a class="back" href="/blog/">
+        <Icon name="arrow-right" size={16} class="flip" /> All news
+      </a>
+      <div class="grid-news">
+        {posts.map((post) => <BlogCard post={post} />)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    margin-bottom: 2rem;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .back:hover {
+    color: var(--color-accent);
+  }
+  .flip {
+    transform: rotate(180deg);
+  }
+  .grid-news {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+  :global(.page-title) {
+    text-transform: capitalize;
+  }
+</style>

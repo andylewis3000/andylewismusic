@@ -1,0 +1,76 @@
+---
+/**
+ * Events — upcoming shows followed by a past-events archive.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import EventCard from '@components/cards/EventCard.astro';
+import CTASection from '@components/sections/CTASection.astro';
+import { getEvents } from '@lib/content';
+
+const { upcoming, past } = await getEvents();
+---
+
+<BaseLayout
+  title="Events"
+  description="Upcoming live shows and past performances by Andy Lewis."
+>
+  <PageHero
+    kicker="Live"
+    title="Events"
+    intro="Where to catch a performance. New dates are announced here first."
+  />
+
+  <section class="section-tight">
+    <div class="container-page">
+      <h2 class="events-h">Upcoming</h2>
+      {
+        upcoming.length > 0 ? (
+          <div class="event-list">
+            {upcoming.map((event) => (
+              <EventCard event={event} variant="upcoming" />
+            ))}
+          </div>
+        ) : (
+          <p class="empty">No dates on the calendar right now — check back soon, or get in touch about booking.</p>
+        )
+      }
+    </div>
+  </section>
+
+  {
+    past.length > 0 && (
+      <section class="section-tight past">
+        <div class="container-page">
+          <h2 class="events-h">Past shows</h2>
+          <div class="event-list">
+            {past.map((event) => (
+              <EventCard event={event} variant="past" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTASection />
+</BaseLayout>
+
+<style>
+  .events-h {
+    font-size: var(--text-h3);
+    margin-bottom: 1.5rem;
+  }
+  .event-list {
+    display: grid;
+    gap: 1rem;
+  }
+  .empty {
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+    max-width: 52ch;
+  }
+  .past {
+    border-top: 1px solid var(--color-line);
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+/**
+ * VideoCard — a YouTube facade with title + category meta. Playback happens
+ * inline via YouTubeLite (no navigation).
+ */
+import type { Video } from '@lib/content';
+import YouTubeLite from '@components/embeds/YouTubeLite.astro';
+import { resolveImage } from '@lib/images';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  video: Video;
+}
+const { video } = Astro.props;
+const d = video.data;
+
+// Prefer a CMS thumbnail if provided (optimized); else YouTubeLite uses YouTube's.
+let poster: string | undefined;
+const custom = resolveImage(d.thumbnail);
+if (custom) {
+  poster = (await getImage({ src: custom, width: 640 })).src;
+}
+const categoryLabel = d.category.replace('-', ' ');
+---
+
+<article class="video-card">
+  <YouTubeLite id={d.youtubeId} title={d.title} poster={poster} />
+  <div class="video-meta">
+    <span class="kicker">{categoryLabel}</span>
+    <h3 class="video-title">{d.title}</h3>
+    {d.description && <p class="video-desc">{d.description}</p>}
+  </div>
+</article>
+
+<style>
+  .video-card {
+    display: grid;
+    gap: 1rem;
+  }
+  .video-meta {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .video-title {
+    font-size: var(--text-h4);
+  }
+  .video-desc {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+</style>

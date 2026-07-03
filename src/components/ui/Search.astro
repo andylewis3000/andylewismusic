@@ -1,0 +1,63 @@
+---
+/**
+ * Search — client-side blog search powered by Pagefind.
+ *
+ * Pagefind builds a static search index at build time (`pagefind --site dist`,
+ * part of `npm run build`) and only blog articles are indexed (they carry
+ * data-pagefind-body). The UI assets live at /pagefind/ and therefore only
+ * exist in a production build — in `dev` the box renders but returns nothing.
+ */
+---
+
+<div class="search" data-search>
+  <div id="pagefind-search"></div>
+</div>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script src="/pagefind/pagefind-ui.js" is:inline></script>
+<script is:inline>
+  function initPagefind() {
+    if (!window.PagefindUI) return;
+    const el = document.getElementById('pagefind-search');
+    if (!el || el.dataset.init) return;
+    el.dataset.init = '1';
+    new window.PagefindUI({
+      element: '#pagefind-search',
+      showImages: false,
+      showSubResults: true,
+      pageSize: 5,
+      placeholder: 'Search news…',
+    });
+  }
+  if (document.readyState !== 'loading') initPagefind();
+  else document.addEventListener('DOMContentLoaded', initPagefind);
+  document.addEventListener('astro:after-swap', initPagefind);
+</script>
+
+<style is:global>
+  .search {
+    width: min(100%, 22rem);
+    --pagefind-ui-scale: 0.85;
+    --pagefind-ui-primary: var(--color-accent);
+    --pagefind-ui-text: var(--color-ink);
+    --pagefind-ui-background: var(--color-surface);
+    --pagefind-ui-border: var(--color-line-strong);
+    --pagefind-ui-tag: var(--color-surface-2);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius-md);
+    --pagefind-ui-font: var(--font-sans);
+  }
+  .search .pagefind-ui__search-input {
+    background: var(--color-surface);
+    color: var(--color-ink);
+  }
+  .search .pagefind-ui__result {
+    border-color: var(--color-line);
+  }
+  .search .pagefind-ui__result-link {
+    color: var(--color-ink);
+  }
+  .search .pagefind-ui__result-link:hover {
+    color: var(--color-accent);
+  }
+</style>

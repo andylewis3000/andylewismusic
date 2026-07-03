@@ -1,0 +1,134 @@
+---
+/**
+ * Videos — a featured video plus a filterable archive. Filtering is a small
+ * progressive enhancement (works as a full grid without JS).
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import VideoCard from '@components/cards/VideoCard.astro';
+import CTASection from '@components/sections/CTASection.astro';
+import { getVideos, getFeaturedVideo } from '@lib/content';
+
+const videos = await getVideos();
+const featured = await getFeaturedVideo();
+const rest = videos.filter((v) => v.id !== featured?.id);
+
+const categories = [...new Set(videos.map((v) => v.data.category))];
+const label = (c: string) => c.replace('-', ' ');
+---
+
+<BaseLayout
+  title="Videos"
+  description="Live sessions, playthroughs and music videos from Andy Lewis."
+>
+  <PageHero
+    kicker="Watch"
+    title="Videos"
+    intro="Live sessions, drum playthroughs and music videos — click any thumbnail to play."
+  />
+
+  {
+    featured && (
+      <section class="section-tight">
+        <div class="container-page featured-video">
+          <VideoCard video={featured} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    rest.length > 0 && (
+      <section class="section-tight">
+        <div class="container-page">
+          {categories.length > 1 && (
+            <div class="filters" role="group" aria-label="Filter videos by category">
+              <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">
+                All
+              </button>
+              {categories.map((c) => (
+                <button class="filter" type="button" data-filter={c} aria-pressed="false">
+                  {label(c)}
+                </button>
+              ))}
+            </div>
+          )}
+          <div class="grid-videos" data-video-grid>
+            {rest.map((video) => (
+              <div class="video-item" data-category={video.data.category}>
+                <VideoCard video={video} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTASection />
+</BaseLayout>
+
+<script>
+  function initFilters() {
+    const container = document.querySelector('[data-video-grid]');
+    if (!container) return;
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        buttons.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('is-active', active);
+          b.setAttribute('aria-pressed', String(active));
+        });
+        container.querySelectorAll<HTMLElement>('.video-item').forEach((item) => {
+          const show = filter === 'all' || item.dataset.category === filter;
+          item.hidden = !show;
+        });
+      });
+    });
+  }
+  initFilters();
+  document.addEventListener('astro:after-swap', initFilters);
+</script>
+
+<style>
+  .featured-video {
+    max-width: 62rem;
+    margin-inline: auto;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .filter {
+    padding: 0.5em 1.1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    font-weight: 500;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .filter:hover {
+    color: var(--color-ink);
+  }
+  .filter.is-active {
+    color: var(--color-accent-contrast);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .grid-videos {
+    display: grid;
+    gap: 2rem 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+</style>

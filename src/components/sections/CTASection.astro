@@ -1,0 +1,76 @@
+---
+/**
+ * CTASection — the recurring "let's work together" call to action.
+ * Defaults to the homepage CTA content but accepts overrides.
+ */
+import Button from '@components/ui/Button.astro';
+import { home } from '@lib/settings';
+
+interface Props {
+  heading?: string;
+  body?: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string } | null;
+}
+const {
+  heading = home.cta.heading,
+  body = home.cta.body,
+  primary = home.cta.primaryCta,
+  secondary = home.cta.secondaryCta ?? null,
+} = Astro.props;
+---
+
+<section class="section">
+  <div class="container-page">
+    <div class="cta card">
+      <div class="cta-glow" aria-hidden="true"></div>
+      <div class="cta-inner">
+        <h2 class="cta-heading">{heading}</h2>
+        <p class="cta-body">{body}</p>
+        <div class="cta-actions">
+          <Button href={primary.href} variant="primary" icon="arrow-right">{primary.label}</Button>
+          {secondary && <Button href={secondary.href} variant="ghost">{secondary.label}</Button>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    position: relative;
+    padding: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+    text-align: center;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute;
+    inset: -40% 20% auto;
+    height: 60%;
+    background: radial-gradient(50% 100% at 50% 0%, rgba(154, 205, 51, 0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .cta-inner {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    justify-items: center;
+  }
+  .cta-heading {
+    font-size: var(--text-h1);
+    max-width: 18ch;
+  }
+  .cta-body {
+    margin: 0;
+    max-width: 48ch;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+  }
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+</style>

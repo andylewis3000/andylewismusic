@@ -324,7 +324,78 @@
   }
 }
 
-/* 6 ─ Accessibility utilities ───────────────────────────────────────── */
+/* 6 ─ Layout + prose ────────────────────────────────────────────────── */
+@layer components {
+  /* Standard vertical rhythm between page sections. */
+  .section {
+    padding-block: var(--space-section);
+  }
+  .section-tight {
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  }
+
+  /* Long-form article typography for Markdown bodies. */
+  .prose {
+    max-width: 68ch;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+    line-height: 1.75;
+  }
+  .prose > * + * {
+    margin-top: 1.4em;
+  }
+  .prose h2 {
+    font-size: var(--text-h2);
+    color: var(--color-ink);
+    margin-top: 2.2em;
+  }
+  .prose h3 {
+    font-size: var(--text-h3);
+    color: var(--color-ink);
+    margin-top: 1.8em;
+  }
+  .prose strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: color var(--dur-base) var(--ease-standard);
+  }
+  .prose a:hover {
+    color: var(--color-accent-hover);
+  }
+  .prose blockquote {
+    margin-inline: 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--color-accent);
+    color: var(--color-ink);
+    font-style: italic;
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.3em;
+  }
+  .prose li + li {
+    margin-top: 0.5em;
+  }
+  .prose img {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+  }
+  .prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: var(--color-surface-2);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* 7 ─ Accessibility utilities ───────────────────────────────────────── */
 @layer utilities {
   /* Visually hidden but available to assistive tech. */
   .sr-only {

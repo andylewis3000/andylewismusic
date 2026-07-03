@@ -1,0 +1,142 @@
+---
+/**
+ * EventCard — a single show. `upcoming` variant shows a ticket CTA; `past`
+ * variant is muted with a status label. Emits accessible date markup.
+ */
+import type { Event } from '@lib/content';
+import Button from '@components/ui/Button.astro';
+import { eventDateParts, isoDate } from '@lib/format';
+
+interface Props {
+  event: Event;
+  variant?: 'upcoming' | 'past';
+}
+const { event, variant = 'upcoming' } = Astro.props;
+const d = event.data;
+const parts = eventDateParts(d.date);
+const status = d.cancelled ? 'Cancelled' : d.soldOut ? 'Sold out' : null;
+---
+
+<article class:list={['card event-card', `is-${variant}`, status && 'has-status']}>
+  <time class="event-date" datetime={isoDate(d.date)}>
+    <span class="event-day">{parts.day}</span>
+    <span class="event-month">{parts.month}</span>
+    <span class="event-year">{parts.year}</span>
+  </time>
+
+  <div class="event-body">
+    <h3 class="event-title">{d.title}</h3>
+    <p class="event-venue">
+      {d.venue} · {d.city}, {d.country}
+    </p>
+    <p class="event-meta">
+      {parts.weekday} · {d.doorsTime ?? parts.time}{d.role ? ` · ${d.role}` : ''}
+    </p>
+    {d.lineup.length > 0 && <p class="event-lineup">{d.lineup.join(' · ')}</p>}
+  </div>
+
+  <div class="event-action">
+    {
+      status ? (
+        <span class:list={['event-status', d.cancelled && 'is-cancelled']}>{status}</span>
+      ) : variant === 'upcoming' && d.ticketUrl ? (
+        <Button href={d.ticketUrl} variant="primary" icon="arrow-up-right">
+          Tickets
+        </Button>
+      ) : d.price ? (
+        <span class="event-price">{d.price}</span>
+      ) : null
+    }
+  </div>
+</article>
+
+<style>
+  .event-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1.25rem 1.5rem;
+    align-items: center;
+    padding: 1.25rem 1.4rem;
+  }
+  .event-date {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.1rem;
+    width: 4.75rem;
+    padding: 0.75rem 0.5rem;
+    border-radius: var(--radius-md);
+    background: var(--color-accent-soft);
+    border: 1px solid var(--color-line);
+  }
+  .event-day {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--color-ink);
+  }
+  .event-month {
+    font-size: var(--text-caption);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-accent);
+  }
+  .event-year {
+    font-size: 0.7rem;
+    color: var(--color-ink-faint);
+  }
+  .event-body {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .event-title {
+    font-size: var(--text-h4);
+  }
+  .event-venue {
+    margin: 0;
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .event-meta,
+  .event-lineup {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .event-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .event-status {
+    display: inline-block;
+    padding: 0.4em 0.9em;
+    border-radius: 999px;
+    font-size: var(--text-caption);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    border: 1px solid var(--color-line-strong);
+  }
+  .event-status.is-cancelled {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+  }
+  .event-price {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .is-past {
+    opacity: 0.72;
+  }
+  @media (min-width: 640px) {
+    .event-card {
+      grid-template-columns: auto 1fr auto;
+    }
+    .event-action {
+      grid-column: auto;
+      justify-self: end;
+    }
+  }
+</style>

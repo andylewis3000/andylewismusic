@@ -1,0 +1,75 @@
+---
+/**
+ * GearCard — an equipment item with image, brand, name, note and optional link.
+ */
+import type { Gear } from '@lib/content';
+import Image from '@components/media/Image.astro';
+import Icon from '@components/ui/Icon.astro';
+
+interface Props {
+  item: Gear;
+}
+const { item } = Astro.props;
+const d = item.data;
+---
+
+<article class="card gear-card">
+  <div class="gear-media">
+    <Image
+      path={d.image}
+      alt={d.imageAlt ?? d.name}
+      aspect="4/3"
+      sizes="(max-width: 640px) 90vw, 340px"
+      placeholderLabel={d.brand ?? d.name}
+    />
+  </div>
+  <div class="gear-body">
+    {d.brand && <span class="kicker">{d.brand}</span>}
+    <h3 class="gear-name">{d.name}</h3>
+    <p class="gear-desc">{d.description}</p>
+    {
+      d.link && (
+        <a class="gear-link" href={d.link} target="_blank" rel="noopener noreferrer">
+          More <Icon name="arrow-up-right" size={16} />
+        </a>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .gear-card {
+    display: grid;
+  }
+  .gear-media :global(img),
+  .gear-media :global(.media-placeholder) {
+    width: 100%;
+    object-fit: cover;
+  }
+  .gear-body {
+    padding: 1.1rem 1.25rem 1.35rem;
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+  .gear-name {
+    font-size: var(--text-h4);
+  }
+  .gear-desc {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    line-height: 1.6;
+  }
+  .gear-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    color: var(--color-accent);
+    font-size: var(--text-small);
+    font-weight: 600;
+  }
+  .gear-link:hover {
+    color: var(--color-accent-hover);
+  }
+</style>

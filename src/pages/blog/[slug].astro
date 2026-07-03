@@ -1,0 +1,186 @@
+---
+/**
+ * Blog article — full post with hero, prose body, tags and related posts.
+ * The <article> is marked for Pagefind indexing (data-pagefind-body).
+ */
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Image from '@components/media/Image.astro';
+import Icon from '@components/ui/Icon.astro';
+import BlogCard from '@components/cards/BlogCard.astro';
+import { getPosts, getRelatedPosts } from '@lib/content';
+import { formatDate, isoDate, readingTime } from '@lib/format';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const d = post.data;
+const { Content } = await render(post);
+const related = await getRelatedPosts(post, 3);
+const minutes = readingTime(post.body ?? '');
+---
+
+<BaseLayout
+  title={d.title}
+  description={d.description}
+  image={d.heroImage}
+  type="article"
+  publishedTime={isoDate(d.publishDate)}
+  modifiedTime={d.updatedDate ? isoDate(d.updatedDate) : undefined}
+>
+  <article class="post" data-pagefind-body>
+    <header class="post-head section-tight">
+      <div class="container-page post-head-inner">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/blog/"><Icon name="arrow-right" size={14} class="flip" /> News</a>
+          <span aria-hidden="true">/</span>
+          <a href={`/blog/category/${d.category}/`} class="crumb-cat">{d.category}</a>
+        </nav>
+        <h1 class="post-title">{d.title}</h1>
+        <p class="post-meta">
+          <time datetime={isoDate(d.publishDate)}>{formatDate(d.publishDate)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{minutes}</span>
+          <span aria-hidden="true">·</span>
+          <span>{d.author}</span>
+        </p>
+      </div>
+    </header>
+
+    {
+      d.heroImage && (
+        <div class="container-page">
+          <div class="post-hero">
+            <Image
+              path={d.heroImage}
+              alt={d.heroImageAlt ?? d.title}
+              aspect="16/9"
+              sizes="(max-width: 1024px) 100vw, 960px"
+              loading="eager"
+              fetchpriority="high"
+              placeholderLabel="News"
+            />
+          </div>
+        </div>
+      )
+    }
+
+    <div class="container-page">
+      <div class="post-body prose">
+        <Content />
+      </div>
+
+      {
+        d.tags.length > 0 && (
+          <div class="post-tags">
+            {d.tags.map((tag) => (
+              <a href={`/blog/tag/${tag}/`} class="tag">
+                #{tag}
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="section related">
+        <div class="container-page">
+          <h2 class="related-h">Related reading</h2>
+          <div class="grid-news">
+            {related.map((p) => (
+              <BlogCard post={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .post-head-inner {
+    display: grid;
+    gap: 1rem;
+    max-width: 60rem;
+  }
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    text-transform: capitalize;
+  }
+  .crumbs a:hover {
+    color: var(--color-accent);
+  }
+  .flip {
+    transform: rotate(180deg);
+  }
+  .post-title {
+    font-size: var(--text-h1);
+    max-width: 20ch;
+  }
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .post-hero {
+    max-width: 60rem;
+    margin: 0 auto 3rem;
+  }
+  .post-hero :global(img),
+  .post-hero :global(.media-placeholder) {
+    width: 100%;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-line);
+  }
+  .post-body {
+    margin-inline: auto;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 68ch;
+    margin: 3rem auto 0;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .tag {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    transition: color var(--dur-base) var(--ease-standard);
+  }
+  .tag:hover {
+    color: var(--color-accent);
+  }
+  .related {
+    border-top: 1px solid var(--color-line);
+  }
+  .related-h {
+    font-size: var(--text-h3);
+    margin-bottom: 1.75rem;
+  }
+  .grid-news {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+</style>

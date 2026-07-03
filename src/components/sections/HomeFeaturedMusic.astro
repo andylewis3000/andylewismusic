@@ -1,0 +1,40 @@
+---
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import MusicCard from '@components/cards/MusicCard.astro';
+import { getFeaturedAlbums } from '@lib/content';
+
+interface Props {
+  heading?: string;
+  subheading?: string;
+}
+const { heading = 'Featured Music', subheading } = Astro.props;
+const albums = await getFeaturedAlbums(3);
+---
+
+{
+  albums.length > 0 && (
+    <section class="section">
+      <div class="container-page">
+        <SectionHeader
+          kicker="Discography"
+          heading={heading}
+          subheading={subheading}
+          href="/music/"
+        />
+        <div class="grid-cards">
+          {albums.map((album) => (
+            <MusicCard album={album} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .grid-cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  }
+</style>
