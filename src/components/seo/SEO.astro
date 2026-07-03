@@ -6,9 +6,8 @@
  * Structured data (schema.org JSON-LD) is layered in during Phase 8 via
  * dedicated schema components; this handles the core meta every page needs.
  */
-import { getImage } from 'astro:assets';
-import { resolveImage } from '@lib/images';
 import { site } from '@lib/settings';
+import { resolveImageUrl } from '@lib/seo';
 
 interface Props {
   title?: string;
@@ -37,21 +36,7 @@ const {
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
 const canonical = new URL(path, site.url).href;
 
-/** Resolve any stored image path to an absolute, social-ready URL. */
-async function resolveOgImage(img?: string): Promise<string | undefined> {
-  const candidate = img ?? site.defaultOgImage;
-  const meta = resolveImage(candidate);
-  if (meta) {
-    const optimized = await getImage({ src: meta, width: 1200, format: 'jpg' });
-    return new URL(optimized.src, site.url).href;
-  }
-  // Not an optimizable src asset — treat a public-root path as a direct URL.
-  if (candidate.startsWith('/') && !candidate.startsWith('/src')) {
-    return new URL(candidate, site.url).href;
-  }
-  return undefined;
-}
-const ogImage = await resolveOgImage(image);
+const ogImage = await resolveImageUrl(image);
 ---
 
 <meta charset="utf-8" />

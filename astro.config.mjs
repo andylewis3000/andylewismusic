@@ -31,6 +31,8 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),
+      // Keep dev-only pages out of the index.
+      filter: (page) => !page.includes('/styleguide'),
     }),
   ],
   vite: {

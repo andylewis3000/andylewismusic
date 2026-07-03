@@ -1,0 +1,15 @@
+---
+/**
+ * JsonLd — emits one schema.org JSON-LD document per page, wrapping the
+ * provided nodes in a single @graph. The `<` escape prevents any chance of
+ * breaking out of the script element.
+ */
+interface Props {
+  graph: Record<string, unknown>[];
+}
+const { graph } = Astro.props as Props;
+const doc = { '@context': 'https://schema.org', '@graph': graph };
+const json = JSON.stringify(doc).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

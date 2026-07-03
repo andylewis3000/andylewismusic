@@ -13,9 +13,11 @@
 import '@styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import SEO from '@components/seo/SEO.astro';
+import JsonLd from '@components/seo/JsonLd.astro';
 import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 import { site } from '@lib/settings';
+import { personSchema, websiteSchema, resolveImageUrl } from '@lib/seo';
 
 interface Props {
   title?: string;
@@ -26,12 +28,18 @@ interface Props {
   noindex?: boolean;
   publishedTime?: string;
   modifiedTime?: string;
+  /** Additional schema.org nodes for this page (album, event, article, …). */
+  schemas?: Record<string, unknown>[];
   /** Extra class on <main>, e.g. for full-bleed pages. */
   mainClass?: string;
 }
 
-const { mainClass, ...seo } = Astro.props;
+const { mainClass, schemas = [], ...seo } = Astro.props;
 const lang = site.locale.replace('_', '-');
+
+// Sitewide identity graph is present on every page; pages append their own.
+const personImage = await resolveImageUrl(site.logo ?? site.defaultOgImage);
+const graph = [websiteSchema(), personSchema(personImage), ...schemas];
 ---
 
 <!doctype html>
@@ -44,6 +52,7 @@ const lang = site.locale.replace('_', '-');
     <SEO {...seo} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <JsonLd graph={graph} />
     <ClientRouter />
   </head>
   <body>

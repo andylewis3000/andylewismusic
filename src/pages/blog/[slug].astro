@@ -11,6 +11,7 @@ import Icon from '@components/ui/Icon.astro';
 import BlogCard from '@components/cards/BlogCard.astro';
 import { getPosts, getRelatedPosts } from '@lib/content';
 import { formatDate, isoDate, readingTime } from '@lib/format';
+import { articleSchema, breadcrumbSchema, resolveImageUrl } from '@lib/seo';
 
 export const getStaticPaths = (async () => {
   const posts = await getPosts();
@@ -22,6 +23,16 @@ const d = post.data;
 const { Content } = await render(post);
 const related = await getRelatedPosts(post, 3);
 const minutes = readingTime(post.body ?? '');
+
+const heroUrl = await resolveImageUrl(d.heroImage);
+const schemas = [
+  articleSchema(post, heroUrl),
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'News', url: '/blog/' },
+    { name: d.title, url: `/blog/${post.id}/` },
+  ]),
+];
 ---
 
 <BaseLayout
@@ -31,6 +42,7 @@ const minutes = readingTime(post.body ?? '');
   type="article"
   publishedTime={isoDate(d.publishDate)}
   modifiedTime={d.updatedDate ? isoDate(d.updatedDate) : undefined}
+  schemas={schemas}
 >
   <article class="post" data-pagefind-body>
     <header class="post-head section-tight">
