@@ -37,6 +37,10 @@ const lang = site.locale.replace('_', '-');
 <!doctype html>
 <html lang={lang}>
   <head>
+    {/* Mark JS available ASAP so reveal styles only hide content when we can reveal it. */}
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
     <SEO {...seo} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -49,5 +53,41 @@ const lang = site.locale.replace('_', '-');
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // Scroll-reveal: fade/rise elements as they enter the viewport. Skipped
+      // entirely for users who prefer reduced motion. Re-initialised after each
+      // view transition so freshly-swapped content animates too.
+      function setupReveal() {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const els = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]:not(.is-inview)'));
+        if (reduced || !('IntersectionObserver' in window)) {
+          els.forEach((el) => el.classList.add('is-inview'));
+          return;
+        }
+        const io = new IntersectionObserver(
+          (entries, obs) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-inview');
+              obs.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+        );
+        for (const el of els) {
+          // Gentle stagger among reveal siblings (grids feel choreographed).
+          const parent = el.parentElement;
+          if (parent) {
+            const sibs = Array.from(parent.children).filter((c) => c.hasAttribute('data-reveal'));
+            const idx = sibs.indexOf(el);
+            if (idx > 0) el.style.setProperty('--reveal-delay', `${Math.min(idx, 6) * 55}ms`);
+          }
+          io.observe(el);
+        }
+      }
+      setupReveal();
+      document.addEventListener('astro:after-swap', setupReveal);
+    </script>
   </body>
 </html>

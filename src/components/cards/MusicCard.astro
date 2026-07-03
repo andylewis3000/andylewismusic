@@ -15,7 +15,7 @@ const { title, type, releaseDate, cover, coverAlt } = album.data;
 const typeLabel = type === 'ep' ? 'EP' : type.charAt(0).toUpperCase() + type.slice(1);
 ---
 
-<a class="card music-card" href={`/music/${album.id}/`}>
+<a class="card music-card" href={`/music/${album.id}/`} data-reveal>
   <div class="music-cover">
     <Image
       path={cover}

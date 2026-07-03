@@ -17,7 +17,7 @@ const parts = eventDateParts(d.date);
 const status = d.cancelled ? 'Cancelled' : d.soldOut ? 'Sold out' : null;
 ---
 
-<article class:list={['card event-card', `is-${variant}`, status && 'has-status']}>
+<article class:list={['card event-card', `is-${variant}`, status && 'has-status']} data-reveal>
   <time class="event-date" datetime={isoDate(d.date)}>
     <span class="event-day">{parts.day}</span>
     <span class="event-month">{parts.month}</span>

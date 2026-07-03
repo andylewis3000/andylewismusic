@@ -14,7 +14,7 @@ const { post, featured = false } = Astro.props;
 const d = post.data;
 ---
 
-<article class:list={['card blog-card', featured && 'is-featured']}>
+<article class:list={['card blog-card', featured && 'is-featured']} data-reveal>
   <a class="blog-link" href={`/blog/${post.id}/`}>
     <div class="blog-media">
       <Image

@@ -429,3 +429,80 @@
     transform: translateY(0);
   }
 }
+
+/* 8 ─ Motion: scroll reveals, hero entrance, page transitions ────────── */
+/* All motion is gated on BOTH `html.js` (so no-JS users always see content)
+   AND prefers-reduced-motion (so motion-sensitive users get none). */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.65s var(--ease-out),
+      transform 0.65s var(--ease-out);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  html.js [data-reveal='blur'] {
+    filter: blur(8px);
+    transition:
+      opacity 0.65s var(--ease-out),
+      transform 0.65s var(--ease-out),
+      filter 0.65s var(--ease-out);
+  }
+  html.js [data-reveal].is-inview {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    will-change: auto;
+  }
+
+  /* Hero entrance: a staggered rise on first load. */
+  html.js .hero-inner > * {
+    opacity: 0;
+    animation: rise 0.75s var(--ease-out) forwards;
+  }
+  html.js .hero-inner > *:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  html.js .hero-inner > *:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  html.js .hero-inner > *:nth-child(3) {
+    animation-delay: 0.32s;
+  }
+  html.js .hero-inner > *:nth-child(4) {
+    animation-delay: 0.44s;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(22px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Subtle page transition (Astro View Transitions). */
+  ::view-transition-old(root) {
+    animation: vt-out 0.26s var(--ease-standard) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 0.4s var(--ease-out) both;
+  }
+  @keyframes vt-out {
+    to {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  @keyframes vt-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+  }
+}

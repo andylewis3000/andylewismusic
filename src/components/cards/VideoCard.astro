@@ -23,7 +23,7 @@ if (custom) {
 const categoryLabel = d.category.replace('-', ' ');
 ---
 
-<article class="video-card">
+<article class="video-card" data-reveal>
   <YouTubeLite id={d.youtubeId} title={d.title} poster={poster} />
   <div class="video-meta">
     <span class="kicker">{categoryLabel}</span>
