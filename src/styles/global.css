@@ -35,7 +35,8 @@
   /* — Color: text (warm off-white → warm grays) — */
   --color-ink: #f4f2ee;
   --color-ink-muted: #b8b3ab;
-  --color-ink-faint: #7c776e;
+  /* Raised from #7c776e to clear WCAG AA (4.5:1) for small caption text. */
+  --color-ink-faint: #8b857b;
 
   /* — Color: signature accent (brand lime → bright chartreuse) — */
   --color-accent: #9acd33;

@@ -37,7 +37,7 @@ const { categories } = await getPostTaxonomies();
         {
           categories.length > 0 && (
             <nav class="cat-nav" aria-label="Post categories">
-              <a href="/blog/" class="cat is-active">All</a>
+              <a href="/blog/" class="cat is-active" aria-current="page">All</a>
               {categories.map((c) => (
                 <a href={`/blog/category/${c}/`} class="cat">
                   {c}
@@ -49,6 +49,7 @@ const { categories } = await getPostTaxonomies();
         <Search />
       </div>
 
+      <h2 class="sr-only">Articles</h2>
       <div class="grid-news">
         {page.data.map((post) => <BlogCard post={post} />)}
       </div>

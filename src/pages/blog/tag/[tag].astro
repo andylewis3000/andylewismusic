@@ -29,6 +29,7 @@ const { posts, tag } = Astro.props;
       <a class="back" href="/blog/">
         <Icon name="arrow-right" size={16} class="flip" /> All news
       </a>
+      <h2 class="sr-only">Posts tagged {tag}</h2>
       <div class="grid-news">
         {posts.map((post) => <BlogCard post={post} />)}
       </div>

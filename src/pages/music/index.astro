@@ -22,8 +22,9 @@ const albums = await getAlbums();
     intro="Records built around live drums, guitar and analogue texture. Stream anywhere, or dig into the liner notes."
   />
 
-  <section class="section-tight">
+  <section class="section-tight" aria-label="Releases">
     <div class="container-page">
+      <h2 class="sr-only">Releases</h2>
       {
         albums.length > 0 ? (
           <div class="grid-cards">

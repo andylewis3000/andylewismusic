@@ -29,8 +29,9 @@ const label = (c: string) => c.replace('-', ' ');
 
   {
     featured && (
-      <section class="section-tight">
+      <section class="section-tight" aria-label="Featured video">
         <div class="container-page featured-video">
+          <h2 class="sr-only">Featured video</h2>
           <VideoCard video={featured} />
         </div>
       </section>
@@ -39,8 +40,9 @@ const label = (c: string) => c.replace('-', ' ');
 
   {
     rest.length > 0 && (
-      <section class="section-tight">
+      <section class="section-tight" aria-label="Video archive">
         <div class="container-page">
+          <h2 class="sr-only">Video archive</h2>
           {categories.length > 1 && (
             <div class="filters" role="group" aria-label="Filter videos by category">
               <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">

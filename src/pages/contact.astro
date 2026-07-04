@@ -232,7 +232,9 @@ const turnstileKey = site.forms.turnstileSiteKey;
     font-size: var(--text-small);
     color: var(--color-ink);
     background: var(--color-surface);
-    border: 1px solid var(--color-line-strong);
+    /* Stronger than --color-line-strong to meet WCAG 2.2 non-text contrast
+       (1.4.11, ≥3:1) for form-field boundaries. */
+    border: 1px solid rgba(244, 242, 238, 0.42);
     border-radius: var(--radius-md);
     transition:
       border-color var(--dur-base) var(--ease-standard),
