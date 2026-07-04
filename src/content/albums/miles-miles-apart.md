@@ -25,8 +25,8 @@ tracklist:
     duration: 3:40
 credits: []
 links:
-  spotify: ''
-  appleMusic: ''
+  spotify: https://open.spotify.com/album/4yPqVw0i7pFGarf5Ve8IRz?si=n0C2bIyEQvmTt6vO0vO7zw
+  appleMusic: https://music.apple.com/ca/album/miles-and-miles-apart-ep/752012764
   bandcamp: ''
   youtube: ''
   soundcloud: ''

@@ -34,8 +34,8 @@ tracklist:
     duration: 7:25
 credits: []
 links:
-  spotify: ''
-  appleMusic: ''
+  spotify: https://open.spotify.com/album/7BRqu95yH7IugtnNb1xpH0?si=u-mmJf4XQq20jdmgnGmQVw
+  appleMusic: https://music.apple.com/ca/album/short-controlled-bursts/1523362512
   bandcamp: ''
   youtube: ''
   soundcloud: ''

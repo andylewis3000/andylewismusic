@@ -35,8 +35,8 @@ tracklist:
     duration: 5:18
 credits: []
 links:
-  spotify: ''
-  appleMusic: ''
+  spotify: https://open.spotify.com/album/1JFlmP12lRAiQAKnZ3EMNp?si=5tJkXUckT2Ogt5XfweJifQ
+  appleMusic: https://music.apple.com/ca/album/contagious-movement-theory/1174883205
   bandcamp: ''
   youtube: ''
   soundcloud: ''

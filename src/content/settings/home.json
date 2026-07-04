@@ -5,7 +5,7 @@
     "subheading": "Three decades behind the kit and the guitar — stages, sessions and scoring. Available for performances, recording and collaboration.",
     "background": "dark",
     "backgroundImage": "/src/assets/images/uploads/al-drums-danforth.jpg",
-    "backgroundAlt": "Andy Lewis performing live, lit in deep red stage light",
+    "backgroundAlt": "Andy Lewis performing drums live, black and white",
     "parallax": false,
     "primaryCta": {
       "label": "Watch",
@@ -28,7 +28,10 @@
       "enabled": true,
       "heading": "Featured Music",
       "subheading": "Recent releases & selected work",
+      "limit": 2,
+      "body": "",
       "background": "light",
+      "backgroundAlt": "",
       "parallax": false
     },
     {
@@ -37,6 +40,7 @@
       "heading": "Latest Video",
       "subheading": "",
       "background": "dark",
+      "backgroundAlt": "",
       "parallax": false
     },
     {
@@ -45,6 +49,7 @@
       "heading": "Upcoming Shows",
       "subheading": "Catch a performance live",
       "background": "light",
+      "backgroundAlt": "",
       "parallax": false
     },
     {
@@ -53,6 +58,7 @@
       "heading": "Latest News",
       "subheading": "",
       "background": "light",
+      "backgroundAlt": "",
       "parallax": false
     },
     {
@@ -61,6 +67,7 @@
       "heading": "On the Road",
       "subheading": "",
       "background": "dark",
+      "backgroundAlt": "",
       "parallax": false
     },
     {
@@ -69,12 +76,13 @@
       "heading": "",
       "subheading": "",
       "background": "accent",
+      "backgroundAlt": "",
       "parallax": false
     }
   ],
   "instagram": {
     "handle": "andylewisdrums",
-    "heading": "On the Road"
+    "heading": "Check this out"
   },
   "cta": {
     "heading": "Let's make something worth hearing",

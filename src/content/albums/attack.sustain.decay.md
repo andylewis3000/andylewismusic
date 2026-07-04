@@ -24,8 +24,8 @@ tracklist:
     duration: 3:00
 credits: []
 links:
-  spotify: ''
-  appleMusic: ''
+  spotify: https://open.spotify.com/album/2gvltH2n07fxw25nXAzFtC?si=eNQt--PpT22oCrI37QvZ6Q
+  appleMusic: https://music.apple.com/ca/album/attack-sustain-decay-ep/1202418890
   bandcamp: ''
   youtube: ''
   soundcloud: ''
