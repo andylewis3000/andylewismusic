@@ -1,13 +1,22 @@
 ---
 title: About
-headline: "I've spent twenty years chasing the feel of a great take."
+headline: I've spent twenty years chasing the feel of a great take.
 portrait: /src/assets/images/uploads/about-portrait.jpg
-portraitAlt: "Andy Lewis seated behind a drum kit, half-lit in warm light"
+portraitAlt: Andy Lewis seated behind a drum kit, half-lit in warm light
+hero:
+  kicker: About
+  background: dark
+  backgroundAlt: ''
+  parallax: false
 highlights:
-  - { label: "Years playing", value: "20+" }
-  - { label: "Records", value: "12" }
-  - { label: "Shows played", value: "500+" }
-  - { label: "Instruments", value: "Drums · Guitar" }
+  - label: Years playing
+    value: 30+
+  - label: Records
+    value: '12'
+  - label: Shows played
+    value: 500+
+  - label: Instruments
+    value: Drums · Guitar
 influences:
   - Jeff Porcaro
   - Brian Blade
@@ -15,26 +24,57 @@ influences:
   - Radiohead
   - Ennio Morricone
 experience:
-  - { year: "2024–", title: "Composer for screen", detail: "Scoring short films and documentary work." }
-  - { year: "2018–", title: "Session drummer & guitarist", detail: "Studio dates across genres, UK & remote." }
-  - { year: "2012–", title: "Touring musician", detail: "500+ shows across the UK and Europe." }
-  - { year: "2006–", title: "Started gigging", detail: "First professional work behind the kit." }
+  - year: 2024–
+    title: Composer for screen
+    detail: Scoring short films and documentary work.
+  - year: 2018–
+    title: Session drummer & guitarist
+    detail: Studio dates across genres, UK & remote.
+  - year: 2012–
+    title: Touring musician
+    detail: 500+ shows across the UK and Europe.
+  - year: 2006–
+    title: Started gigging
+    detail: First professional work behind the kit.
 equipment:
-  - { label: "Drums", items: ["Gretsch Broadkaster", "Zildjian K cymbals", "Vintage Ludwig snares"] }
-  - { label: "Guitars", items: ["Fender Jazzmaster", "Gibson ES-335", "Baritone tele"] }
-  - { label: "Studio", items: ["Universal Audio Apollo", "Neumann & Coles mics", "Tape machine"] }
-hero:
-  kicker: About
-  background: dark
-  parallax: false
+  - label: Drums
+    items:
+      - Gretsch Broadkaster
+      - Zildjian K cymbals
+      - Vintage Ludwig snares
+  - label: Guitars
+    items:
+      - Fender Jazzmaster
+      - Gibson ES-335
+      - Baritone tele
+  - label: Studio
+    items:
+      - Universal Audio Apollo
+      - Neumann & Coles mics
+      - Tape machine
 sections:
-  - { id: bio, background: light, parallax: false }
-  - { id: highlights, background: dark, parallax: false }
-  - { id: experience, background: white, parallax: false }
-  - { id: influences, background: light, parallax: false }
-  - { id: equipment, background: white, parallax: false }
+  - id: bio
+    background: light
+    backgroundAlt: ''
+    parallax: false
+  - id: highlights
+    background: dark
+    backgroundAlt: ''
+    parallax: false
+  - id: experience
+    background: white
+    backgroundAlt: ''
+    parallax: false
+  - id: influences
+    background: light
+    backgroundAlt: ''
+    parallax: false
+  - id: equipment
+    background: white
+    backgroundAlt: ''
+    parallax: false
 seo:
-  description: "Andy Lewis is a drummer, guitarist and composer with 20+ years of stage and studio experience."
+  description: Andy Lewis is a drummer, guitarist and composer with 20+ years of stage and studio experience.
 ---
 
 I'm Andy — a drummer, guitarist and composer based in the UK.

@@ -7,20 +7,70 @@
     "backgroundImage": "/src/assets/images/uploads/al-drums-danforth.jpg",
     "backgroundAlt": "Andy Lewis performing live, lit in deep red stage light",
     "parallax": false,
-    "primaryCta": { "label": "Book Andy", "href": "/contact/", "style": "primary" },
-    "secondaryCta": { "label": "Listen", "href": "/music/", "style": "ghost" }
+    "primaryCta": {
+      "label": "Watch",
+      "href": "/videos/",
+      "style": "primary"
+    },
+    "secondaryCta": {
+      "label": "Listen",
+      "href": "/music/",
+      "style": "ghost"
+    }
   },
   "intro": {
     "heading": "A musician for the moments that matter",
     "body": "From the driving backbone of a live set to the quiet detail of a film cue, I bring feel, precision and a producer's ear to every project — whether that's a stadium support slot, a session date, or a score that needs to breathe."
   },
   "sections": [
-    { "id": "featured-music", "enabled": true, "heading": "Featured Music", "subheading": "Recent releases & selected work", "background": "light", "parallax": false },
-    { "id": "latest-video", "enabled": true, "heading": "Latest Video", "subheading": "", "background": "dark", "parallax": false },
-    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live", "background": "light", "parallax": false },
-    { "id": "news", "enabled": true, "heading": "Latest News", "subheading": "", "background": "light", "parallax": false },
-    { "id": "instagram", "enabled": true, "heading": "On the Road", "subheading": "", "background": "dark", "parallax": false },
-    { "id": "cta", "enabled": true, "heading": "", "subheading": "", "background": "accent", "parallax": false }
+    {
+      "id": "featured-music",
+      "enabled": true,
+      "heading": "Featured Music",
+      "subheading": "Recent releases & selected work",
+      "background": "light",
+      "parallax": false
+    },
+    {
+      "id": "latest-video",
+      "enabled": true,
+      "heading": "Latest Video",
+      "subheading": "",
+      "background": "dark",
+      "parallax": false
+    },
+    {
+      "id": "upcoming-events",
+      "enabled": true,
+      "heading": "Upcoming Shows",
+      "subheading": "Catch a performance live",
+      "background": "light",
+      "parallax": false
+    },
+    {
+      "id": "news",
+      "enabled": true,
+      "heading": "Latest News",
+      "subheading": "",
+      "background": "light",
+      "parallax": false
+    },
+    {
+      "id": "instagram",
+      "enabled": true,
+      "heading": "On the Road",
+      "subheading": "",
+      "background": "dark",
+      "parallax": false
+    },
+    {
+      "id": "cta",
+      "enabled": true,
+      "heading": "",
+      "subheading": "",
+      "background": "accent",
+      "parallax": false
+    }
   ],
   "instagram": {
     "handle": "andylewisdrums",
@@ -29,7 +79,15 @@
   "cta": {
     "heading": "Let's make something worth hearing",
     "body": "Booking a show, planning a session, or scoring a project? Tell me what you're building.",
-    "primaryCta": { "label": "Start a Booking", "href": "/contact/", "style": "primary" },
-    "secondaryCta": { "label": "Read the story", "href": "/about/", "style": "ghost" }
+    "primaryCta": {
+      "label": "Start a Booking",
+      "href": "/contact/",
+      "style": "primary"
+    },
+    "secondaryCta": {
+      "label": "Read the story",
+      "href": "/about/",
+      "style": "ghost"
+    }
   }
 }

@@ -9,8 +9,8 @@
     "parallax": false
   },
   "sections": [
-    { "id": "featured", "enabled": true, "heading": "Featured video", "background": "dark", "parallax": false },
-    { "id": "archive", "enabled": true, "heading": "Video archive", "background": "white", "parallax": false },
+    { "id": "latest-video", "enabled": true, "heading": "Featured", "background": "dark", "parallax": false },
+    { "id": "video-archive", "enabled": true, "heading": "All videos", "background": "white", "parallax": false },
     { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
   ]
 }

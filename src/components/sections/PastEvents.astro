@@ -1,0 +1,48 @@
+---
+/**
+ * Past events block — the archive of past shows.
+ */
+import Section from '@components/layout/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import EventCard from '@components/cards/EventCard.astro';
+import { getEvents } from '@lib/content';
+import { take, type BlockProps } from '@lib/blocks';
+
+const {
+  heading = 'Past shows',
+  subheading,
+  tone = 'grey',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+  limit,
+} = Astro.props as BlockProps;
+const { past } = await getEvents();
+const shows = take(past, limit ?? 0, 0);
+---
+
+{
+  shows.length > 0 && (
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      {
+        heading || subheading ? (
+          <SectionHeader kicker="Archive" heading={heading} subheading={subheading} />
+        ) : (
+          <h2 class="sr-only">Past shows</h2>
+        )
+      }
+      <div class="event-list">
+        {shows.map((event) => (
+          <EventCard event={event} variant="past" />
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  .event-list {
+    display: grid;
+    gap: 1rem;
+  }
+</style>

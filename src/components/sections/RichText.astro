@@ -1,0 +1,36 @@
+---
+/**
+ * Rich-text block — arbitrary Markdown content, rendered in the prose style.
+ * Lets an editor add a free content section to any page.
+ */
+import Section from '@components/layout/Section.astro';
+import { marked } from 'marked';
+import type { BlockProps } from '@lib/blocks';
+
+const {
+  heading,
+  body = '',
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props as BlockProps;
+const html = marked.parse(body, { async: false }) as string;
+---
+
+<Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+  <div class="rich-text" data-reveal>
+    {heading && <h2 class="rt-heading">{heading}</h2>}
+    {body && <div class="prose" set:html={html} />}
+  </div>
+</Section>
+
+<style>
+  .rt-heading {
+    font-size: var(--text-h2);
+    margin-bottom: 1.5rem;
+  }
+  .rich-text .prose {
+    margin-inline: 0;
+  }
+</style>

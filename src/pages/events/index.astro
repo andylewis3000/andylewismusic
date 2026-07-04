@@ -1,26 +1,20 @@
 ---
 /**
- * Events — upcoming shows then a past archive. Hero + section styling from the
- * CMS (Pages → Events).
+ * Events — hero + composable sections (Pages → Events). Emits Event JSON-LD
+ * for upcoming shows regardless of section layout.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
-import EventCard from '@components/cards/EventCard.astro';
-import CTASection from '@components/sections/CTASection.astro';
+import SectionRenderer from '@components/sections/SectionRenderer.astro';
 import { getEvents } from '@lib/content';
 import { eventSchema, resolveImageUrl } from '@lib/seo';
-import { pages, findSection } from '@lib/pages';
+import { pages } from '@lib/pages';
 
-const { upcoming, past } = await getEvents();
+const p = pages.events;
+const { upcoming } = await getEvents();
 const schemas = await Promise.all(
   upcoming.map(async (event) => eventSchema(event, await resolveImageUrl(event.data.image)))
 );
-
-const p = pages.events;
-const up = findSection(p.sections, 'upcoming');
-const pa = findSection(p.sections, 'past');
-const cta = findSection(p.sections, 'cta');
 ---
 
 <BaseLayout title={p.hero.heading} description={p.hero.intro} schemas={schemas}>
@@ -33,71 +27,5 @@ const cta = findSection(p.sections, 'cta');
     backgroundAlt={p.hero.backgroundAlt}
     parallax={p.hero.parallax}
   />
-
-  <Section
-    tone={up.background}
-    backgroundImage={up.backgroundImage}
-    backgroundAlt={up.backgroundAlt}
-    parallax={up.parallax}
-    padding="tight"
-  >
-    <h2 class="events-h">{up.heading ?? 'Upcoming'}</h2>
-    {
-      upcoming.length > 0 ? (
-        <div class="event-list">
-          {upcoming.map((event) => (
-            <EventCard event={event} variant="upcoming" />
-          ))}
-        </div>
-      ) : (
-        <p class="empty">No dates on the calendar right now — check back soon, or get in touch about booking.</p>
-      )
-    }
-  </Section>
-
-  {
-    past.length > 0 && (
-      <Section
-        tone={pa.background}
-        backgroundImage={pa.backgroundImage}
-        backgroundAlt={pa.backgroundAlt}
-        parallax={pa.parallax}
-        padding="tight"
-      >
-        <h2 class="events-h">{pa.heading ?? 'Past shows'}</h2>
-        <div class="event-list">
-          {past.map((event) => (
-            <EventCard event={event} variant="past" />
-          ))}
-        </div>
-      </Section>
-    )
-  }
-
-  {
-    cta.enabled && (
-      <CTASection
-        tone={cta.background}
-        backgroundImage={cta.backgroundImage}
-        backgroundAlt={cta.backgroundAlt}
-        parallax={cta.parallax}
-      />
-    )
-  }
+  {p.sections.map((section) => <SectionRenderer section={section} />)}
 </BaseLayout>
-
-<style>
-  .events-h {
-    font-size: var(--text-h3);
-    margin-bottom: 1.5rem;
-  }
-  .event-list {
-    display: grid;
-    gap: 1rem;
-  }
-  .empty {
-    color: var(--color-ink-muted);
-    font-size: var(--text-lead);
-    max-width: 52ch;
-  }
-</style>

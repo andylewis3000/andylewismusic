@@ -1,4 +1,8 @@
 ---
+/**
+ * Discography block — the full release grid (albums, EPs, singles).
+ * `limit` caps the count; default shows all.
+ */
 import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import MusicCard from '@components/cards/MusicCard.astro';
@@ -6,7 +10,7 @@ import { getAlbums } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
-  heading = 'Featured Music',
+  heading = 'Music',
   subheading,
   tone = 'dark',
   backgroundImage,
@@ -14,8 +18,7 @@ const {
   parallax = false,
   limit,
 } = Astro.props as BlockProps;
-const featured = (await getAlbums()).filter((a) => a.data.featured);
-const albums = take(featured, limit, 3);
+const albums = take(await getAlbums(), limit ?? 0, 0);
 ---
 
 {
@@ -23,9 +26,9 @@ const albums = take(featured, limit, 3);
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {
         heading || subheading ? (
-          <SectionHeader kicker="Discography" heading={heading} subheading={subheading} href="/music/" />
+          <SectionHeader kicker="Discography" heading={heading} subheading={subheading} />
         ) : (
-          <h2 class="sr-only">Featured music</h2>
+          <h2 class="sr-only">Music</h2>
         )
       }
       <div class="grid-cards">
@@ -41,6 +44,6 @@ const albums = take(featured, limit, 3);
   .grid-cards {
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
   }
 </style>

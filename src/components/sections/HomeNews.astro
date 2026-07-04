@@ -2,17 +2,9 @@
 import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import BlogCard from '@components/cards/BlogCard.astro';
-import { getFeaturedPosts } from '@lib/content';
-import type { Tone } from '@lib/pages';
+import { getPosts } from '@lib/content';
+import { take, type BlockProps } from '@lib/blocks';
 
-interface Props {
-  heading?: string;
-  subheading?: string;
-  tone?: Tone;
-  backgroundImage?: string;
-  backgroundAlt?: string;
-  parallax?: boolean;
-}
 const {
   heading = 'Latest News',
   subheading,
@@ -20,14 +12,25 @@ const {
   backgroundImage,
   backgroundAlt,
   parallax = false,
-} = Astro.props;
-const posts = await getFeaturedPosts(3);
+  limit,
+} = Astro.props as BlockProps;
+// Prefer featured posts; a limit of 0 shows all (news archive).
+const all = await getPosts();
+const featured = all.filter((p) => p.data.featured);
+const base = limit === 0 ? all : featured.length ? featured : all;
+const posts = take(base, limit, 3);
 ---
 
 {
   posts.length > 0 && (
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
-      <SectionHeader kicker="Journal" heading={heading} subheading={subheading} href="/blog/" />
+      {
+        heading || subheading ? (
+          <SectionHeader kicker="Journal" heading={heading} subheading={subheading} href="/blog/" />
+        ) : (
+          <h2 class="sr-only">News</h2>
+        )
+      }
       <div class="grid-news">
         {posts.map((post) => (
           <BlogCard post={post} />

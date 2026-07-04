@@ -1,0 +1,120 @@
+---
+/**
+ * Video archive block — all videos in a category-filterable grid.
+ * Filtering is progressive enhancement (works as a full grid without JS).
+ */
+import Section from '@components/layout/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import VideoCard from '@components/cards/VideoCard.astro';
+import { getVideos } from '@lib/content';
+import { take, type BlockProps } from '@lib/blocks';
+
+const {
+  heading,
+  subheading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+  limit,
+} = Astro.props as BlockProps;
+const videos = take(await getVideos(), limit ?? 0, 0);
+const categories = [...new Set(videos.map((v) => v.data.category))];
+const label = (c: string) => c.replace('-', ' ');
+---
+
+{
+  videos.length > 0 && (
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      {
+        heading || subheading ? (
+          <SectionHeader kicker="Watch" heading={heading} subheading={subheading} />
+        ) : (
+          <h2 class="sr-only">Videos</h2>
+        )
+      }
+      {categories.length > 1 && (
+        <div class="filters" role="group" aria-label="Filter videos by category">
+          <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">
+            All
+          </button>
+          {categories.map((c) => (
+            <button class="filter" type="button" data-filter={c} aria-pressed="false">
+              {label(c)}
+            </button>
+          ))}
+        </div>
+      )}
+      <div class="grid-videos" data-video-grid>
+        {videos.map((video) => (
+          <div class="video-item" data-category={video.data.category}>
+            <VideoCard video={video} />
+          </div>
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+<script>
+  function initFilters() {
+    document.querySelectorAll<HTMLElement>('[data-video-grid]').forEach((container) => {
+      const scope = container.closest('section') ?? document;
+      const buttons = scope.querySelectorAll<HTMLButtonElement>('.filter');
+      buttons.forEach((btn) => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          buttons.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+          container.querySelectorAll<HTMLElement>('.video-item').forEach((item) => {
+            item.hidden = !(filter === 'all' || item.dataset.category === filter);
+          });
+        });
+      });
+    });
+  }
+  initFilters();
+  document.addEventListener('astro:after-swap', initFilters);
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .filter {
+    padding: 0.5em 1.1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    font-weight: 500;
+    text-transform: capitalize;
+    cursor: pointer;
+    transition:
+      color var(--dur-base) var(--ease-standard),
+      background-color var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+  .filter:hover {
+    color: var(--color-ink);
+  }
+  .filter.is-active {
+    color: var(--color-accent-contrast);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .grid-videos {
+    display: grid;
+    gap: 2rem 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  }
+</style>

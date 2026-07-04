@@ -9,7 +9,7 @@
     "parallax": false
   },
   "sections": [
-    { "id": "releases", "enabled": true, "heading": "Releases", "background": "light", "parallax": false },
+    { "id": "discography", "enabled": true, "heading": "", "background": "light", "parallax": false },
     { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
   ]
 }

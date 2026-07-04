@@ -3,16 +3,8 @@ import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import EventCard from '@components/cards/EventCard.astro';
 import { getEvents } from '@lib/content';
-import type { Tone } from '@lib/pages';
+import { take, type BlockProps } from '@lib/blocks';
 
-interface Props {
-  heading?: string;
-  subheading?: string;
-  tone?: Tone;
-  backgroundImage?: string;
-  backgroundAlt?: string;
-  parallax?: boolean;
-}
 const {
   heading = 'Upcoming Shows',
   subheading,
@@ -20,13 +12,20 @@ const {
   backgroundImage,
   backgroundAlt,
   parallax = false,
-} = Astro.props;
+  limit,
+} = Astro.props as BlockProps;
 const { upcoming } = await getEvents();
-const shows = upcoming.slice(0, 4);
+const shows = take(upcoming, limit, 4);
 ---
 
 <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
-  <SectionHeader kicker="Live" heading={heading} subheading={subheading} href="/events/" />
+  {
+    heading || subheading ? (
+      <SectionHeader kicker="Live" heading={heading} subheading={subheading} href="/events/" />
+    ) : (
+      <h2 class="sr-only">Upcoming shows</h2>
+    )
+  }
   {
     shows.length > 0 ? (
       <div class="event-list">

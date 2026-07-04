@@ -38,11 +38,36 @@ const styleShape = {
   parallax: z.boolean().default(false),
 };
 
+/**
+ * The shared section library. Any of these blocks can be added to any page
+ * from the CMS dropdown. Keep in sync with the select options in
+ * public/admin/config.yml and the map in SectionRenderer.astro.
+ */
+export const SECTION_TYPES = [
+  'featured-music',
+  'discography',
+  'latest-video',
+  'video-archive',
+  'upcoming-events',
+  'past-events',
+  'news',
+  'instagram',
+  'gear',
+  'contact-form',
+  'rich-text',
+  'cta',
+] as const;
+
 const pageSectionSchema = z.object({
+  // The section type, chosen from the shared library (SECTION_TYPES).
   id: z.string(),
   enabled: z.boolean().default(true),
   heading: z.string().optional(),
   subheading: z.string().optional(),
+  /** Max items for list blocks (featured-music, news, events…). 0 = all. */
+  limit: z.number().optional(),
+  /** Body content for the rich-text block (Markdown). */
+  body: z.string().optional(),
   ...styleShape,
 });
 

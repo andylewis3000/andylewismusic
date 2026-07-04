@@ -257,11 +257,15 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [featured-music, latest-video, events, news, instagram, cta] }
+            # Shared section library — any of these blocks can be added to any
+            # page. Reused via *section_fields on every composable page.
+            fields: &section_fields
+              - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, latest-video, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, rich-text, cta] }
               - { label: Enabled, name: enabled, widget: boolean, default: true }
               - { label: Heading, name: heading, widget: string, required: false }
               - { label: Subheading, name: subheading, widget: string, required: false }
+              - { label: 'Item limit (0 = all)', name: limit, widget: number, required: false, value_type: int, hint: 'For list blocks (music, news, events…)' }
+              - { label: 'Rich text body', name: body, widget: markdown, required: false, hint: 'Only used by the “Rich text” section type' }
               - *f_bg
               - *f_bgimg
               - *f_bgalt
@@ -353,14 +357,7 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [releases, cta] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - { label: Heading, name: heading, widget: string, required: false }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
+            fields: *section_fields
 
       # ---- Videos ----
       - name: videos-page
@@ -372,14 +369,7 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [featured, archive, cta] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - { label: Heading, name: heading, widget: string, required: false }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
+            fields: *section_fields
 
       # ---- Events ----
       - name: events-page
@@ -391,14 +381,7 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [upcoming, past, cta] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - { label: Heading, name: heading, widget: string, required: false }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
+            fields: *section_fields
 
       # ---- News / Blog ----
       - name: blog-page
@@ -428,13 +411,7 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [gear, cta] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
+            fields: *section_fields
 
       # ---- Contact ----
       - name: contact-page
@@ -446,13 +423,7 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [form] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
+            fields: *section_fields
 
   # ── SITE SETTINGS ──────────────────────────────────────────────────────
   - name: settings

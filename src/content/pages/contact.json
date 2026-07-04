@@ -9,6 +9,6 @@
     "parallax": false
   },
   "sections": [
-    { "id": "form", "enabled": true, "background": "light", "parallax": false }
+    { "id": "contact-form", "enabled": true, "background": "light", "parallax": false }
   ]
 }

@@ -9,8 +9,8 @@
     "parallax": false
   },
   "sections": [
-    { "id": "upcoming", "enabled": true, "heading": "Upcoming", "background": "light", "parallax": false },
-    { "id": "past", "enabled": true, "heading": "Past shows", "background": "grey", "parallax": false },
+    { "id": "upcoming-events", "enabled": true, "heading": "Upcoming", "background": "light", "parallax": false, "limit": 0 },
+    { "id": "past-events", "enabled": true, "heading": "Past shows", "background": "grey", "parallax": false, "limit": 0 },
     { "id": "cta", "enabled": true, "background": "dark", "parallax": false }
   ]
 }

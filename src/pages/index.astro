@@ -1,20 +1,13 @@
 ---
 /**
- * Home — hero, a short intro statement, then the CMS-ordered, toggleable
- * homepage sections (each with its own tone/background), and the closing CTA.
+ * Home — hero, a short intro statement, then a fully composable list of
+ * sections (any block from the shared library, ordered in the CMS).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@components/layout/Section.astro';
 import Hero from '@components/sections/Hero.astro';
-import HomeFeaturedMusic from '@components/sections/HomeFeaturedMusic.astro';
-import HomeLatestVideo from '@components/sections/HomeLatestVideo.astro';
-import HomeEvents from '@components/sections/HomeEvents.astro';
-import HomeNews from '@components/sections/HomeNews.astro';
-import InstagramSection from '@components/sections/InstagramSection.astro';
-import CTASection from '@components/sections/CTASection.astro';
+import SectionRenderer from '@components/sections/SectionRenderer.astro';
 import { home } from '@lib/pages';
-
-const sections = home.sections.filter((s) => s.enabled);
 ---
 
 <BaseLayout description={home.intro.body}>
@@ -28,32 +21,7 @@ const sections = home.sections.filter((s) => s.enabled);
     </div>
   </Section>
 
-  {
-    sections.map((s) => {
-      const style = {
-        tone: s.background,
-        backgroundImage: s.backgroundImage,
-        backgroundAlt: s.backgroundAlt,
-        parallax: s.parallax,
-      };
-      switch (s.id) {
-        case 'featured-music':
-          return <HomeFeaturedMusic heading={s.heading} subheading={s.subheading} {...style} />;
-        case 'latest-video':
-          return <HomeLatestVideo heading={s.heading} subheading={s.subheading} {...style} />;
-        case 'events':
-          return <HomeEvents heading={s.heading} subheading={s.subheading} {...style} />;
-        case 'news':
-          return <HomeNews heading={s.heading} subheading={s.subheading} {...style} />;
-        case 'instagram':
-          return <InstagramSection heading={s.heading} {...style} />;
-        case 'cta':
-          return <CTASection {...style} />;
-        default:
-          return null;
-      }
-    })
-  }
+  {home.sections.map((section) => <SectionRenderer section={section} />)}
 </BaseLayout>
 
 <style>

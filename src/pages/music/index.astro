@@ -1,20 +1,13 @@
 ---
 /**
- * Music — discography grid. Hero + section styling come from the CMS
- * (Pages → Music); each card links to a detail page.
+ * Music — hero + composable sections (Pages → Music in the CMS).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
-import MusicCard from '@components/cards/MusicCard.astro';
-import CTASection from '@components/sections/CTASection.astro';
-import { getAlbums } from '@lib/content';
-import { pages, findSection } from '@lib/pages';
+import SectionRenderer from '@components/sections/SectionRenderer.astro';
+import { pages } from '@lib/pages';
 
-const albums = await getAlbums();
 const p = pages.music;
-const releases = findSection(p.sections, 'releases');
-const cta = findSection(p.sections, 'cta');
 ---
 
 <BaseLayout title={p.hero.heading} description={p.hero.intro}>
@@ -27,49 +20,5 @@ const cta = findSection(p.sections, 'cta');
     backgroundAlt={p.hero.backgroundAlt}
     parallax={p.hero.parallax}
   />
-
-  <Section
-    tone={releases.background}
-    backgroundImage={releases.backgroundImage}
-    backgroundAlt={releases.backgroundAlt}
-    parallax={releases.parallax}
-    padding="tight"
-    aria-label="Releases"
-  >
-    <h2 class="sr-only">Releases</h2>
-    {
-      albums.length > 0 ? (
-        <div class="grid-cards">
-          {albums.map((album) => (
-            <MusicCard album={album} />
-          ))}
-        </div>
-      ) : (
-        <p class="empty">Releases are on the way — check back soon.</p>
-      )
-    }
-  </Section>
-
-  {
-    cta.enabled && (
-      <CTASection
-        tone={cta.background}
-        backgroundImage={cta.backgroundImage}
-        backgroundAlt={cta.backgroundAlt}
-        parallax={cta.parallax}
-      />
-    )
-  }
+  {p.sections.map((section) => <SectionRenderer section={section} />)}
 </BaseLayout>
-
-<style>
-  .grid-cards {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
-  }
-  .empty {
-    color: var(--color-ink-muted);
-    font-size: var(--text-lead);
-  }
-</style>

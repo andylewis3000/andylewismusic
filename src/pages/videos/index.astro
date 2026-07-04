@@ -1,26 +1,13 @@
 ---
 /**
- * Videos — a featured video plus a filterable archive. Hero + section styling
- * come from the CMS (Pages → Videos). Filtering is progressive enhancement.
+ * Videos — hero + composable sections (Pages → Videos in the CMS).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
-import VideoCard from '@components/cards/VideoCard.astro';
-import CTASection from '@components/sections/CTASection.astro';
-import { getVideos, getFeaturedVideo } from '@lib/content';
-import { pages, findSection } from '@lib/pages';
-
-const videos = await getVideos();
-const featured = await getFeaturedVideo();
-const rest = videos.filter((v) => v.id !== featured?.id);
-const categories = [...new Set(videos.map((v) => v.data.category))];
-const label = (c: string) => c.replace('-', ' ');
+import SectionRenderer from '@components/sections/SectionRenderer.astro';
+import { pages } from '@lib/pages';
 
 const p = pages.videos;
-const featuredS = findSection(p.sections, 'featured');
-const archiveS = findSection(p.sections, 'archive');
-const cta = findSection(p.sections, 'cta');
 ---
 
 <BaseLayout title={p.hero.heading} description={p.hero.intro}>
@@ -33,130 +20,5 @@ const cta = findSection(p.sections, 'cta');
     backgroundAlt={p.hero.backgroundAlt}
     parallax={p.hero.parallax}
   />
-
-  {
-    featured && (
-      <Section
-        tone={featuredS.background}
-        backgroundImage={featuredS.backgroundImage}
-        backgroundAlt={featuredS.backgroundAlt}
-        parallax={featuredS.parallax}
-        padding="tight"
-        aria-label="Featured video"
-        innerClass="featured-video"
-      >
-        <h2 class="sr-only">Featured video</h2>
-        <VideoCard video={featured} />
-      </Section>
-    )
-  }
-
-  {
-    rest.length > 0 && (
-      <Section
-        tone={archiveS.background}
-        backgroundImage={archiveS.backgroundImage}
-        backgroundAlt={archiveS.backgroundAlt}
-        parallax={archiveS.parallax}
-        padding="tight"
-        aria-label="Video archive"
-      >
-        <h2 class="sr-only">Video archive</h2>
-        {categories.length > 1 && (
-          <div class="filters" role="group" aria-label="Filter videos by category">
-            <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">
-              All
-            </button>
-            {categories.map((c) => (
-              <button class="filter" type="button" data-filter={c} aria-pressed="false">
-                {label(c)}
-              </button>
-            ))}
-          </div>
-        )}
-        <div class="grid-videos" data-video-grid>
-          {rest.map((video) => (
-            <div class="video-item" data-category={video.data.category}>
-              <VideoCard video={video} />
-            </div>
-          ))}
-        </div>
-      </Section>
-    )
-  }
-
-  {
-    cta.enabled && (
-      <CTASection
-        tone={cta.background}
-        backgroundImage={cta.backgroundImage}
-        backgroundAlt={cta.backgroundAlt}
-        parallax={cta.parallax}
-      />
-    )
-  }
+  {p.sections.map((section) => <SectionRenderer section={section} />)}
 </BaseLayout>
-
-<script>
-  function initFilters() {
-    const container = document.querySelector('[data-video-grid]');
-    if (!container) return;
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter');
-    buttons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = btn.dataset.filter;
-        buttons.forEach((b) => {
-          const active = b === btn;
-          b.classList.toggle('is-active', active);
-          b.setAttribute('aria-pressed', String(active));
-        });
-        container.querySelectorAll<HTMLElement>('.video-item').forEach((item) => {
-          const show = filter === 'all' || item.dataset.category === filter;
-          item.hidden = !show;
-        });
-      });
-    });
-  }
-  initFilters();
-  document.addEventListener('astro:after-swap', initFilters);
-</script>
-
-<style>
-  .featured-video {
-    max-width: 62rem;
-  }
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-  .filter {
-    padding: 0.5em 1.1em;
-    border-radius: 999px;
-    border: 1px solid var(--color-line-strong);
-    background: transparent;
-    color: var(--color-ink-muted);
-    font-size: var(--text-small);
-    font-weight: 500;
-    text-transform: capitalize;
-    cursor: pointer;
-    transition:
-      color var(--dur-base) var(--ease-standard),
-      background-color var(--dur-base) var(--ease-standard),
-      border-color var(--dur-base) var(--ease-standard);
-  }
-  .filter:hover {
-    color: var(--color-ink);
-  }
-  .filter.is-active {
-    color: var(--color-accent-contrast);
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-  }
-  .grid-videos {
-    display: grid;
-    gap: 2rem 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-  }
-</style>

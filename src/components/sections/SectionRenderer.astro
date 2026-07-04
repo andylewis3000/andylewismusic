@@ -1,0 +1,56 @@
+---
+/**
+ * SectionRenderer — renders one composable section from its config, mapping the
+ * section `id` (type) to a block from the shared library. This is what makes
+ * any section addable to any page. Keep the map in sync with SECTION_TYPES
+ * (src/lib/pages.ts) and the CMS dropdown (public/admin/config.yml).
+ */
+import HomeFeaturedMusic from './HomeFeaturedMusic.astro';
+import Discography from './Discography.astro';
+import HomeLatestVideo from './HomeLatestVideo.astro';
+import VideoArchive from './VideoArchive.astro';
+import HomeEvents from './HomeEvents.astro';
+import PastEvents from './PastEvents.astro';
+import HomeNews from './HomeNews.astro';
+import InstagramSection from './InstagramSection.astro';
+import GearBlock from './GearBlock.astro';
+import ContactForm from './ContactForm.astro';
+import RichText from './RichText.astro';
+import CTASection from './CTASection.astro';
+import type { PageSection } from '@lib/pages';
+
+interface Props {
+  section: PageSection;
+}
+const { section: s } = Astro.props;
+
+const map: Record<string, unknown> = {
+  'featured-music': HomeFeaturedMusic,
+  discography: Discography,
+  'latest-video': HomeLatestVideo,
+  'video-archive': VideoArchive,
+  'upcoming-events': HomeEvents,
+  'past-events': PastEvents,
+  news: HomeNews,
+  instagram: InstagramSection,
+  gear: GearBlock,
+  'contact-form': ContactForm,
+  'rich-text': RichText,
+  cta: CTASection,
+};
+
+const Block = map[s.id] as (props: Record<string, unknown>) => unknown;
+// Treat blank CMS fields as "unset" so each block's own defaults apply.
+const blockProps = {
+  heading: s.heading || undefined,
+  subheading: s.subheading || undefined,
+  body: s.body || undefined,
+  limit: s.limit,
+  tone: s.background,
+  backgroundImage: s.backgroundImage || undefined,
+  backgroundAlt: s.backgroundAlt || undefined,
+  parallax: s.parallax,
+};
+---
+
+{s.enabled !== false && Block && <Block {...blockProps} />}
