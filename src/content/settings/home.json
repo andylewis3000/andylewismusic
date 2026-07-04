@@ -17,7 +17,7 @@
   "sections": [
     { "id": "featured-music", "enabled": true, "heading": "Featured Music", "subheading": "Recent releases & selected work", "background": "light", "parallax": false },
     { "id": "latest-video", "enabled": true, "heading": "Latest Video", "subheading": "", "background": "dark", "parallax": false },
-    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live", "background": "white", "parallax": false },
+    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live", "background": "light", "parallax": false },
     { "id": "news", "enabled": true, "heading": "Latest News", "subheading": "", "background": "light", "parallax": false },
     { "id": "instagram", "enabled": true, "heading": "On the Road", "subheading": "", "background": "dark", "parallax": false },
     { "id": "cta", "enabled": true, "heading": "", "subheading": "", "background": "accent", "parallax": false }

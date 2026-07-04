@@ -1,47 +1,68 @@
 ---
 /**
- * Gear — equipment grouped by category (drums, guitars, studio, …).
+ * Gear — equipment grouped by category. Hero + section styling from the CMS
+ * (Pages → Gear).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import GearCard from '@components/cards/GearCard.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import { getGearByCategory } from '@lib/content';
+import { pages, findSection } from '@lib/pages';
 
 const groups = await getGearByCategory();
+const p = pages.gear;
+const g = findSection(p.sections, 'gear');
+const cta = findSection(p.sections, 'cta');
 ---
 
-<BaseLayout
-  title="Gear"
-  description="The drums, guitars and studio equipment behind Andy Lewis's sound."
->
+<BaseLayout title={p.hero.heading} description={p.hero.intro}>
   <PageHero
-    kicker="Setup"
-    title="Gear"
-    intro="The instruments and tools behind the sound. Tuned, road-worn and chosen for feel."
+    kicker={p.hero.kicker}
+    title={p.hero.heading}
+    intro={p.hero.intro}
+    tone={p.hero.background}
+    backgroundImage={p.hero.backgroundImage}
+    backgroundAlt={p.hero.backgroundAlt}
+    parallax={p.hero.parallax}
   />
 
-  <section class="section-tight">
-    <div class="container-page gear-sections">
-      {
-        groups.map((group) => (
-          <section class="gear-group" aria-labelledby={`gear-${group.id}`}>
-            <h2 id={`gear-${group.id}`} class="gear-heading">
-              {group.label}
-            </h2>
-            <div class="grid-gear">
-              {group.items.map((item) => (
-                <GearCard item={item} />
-              ))}
-            </div>
-          </section>
-        ))
-      }
-      {groups.length === 0 && <p class="empty">Gear list coming soon.</p>}
-    </div>
-  </section>
+  <Section
+    tone={g.background}
+    backgroundImage={g.backgroundImage}
+    backgroundAlt={g.backgroundAlt}
+    parallax={g.parallax}
+    padding="tight"
+    innerClass="gear-sections"
+  >
+    {
+      groups.map((group) => (
+        <section class="gear-group" aria-labelledby={`gear-${group.id}`}>
+          <h2 id={`gear-${group.id}`} class="gear-heading">
+            {group.label}
+          </h2>
+          <div class="grid-gear">
+            {group.items.map((item) => (
+              <GearCard item={item} />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+    {groups.length === 0 && <p class="empty">Gear list coming soon.</p>}
+  </Section>
 
-  <CTASection />
+  {
+    cta.enabled && (
+      <CTASection
+        tone={cta.background}
+        backgroundImage={cta.backgroundImage}
+        backgroundAlt={cta.backgroundAlt}
+        parallax={cta.parallax}
+      />
+    )
+  }
 </BaseLayout>
 
 <style>

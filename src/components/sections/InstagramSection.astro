@@ -1,52 +1,63 @@
 ---
 /**
  * InstagramSection — a tasteful "on the road" strip linking to the profile.
- *
- * Instagram's official embed API requires access tokens and long-lived auth
- * that don't fit a static, token-free build. Rather than ship a fragile
- * scraper, we present an on-brand grid (photography placeholders until real
- * images are added) with a strong follow CTA. Swap the tiles for real posts
- * later via a build-time fetch if a token is provisioned.
+ * Instagram's official embed API needs tokens that don't suit a static build,
+ * so we present an on-brand grid + follow CTA (swap for real posts later).
  */
+import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import Icon from '@components/ui/Icon.astro';
 import { home } from '@lib/pages';
+import type { Tone } from '@lib/pages';
+
+interface Props {
+  heading?: string;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
+}
+const {
+  heading = home.instagram.heading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props;
 
 const handle = home.instagram.handle;
 const url = handle ? `https://instagram.com/${handle}` : '#';
 const tiles = Array.from({ length: 6 });
 ---
 
-<section class="section instagram">
-  <div class="container-page">
-    <SectionHeader
-      kicker="Instagram"
-      heading={home.instagram.heading}
-      subheading={handle ? `@${handle}` : undefined}
-      href={url}
-      linkLabel="Follow"
-    />
-    <ul class="ig-grid">
-      {
-        tiles.map(() => (
-          <li>
-            <a
-              class="ig-tile"
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View ${handle ? '@' + handle : 'Andy Lewis'} on Instagram`}
-            >
-              <span class="ig-icon" aria-hidden="true">
-                <Icon name="instagram" size={22} />
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
-</section>
+<Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+  <SectionHeader
+    kicker="Instagram"
+    heading={heading}
+    subheading={handle ? `@${handle}` : undefined}
+    href={url}
+    linkLabel="Follow"
+  />
+  <ul class="ig-grid">
+    {
+      tiles.map(() => (
+        <li>
+          <a
+            class="ig-tile"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${handle ? '@' + handle : 'Andy Lewis'} on Instagram`}
+          >
+            <span class="ig-icon" aria-hidden="true">
+              <Icon name="instagram" size={22} />
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Section>
 
 <style>
   .ig-grid {
@@ -70,7 +81,7 @@ const tiles = Array.from({ length: 6 });
     border: 1px solid var(--color-line);
     background:
       radial-gradient(120% 120% at 30% 20%, rgba(154, 205, 51, 0.12), transparent 55%),
-      linear-gradient(150deg, var(--color-surface-2), var(--color-bg));
+      linear-gradient(150deg, var(--color-surface-2), var(--color-surface));
     color: var(--color-ink-faint);
     transition:
       color var(--dur-base) var(--ease-standard),
@@ -78,7 +89,7 @@ const tiles = Array.from({ length: 6 });
       border-color var(--dur-base) var(--ease-standard);
   }
   .ig-tile:hover {
-    color: var(--color-accent);
+    color: var(--color-accent-ink);
     border-color: var(--color-line-strong);
     transform: translateY(-3px);
   }

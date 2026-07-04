@@ -9,7 +9,7 @@
     "parallax": false
   },
   "sections": [
-    { "id": "gear", "enabled": true, "background": "white", "parallax": false },
+    { "id": "gear", "enabled": true, "background": "light", "parallax": false },
     { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
   ]
 }

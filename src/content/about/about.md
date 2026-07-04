@@ -23,6 +23,16 @@ equipment:
   - { label: "Drums", items: ["Gretsch Broadkaster", "Zildjian K cymbals", "Vintage Ludwig snares"] }
   - { label: "Guitars", items: ["Fender Jazzmaster", "Gibson ES-335", "Baritone tele"] }
   - { label: "Studio", items: ["Universal Audio Apollo", "Neumann & Coles mics", "Tape machine"] }
+hero:
+  kicker: About
+  background: dark
+  parallax: false
+sections:
+  - { id: bio, background: light, parallax: false }
+  - { id: highlights, background: dark, parallax: false }
+  - { id: experience, background: white, parallax: false }
+  - { id: influences, background: light, parallax: false }
+  - { id: equipment, background: white, parallax: false }
 seo:
   description: "Andy Lewis is a drummer, guitarist and composer with 20+ years of stage and studio experience."
 ---

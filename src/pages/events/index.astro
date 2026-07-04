@@ -1,66 +1,89 @@
 ---
 /**
- * Events — upcoming shows followed by a past-events archive.
+ * Events — upcoming shows then a past archive. Hero + section styling from the
+ * CMS (Pages → Events).
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import EventCard from '@components/cards/EventCard.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import { getEvents } from '@lib/content';
 import { eventSchema, resolveImageUrl } from '@lib/seo';
+import { pages, findSection } from '@lib/pages';
 
 const { upcoming, past } = await getEvents();
-
-// Structured data for each upcoming show (helps Google's event listings).
 const schemas = await Promise.all(
   upcoming.map(async (event) => eventSchema(event, await resolveImageUrl(event.data.image)))
 );
+
+const p = pages.events;
+const up = findSection(p.sections, 'upcoming');
+const pa = findSection(p.sections, 'past');
+const cta = findSection(p.sections, 'cta');
 ---
 
-<BaseLayout
-  title="Events"
-  description="Upcoming live shows and past performances by Andy Lewis."
-  schemas={schemas}
->
+<BaseLayout title={p.hero.heading} description={p.hero.intro} schemas={schemas}>
   <PageHero
-    kicker="Live"
-    title="Events"
-    intro="Where to catch a performance. New dates are announced here first."
+    kicker={p.hero.kicker}
+    title={p.hero.heading}
+    intro={p.hero.intro}
+    tone={p.hero.background}
+    backgroundImage={p.hero.backgroundImage}
+    backgroundAlt={p.hero.backgroundAlt}
+    parallax={p.hero.parallax}
   />
 
-  <section class="section-tight">
-    <div class="container-page">
-      <h2 class="events-h">Upcoming</h2>
-      {
-        upcoming.length > 0 ? (
-          <div class="event-list">
-            {upcoming.map((event) => (
-              <EventCard event={event} variant="upcoming" />
-            ))}
-          </div>
-        ) : (
-          <p class="empty">No dates on the calendar right now — check back soon, or get in touch about booking.</p>
-        )
-      }
-    </div>
-  </section>
+  <Section
+    tone={up.background}
+    backgroundImage={up.backgroundImage}
+    backgroundAlt={up.backgroundAlt}
+    parallax={up.parallax}
+    padding="tight"
+  >
+    <h2 class="events-h">{up.heading ?? 'Upcoming'}</h2>
+    {
+      upcoming.length > 0 ? (
+        <div class="event-list">
+          {upcoming.map((event) => (
+            <EventCard event={event} variant="upcoming" />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">No dates on the calendar right now — check back soon, or get in touch about booking.</p>
+      )
+    }
+  </Section>
 
   {
     past.length > 0 && (
-      <section class="section-tight past">
-        <div class="container-page">
-          <h2 class="events-h">Past shows</h2>
-          <div class="event-list">
-            {past.map((event) => (
-              <EventCard event={event} variant="past" />
-            ))}
-          </div>
+      <Section
+        tone={pa.background}
+        backgroundImage={pa.backgroundImage}
+        backgroundAlt={pa.backgroundAlt}
+        parallax={pa.parallax}
+        padding="tight"
+      >
+        <h2 class="events-h">{pa.heading ?? 'Past shows'}</h2>
+        <div class="event-list">
+          {past.map((event) => (
+            <EventCard event={event} variant="past" />
+          ))}
         </div>
-      </section>
+      </Section>
     )
   }
 
-  <CTASection />
+  {
+    cta.enabled && (
+      <CTASection
+        tone={cta.background}
+        backgroundImage={cta.backgroundImage}
+        backgroundAlt={cta.backgroundAlt}
+        parallax={cta.parallax}
+      />
+    )
+  }
 </BaseLayout>
 
 <style>
@@ -76,8 +99,5 @@ const schemas = await Promise.all(
     color: var(--color-ink-muted);
     font-size: var(--text-lead);
     max-width: 52ch;
-  }
-  .past {
-    border-top: 1px solid var(--color-line);
   }
 </style>

@@ -21,6 +21,8 @@ export type Tone = 'dark' | 'grey' | 'light' | 'white' | 'accent';
 
 interface Props {
   tone?: Tone;
+  /** Alias for `tone`, so page-section data ({ background }) can spread in. */
+  background?: Tone;
   backgroundImage?: string | null;
   backgroundAlt?: string;
   parallax?: boolean;
@@ -33,8 +35,10 @@ interface Props {
 }
 
 const {
-  tone = 'dark',
+  tone,
+  background,
   backgroundImage,
+  backgroundAlt: _backgroundAlt,
   parallax = false,
   padding = 'normal',
   class: className,
@@ -42,6 +46,10 @@ const {
   id,
   ...aria
 } = Astro.props;
+const resolvedTone: Tone = tone ?? background ?? 'dark';
+// The background is a decorative CSS layer, so its alt text isn't rendered;
+// accepted only so page-section data can spread in cleanly.
+void _backgroundAlt;
 
 // Resolve an optimized URL for the background image, if any.
 let bgUrl: string | undefined;
@@ -51,7 +59,7 @@ if (meta) {
 }
 const hasImage = Boolean(bgUrl);
 // A photo background is always treated as dark (scrim + light text).
-const effectiveTone = hasImage ? 'dark' : tone;
+const effectiveTone = hasImage ? 'dark' : resolvedTone;
 ---
 
 <section

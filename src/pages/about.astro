@@ -1,10 +1,11 @@
 ---
 /**
- * About — biography (Markdown body), portrait, career highlights, influences,
- * an experience timeline and equipment highlights. Fully CMS-editable.
+ * About — biography, portrait, highlights, timeline, influences, equipment.
+ * Hero + per-section styling come from about.md (Pages → About in the CMS).
  */
 import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import Image from '@components/media/Image.astro';
 import CTASection from '@components/sections/CTASection.astro';
@@ -14,104 +15,105 @@ const about = await getAbout();
 if (!about) throw new Error('About content is missing (src/content/about/about.md).');
 const d = about.data;
 const { Content } = await render(about);
+
+type Style = { background: 'dark' | 'grey' | 'light' | 'white' | 'accent'; backgroundImage?: string; backgroundAlt?: string; parallax: boolean };
+const sec = (id: string): Style =>
+  (d.sections.find((s) => s.id === id) as Style) ?? { background: 'dark', parallax: false };
 ---
 
 <BaseLayout title={d.title} description={d.seo.description ?? d.headline} image={d.portrait}>
-  <PageHero kicker="About" title={d.headline} />
+  <PageHero
+    kicker={d.hero.kicker ?? 'About'}
+    title={d.headline}
+    tone={d.hero.background}
+    backgroundImage={d.hero.backgroundImage}
+    backgroundAlt={d.hero.backgroundAlt}
+    parallax={d.hero.parallax}
+  />
 
-  <section class="section-tight">
-    <div class="container-page about-grid">
-      <div class="about-portrait">
-        <Image
-          path={d.portrait}
-          alt={d.portraitAlt}
-          aspect="4/5"
-          sizes="(max-width: 900px) 90vw, 440px"
-          placeholderLabel="Andy Lewis"
-        />
-      </div>
-      <div class="about-bio prose">
-        <Content />
-      </div>
+  <Section {...sec('bio')} padding="tight" innerClass="about-grid">
+    <div class="about-portrait">
+      <Image
+        path={d.portrait}
+        alt={d.portraitAlt}
+        aspect="4/5"
+        sizes="(max-width: 900px) 90vw, 440px"
+        placeholderLabel="Andy Lewis"
+      />
     </div>
-  </section>
+    <div class="about-bio prose">
+      <Content />
+    </div>
+  </Section>
 
   {
     d.highlights.length > 0 && (
-      <section class="section-tight highlights">
-        <div class="container-page">
-          <dl class="highlight-grid">
-            {d.highlights.map((h) => (
-              <div class="highlight">
-                <dt>{h.value}</dt>
-                <dd>{h.label}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-      </section>
+      <Section {...sec('highlights')} padding="tight">
+        <dl class="highlight-grid">
+          {d.highlights.map((h) => (
+            <div class="highlight">
+              <dt>{h.value}</dt>
+              <dd>{h.label}</dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
     )
   }
 
   {
     d.experience.length > 0 && (
-      <section class="section-tight">
-        <div class="container-page two-col">
-          <h2 class="col-title">Experience</h2>
-          <ol class="timeline">
-            {d.experience.map((item) => (
-              <li class="timeline-item">
-                <span class="timeline-year">{item.year}</span>
-                <div>
-                  <h3 class="timeline-title">{item.title}</h3>
-                  {item.detail && <p class="timeline-detail">{item.detail}</p>}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <Section {...sec('experience')} padding="tight" innerClass="two-col">
+        <h2 class="col-title">Experience</h2>
+        <ol class="timeline">
+          {d.experience.map((item) => (
+            <li class="timeline-item">
+              <span class="timeline-year">{item.year}</span>
+              <div>
+                <h3 class="timeline-title">{item.title}</h3>
+                {item.detail && <p class="timeline-detail">{item.detail}</p>}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Section>
     )
   }
 
   {
     d.influences.length > 0 && (
-      <section class="section-tight">
-        <div class="container-page two-col">
-          <h2 class="col-title">Influences</h2>
-          <ul class="chips">
-            {d.influences.map((name) => (
-              <li class="chip">{name}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <Section {...sec('influences')} padding="tight" innerClass="two-col">
+        <h2 class="col-title">Influences</h2>
+        <ul class="chips">
+          {d.influences.map((name) => (
+            <li class="chip">{name}</li>
+          ))}
+        </ul>
+      </Section>
     )
   }
 
   {
     d.equipment.length > 0 && (
-      <section class="section-tight">
-        <div class="container-page two-col">
-          <h2 class="col-title">Equipment</h2>
-          <div class="equip-groups">
-            {d.equipment.map((group) => (
-              <div class="equip-group">
-                <h3 class="equip-label">{group.label}</h3>
-                <ul>
-                  {group.items.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+      <Section {...sec('equipment')} padding="tight" innerClass="two-col">
+        <h2 class="col-title">Equipment</h2>
+        <div class="equip-groups">
+          {d.equipment.map((group) => (
+            <div class="equip-group">
+              <h3 class="equip-label">{group.label}</h3>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
-      </section>
+      </Section>
     )
   }
 
-  <CTASection />
+  <CTASection tone="grey" />
 </BaseLayout>
 
 <style>
@@ -140,9 +142,6 @@ const { Content } = await render(about);
     max-width: none;
   }
 
-  .highlights {
-    border-block: 1px solid var(--color-line);
-  }
   .highlight-grid {
     margin: 0;
     display: grid;
@@ -159,7 +158,7 @@ const { Content } = await render(about);
     font-weight: 900;
     font-size: clamp(2rem, 1.4rem + 2.5vw, 3.25rem);
     letter-spacing: -0.03em;
-    color: var(--color-accent);
+    color: var(--color-accent-ink);
     line-height: 1;
   }
   .highlight dd {
@@ -200,7 +199,7 @@ const { Content } = await render(about);
     border-top: 0;
   }
   .timeline-year {
-    color: var(--color-accent);
+    color: var(--color-accent-ink);
     font-weight: 600;
     font-size: var(--text-small);
     padding-top: 0.2rem;

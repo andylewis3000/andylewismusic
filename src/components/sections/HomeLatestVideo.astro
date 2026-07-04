@@ -1,32 +1,38 @@
 ---
+import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import YouTubeLite from '@components/embeds/YouTubeLite.astro';
 import { getFeaturedVideo } from '@lib/content';
+import type { Tone } from '@lib/pages';
 
 interface Props {
   heading?: string;
   subheading?: string;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
 }
-const { heading = 'Latest Video', subheading } = Astro.props;
+const {
+  heading = 'Latest Video',
+  subheading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props;
 const video = await getFeaturedVideo();
 ---
 
 {
   video && (
-    <section class="section">
-      <div class="container-page">
-        <SectionHeader
-          kicker="Watch"
-          heading={heading}
-          subheading={subheading}
-          href="/videos/"
-        />
-        <div class="latest-video">
-          <YouTubeLite id={video.data.youtubeId} title={video.data.title} />
-          <p class="latest-video-title">{video.data.title}</p>
-        </div>
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      <SectionHeader kicker="Watch" heading={heading} subheading={subheading} href="/videos/" />
+      <div class="latest-video">
+        <YouTubeLite id={video.data.youtubeId} title={video.data.title} />
+        <p class="latest-video-title">{video.data.title}</p>
       </div>
-    </section>
+    </Section>
   )
 }
 

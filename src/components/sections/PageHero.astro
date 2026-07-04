@@ -1,18 +1,51 @@
 ---
 /**
- * PageHero — the standard header for interior pages: kicker, title, intro.
+ * PageHero — the header band for interior pages: kicker, title, intro.
+ * Supports the same background options as sections (tone, image, parallax).
  */
+import { getImage } from 'astro:assets';
+import { resolveImage } from '@lib/images';
+import type { Tone } from '@lib/pages';
+
 interface Props {
   kicker?: string;
   title: string;
   intro?: string;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
   align?: 'start' | 'center';
 }
-const { kicker, title, intro, align = 'start' } = Astro.props;
+const {
+  kicker,
+  title,
+  intro,
+  tone = 'dark',
+  backgroundImage,
+  parallax = false,
+  align = 'start',
+} = Astro.props;
+
+let bgUrl: string | undefined;
+const meta = resolveImage(backgroundImage);
+if (meta) bgUrl = (await getImage({ src: meta, width: 1920, format: 'webp' })).src;
+const hasImage = Boolean(bgUrl);
+const effectiveTone = hasImage ? 'dark' : tone;
 ---
 
-<header class:list={['page-hero', `align-${align}`]}>
-  <div class="container-page">
+<header
+  class:list={[
+    'page-hero',
+    `align-${align}`,
+    hasImage && 'has-bg',
+    hasImage && parallax && 'is-parallax',
+  ]}
+  data-tone={effectiveTone}
+  style={hasImage ? `--bg-image:url('${bgUrl}')` : undefined}
+>
+  {hasImage && <div class="ph-scrim" aria-hidden="true"></div>}
+  <div class="container-page ph-inner">
     {kicker && <span class="kicker">{kicker}</span>}
     <h1 class="page-title">{title}</h1>
     {intro && <p class="page-intro">{intro}</p>}
@@ -21,14 +54,44 @@ const { kicker, title, intro, align = 'start' } = Astro.props;
 
 <style>
   .page-hero {
+    position: relative;
+    background-color: var(--tone-bg);
+    color: var(--color-ink);
     padding-block: clamp(3.5rem, 2rem + 7vw, 7rem) clamp(2rem, 1rem + 3vw, 3.5rem);
     border-bottom: 1px solid var(--color-line);
   }
-  .page-hero > div {
+  .has-bg {
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    border-bottom: 0;
+  }
+  .is-parallax {
+    background-attachment: fixed;
+  }
+  @media (max-width: 820px) {
+    .is-parallax {
+      background-attachment: scroll;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-parallax {
+      background-attachment: scroll;
+    }
+  }
+  .ph-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0.6), rgba(10, 10, 11, 0.72));
+    pointer-events: none;
+  }
+  .ph-inner {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 1.1rem;
   }
-  .align-center > div {
+  .align-center .ph-inner {
     justify-items: center;
     text-align: center;
   }

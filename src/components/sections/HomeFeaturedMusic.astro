@@ -1,33 +1,39 @@
 ---
+import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import MusicCard from '@components/cards/MusicCard.astro';
 import { getFeaturedAlbums } from '@lib/content';
+import type { Tone } from '@lib/pages';
 
 interface Props {
   heading?: string;
   subheading?: string;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
 }
-const { heading = 'Featured Music', subheading } = Astro.props;
+const {
+  heading = 'Featured Music',
+  subheading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props;
 const albums = await getFeaturedAlbums(3);
 ---
 
 {
   albums.length > 0 && (
-    <section class="section">
-      <div class="container-page">
-        <SectionHeader
-          kicker="Discography"
-          heading={heading}
-          subheading={subheading}
-          href="/music/"
-        />
-        <div class="grid-cards">
-          {albums.map((album) => (
-            <MusicCard album={album} />
-          ))}
-        </div>
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      <SectionHeader kicker="Discography" heading={heading} subheading={subheading} href="/music/" />
+      <div class="grid-cards">
+        {albums.map((album) => (
+          <MusicCard album={album} />
+        ))}
       </div>
-    </section>
+    </Section>
   )
 }
 

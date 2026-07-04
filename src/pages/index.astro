@@ -1,10 +1,10 @@
 ---
 /**
  * Home — hero, a short intro statement, then the CMS-ordered, toggleable
- * homepage sections (featured music, latest video, events, news, Instagram,
- * closing CTA).
+ * homepage sections (each with its own tone/background), and the closing CTA.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import Hero from '@components/sections/Hero.astro';
 import HomeFeaturedMusic from '@components/sections/HomeFeaturedMusic.astro';
 import HomeLatestVideo from '@components/sections/HomeLatestVideo.astro';
@@ -20,29 +20,35 @@ const sections = home.sections.filter((s) => s.enabled);
 <BaseLayout description={home.intro.body}>
   <Hero />
 
-  <section class="section-tight intro">
-    <div class="container-page" data-reveal>
+  <Section tone="dark" padding="tight" class="intro">
+    <div data-reveal>
       <p class="kicker">Introduction</p>
       <h2 class="intro-heading">{home.intro.heading}</h2>
       <p class="intro-body">{home.intro.body}</p>
     </div>
-  </section>
+  </Section>
 
   {
     sections.map((s) => {
+      const style = {
+        tone: s.background,
+        backgroundImage: s.backgroundImage,
+        backgroundAlt: s.backgroundAlt,
+        parallax: s.parallax,
+      };
       switch (s.id) {
         case 'featured-music':
-          return <HomeFeaturedMusic heading={s.heading} subheading={s.subheading} />;
+          return <HomeFeaturedMusic heading={s.heading} subheading={s.subheading} {...style} />;
         case 'latest-video':
-          return <HomeLatestVideo heading={s.heading} subheading={s.subheading} />;
+          return <HomeLatestVideo heading={s.heading} subheading={s.subheading} {...style} />;
         case 'events':
-          return <HomeEvents heading={s.heading} subheading={s.subheading} />;
+          return <HomeEvents heading={s.heading} subheading={s.subheading} {...style} />;
         case 'news':
-          return <HomeNews heading={s.heading} subheading={s.subheading} />;
+          return <HomeNews heading={s.heading} subheading={s.subheading} {...style} />;
         case 'instagram':
-          return <InstagramSection />;
+          return <InstagramSection heading={s.heading} {...style} />;
         case 'cta':
-          return <CTASection />;
+          return <CTASection {...style} />;
         default:
           return null;
       }
@@ -54,7 +60,6 @@ const sections = home.sections.filter((s) => s.enabled);
   .intro > div {
     display: grid;
     gap: 1.1rem;
-    max-width: 62rem;
   }
   .intro-heading {
     font-size: var(--text-h2);

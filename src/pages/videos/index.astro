@@ -1,73 +1,100 @@
 ---
 /**
- * Videos — a featured video plus a filterable archive. Filtering is a small
- * progressive enhancement (works as a full grid without JS).
+ * Videos — a featured video plus a filterable archive. Hero + section styling
+ * come from the CMS (Pages → Videos). Filtering is progressive enhancement.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import VideoCard from '@components/cards/VideoCard.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import { getVideos, getFeaturedVideo } from '@lib/content';
+import { pages, findSection } from '@lib/pages';
 
 const videos = await getVideos();
 const featured = await getFeaturedVideo();
 const rest = videos.filter((v) => v.id !== featured?.id);
-
 const categories = [...new Set(videos.map((v) => v.data.category))];
 const label = (c: string) => c.replace('-', ' ');
+
+const p = pages.videos;
+const featuredS = findSection(p.sections, 'featured');
+const archiveS = findSection(p.sections, 'archive');
+const cta = findSection(p.sections, 'cta');
 ---
 
-<BaseLayout
-  title="Videos"
-  description="Live sessions, playthroughs and music videos from Andy Lewis."
->
+<BaseLayout title={p.hero.heading} description={p.hero.intro}>
   <PageHero
-    kicker="Watch"
-    title="Videos"
-    intro="Live sessions, drum playthroughs and music videos — click any thumbnail to play."
+    kicker={p.hero.kicker}
+    title={p.hero.heading}
+    intro={p.hero.intro}
+    tone={p.hero.background}
+    backgroundImage={p.hero.backgroundImage}
+    backgroundAlt={p.hero.backgroundAlt}
+    parallax={p.hero.parallax}
   />
 
   {
     featured && (
-      <section class="section-tight" aria-label="Featured video">
-        <div class="container-page featured-video">
-          <h2 class="sr-only">Featured video</h2>
-          <VideoCard video={featured} />
-        </div>
-      </section>
+      <Section
+        tone={featuredS.background}
+        backgroundImage={featuredS.backgroundImage}
+        backgroundAlt={featuredS.backgroundAlt}
+        parallax={featuredS.parallax}
+        padding="tight"
+        aria-label="Featured video"
+        innerClass="featured-video"
+      >
+        <h2 class="sr-only">Featured video</h2>
+        <VideoCard video={featured} />
+      </Section>
     )
   }
 
   {
     rest.length > 0 && (
-      <section class="section-tight" aria-label="Video archive">
-        <div class="container-page">
-          <h2 class="sr-only">Video archive</h2>
-          {categories.length > 1 && (
-            <div class="filters" role="group" aria-label="Filter videos by category">
-              <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">
-                All
+      <Section
+        tone={archiveS.background}
+        backgroundImage={archiveS.backgroundImage}
+        backgroundAlt={archiveS.backgroundAlt}
+        parallax={archiveS.parallax}
+        padding="tight"
+        aria-label="Video archive"
+      >
+        <h2 class="sr-only">Video archive</h2>
+        {categories.length > 1 && (
+          <div class="filters" role="group" aria-label="Filter videos by category">
+            <button class="filter is-active" type="button" data-filter="all" aria-pressed="true">
+              All
+            </button>
+            {categories.map((c) => (
+              <button class="filter" type="button" data-filter={c} aria-pressed="false">
+                {label(c)}
               </button>
-              {categories.map((c) => (
-                <button class="filter" type="button" data-filter={c} aria-pressed="false">
-                  {label(c)}
-                </button>
-              ))}
-            </div>
-          )}
-          <div class="grid-videos" data-video-grid>
-            {rest.map((video) => (
-              <div class="video-item" data-category={video.data.category}>
-                <VideoCard video={video} />
-              </div>
             ))}
           </div>
+        )}
+        <div class="grid-videos" data-video-grid>
+          {rest.map((video) => (
+            <div class="video-item" data-category={video.data.category}>
+              <VideoCard video={video} />
+            </div>
+          ))}
         </div>
-      </section>
+      </Section>
     )
   }
 
-  <CTASection />
+  {
+    cta.enabled && (
+      <CTASection
+        tone={cta.background}
+        backgroundImage={cta.backgroundImage}
+        backgroundAlt={cta.backgroundAlt}
+        parallax={cta.parallax}
+      />
+    )
+  }
 </BaseLayout>
 
 <script>
@@ -97,7 +124,6 @@ const label = (c: string) => c.replace('-', ' ');
 <style>
   .featured-video {
     max-width: 62rem;
-    margin-inline: auto;
   }
   .filters {
     display: flex;

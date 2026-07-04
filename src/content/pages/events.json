@@ -9,7 +9,7 @@
     "parallax": false
   },
   "sections": [
-    { "id": "upcoming", "enabled": true, "heading": "Upcoming", "background": "white", "parallax": false },
+    { "id": "upcoming", "enabled": true, "heading": "Upcoming", "background": "light", "parallax": false },
     { "id": "past", "enabled": true, "heading": "Past shows", "background": "grey", "parallax": false },
     { "id": "cta", "enabled": true, "background": "dark", "parallax": false }
   ]

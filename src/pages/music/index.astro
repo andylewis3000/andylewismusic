@@ -1,45 +1,65 @@
 ---
 /**
- * Music — the full discography grid (albums, EPs, singles). Each card links
- * to a detail page with embeds and tracklist.
+ * Music — discography grid. Hero + section styling come from the CMS
+ * (Pages → Music); each card links to a detail page.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import MusicCard from '@components/cards/MusicCard.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import { getAlbums } from '@lib/content';
+import { pages, findSection } from '@lib/pages';
 
 const albums = await getAlbums();
+const p = pages.music;
+const releases = findSection(p.sections, 'releases');
+const cta = findSection(p.sections, 'cta');
 ---
 
-<BaseLayout
-  title="Music"
-  description="Albums, EPs and singles by Andy Lewis — stream on Spotify, Apple Music and Bandcamp."
->
+<BaseLayout title={p.hero.heading} description={p.hero.intro}>
   <PageHero
-    kicker="Discography"
-    title="Music"
-    intro="Records built around live drums, guitar and analogue texture. Stream anywhere, or dig into the liner notes."
+    kicker={p.hero.kicker}
+    title={p.hero.heading}
+    intro={p.hero.intro}
+    tone={p.hero.background}
+    backgroundImage={p.hero.backgroundImage}
+    backgroundAlt={p.hero.backgroundAlt}
+    parallax={p.hero.parallax}
   />
 
-  <section class="section-tight" aria-label="Releases">
-    <div class="container-page">
-      <h2 class="sr-only">Releases</h2>
-      {
-        albums.length > 0 ? (
-          <div class="grid-cards">
-            {albums.map((album) => (
-              <MusicCard album={album} />
-            ))}
-          </div>
-        ) : (
-          <p class="empty">Releases are on the way — check back soon.</p>
-        )
-      }
-    </div>
-  </section>
+  <Section
+    tone={releases.background}
+    backgroundImage={releases.backgroundImage}
+    backgroundAlt={releases.backgroundAlt}
+    parallax={releases.parallax}
+    padding="tight"
+    aria-label="Releases"
+  >
+    <h2 class="sr-only">Releases</h2>
+    {
+      albums.length > 0 ? (
+        <div class="grid-cards">
+          {albums.map((album) => (
+            <MusicCard album={album} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty">Releases are on the way — check back soon.</p>
+      )
+    }
+  </Section>
 
-  <CTASection />
+  {
+    cta.enabled && (
+      <CTASection
+        tone={cta.background}
+        backgroundImage={cta.backgroundImage}
+        backgroundAlt={cta.backgroundAlt}
+        parallax={cta.parallax}
+      />
+    )
+  }
 </BaseLayout>
 
 <style>

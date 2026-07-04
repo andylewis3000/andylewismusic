@@ -1,33 +1,39 @@
 ---
+import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
 import BlogCard from '@components/cards/BlogCard.astro';
 import { getFeaturedPosts } from '@lib/content';
+import type { Tone } from '@lib/pages';
 
 interface Props {
   heading?: string;
   subheading?: string;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
 }
-const { heading = 'Latest News', subheading } = Astro.props;
+const {
+  heading = 'Latest News',
+  subheading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props;
 const posts = await getFeaturedPosts(3);
 ---
 
 {
   posts.length > 0 && (
-    <section class="section">
-      <div class="container-page">
-        <SectionHeader
-          kicker="Journal"
-          heading={heading}
-          subheading={subheading}
-          href="/blog/"
-        />
-        <div class="grid-news">
-          {posts.map((post) => (
-            <BlogCard post={post} />
-          ))}
-        </div>
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      <SectionHeader kicker="Journal" heading={heading} subheading={subheading} href="/blog/" />
+      <div class="grid-news">
+        {posts.map((post) => (
+          <BlogCard post={post} />
+        ))}
       </div>
-    </section>
+    </Section>
   )
 }
 

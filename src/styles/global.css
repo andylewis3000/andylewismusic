@@ -202,6 +202,16 @@
   --color-accent-soft: rgba(14, 19, 5, 0.1);
   color-scheme: light;
 }
+/* On an accent (lime) section a lime primary button would disappear — invert it. */
+[data-tone='accent'] .btn-primary {
+  background: #0e1305;
+  color: var(--color-accent);
+  box-shadow: none;
+}
+[data-tone='accent'] .btn-primary:hover {
+  background: #000;
+  box-shadow: none;
+}
 
 /* 4 ─ Base layer ────────────────────────────────────────────────────── */
 @layer base {

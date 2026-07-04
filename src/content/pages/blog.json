@@ -9,6 +9,6 @@
     "parallax": false
   },
   "sections": [
-    { "id": "articles", "enabled": true, "background": "white", "parallax": false }
+    { "id": "articles", "enabled": true, "background": "light", "parallax": false }
   ]
 }

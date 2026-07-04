@@ -61,6 +61,15 @@ const disciplines = z.enum([
   'programming',
 ]);
 
+/** Section styling shared with page settings (see src/lib/pages.ts). */
+const sectionTone = z.enum(['dark', 'grey', 'light', 'white', 'accent']);
+const sectionStyleShape = {
+  background: sectionTone.default('dark'),
+  backgroundImage: imagePath.optional(),
+  backgroundAlt: z.string().optional(),
+  parallax: z.boolean().default(false),
+};
+
 /* ── DISCOGRAPHY — albums, EPs & singles ──────────────────────────────── */
 const albums = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/albums' }),
@@ -217,6 +226,12 @@ const about = defineCollection({
       .array(z.object({ label: z.string(), items: z.array(z.string()) }))
       .default([])
       .describe('Equipment highlight groups shown on the About page'),
+    // Hero + per-section styling, mirroring the other pages' options.
+    hero: z.object({ kicker: z.string().optional(), ...sectionStyleShape }).default({}),
+    sections: z
+      .array(z.object({ id: z.string(), ...sectionStyleShape }))
+      .default([])
+      .describe('Background tone/image/parallax for each About section'),
     seo,
   }),
 });

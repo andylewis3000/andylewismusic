@@ -1,57 +1,66 @@
 ---
 /**
  * CTASection — the recurring "let's work together" call to action.
- * Defaults to the homepage CTA content but accepts overrides.
+ * Renders inside a toned Section; defaults to the homepage CTA content.
  */
+import Section from '@components/layout/Section.astro';
 import Button from '@components/ui/Button.astro';
 import { home } from '@lib/pages';
+import type { Tone } from '@lib/pages';
 
 interface Props {
   heading?: string;
   body?: string;
   primary?: { label: string; href: string };
   secondary?: { label: string; href: string } | null;
+  tone?: Tone;
+  backgroundImage?: string;
+  backgroundAlt?: string;
+  parallax?: boolean;
 }
 const {
   heading = home.cta.heading,
   body = home.cta.body,
   primary = home.cta.primaryCta,
   secondary = home.cta.secondaryCta ?? null,
+  tone = 'grey',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
 } = Astro.props;
+
+// The lime glow only reads on dark tones.
+const showGlow = (tone === 'dark' || tone === 'grey') && !backgroundImage;
 ---
 
-<section class="section">
-  <div class="container-page">
-    <div class="cta card" data-reveal>
-      <div class="cta-glow" aria-hidden="true"></div>
-      <div class="cta-inner">
-        <h2 class="cta-heading">{heading}</h2>
-        <p class="cta-body">{body}</p>
-        <div class="cta-actions">
-          <Button href={primary.href} variant="primary" icon="arrow-right">{primary.label}</Button>
-          {secondary && <Button href={secondary.href} variant="ghost">{secondary.label}</Button>}
-        </div>
-      </div>
+<Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax} class="cta-section">
+  {showGlow && <div class="cta-glow" aria-hidden="true"></div>}
+  <div class="cta-inner" data-reveal>
+    <h2 class="cta-heading">{heading}</h2>
+    <p class="cta-body">{body}</p>
+    <div class="cta-actions">
+      <Button href={primary.href} variant="primary" icon="arrow-right">{primary.label}</Button>
+      {secondary && <Button href={secondary.href} variant="ghost">{secondary.label}</Button>}
     </div>
   </div>
-</section>
+</Section>
 
 <style>
-  .cta {
-    position: relative;
-    padding: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+  .cta-section {
     text-align: center;
-    overflow: hidden;
   }
   .cta-glow {
     position: absolute;
-    inset: -40% 20% auto;
-    height: 60%;
-    background: radial-gradient(50% 100% at 50% 0%, rgba(154, 205, 51, 0.18), transparent 70%);
+    inset: 0 20% auto;
+    top: -10%;
+    height: 70%;
+    background: radial-gradient(50% 100% at 50% 0%, rgba(154, 205, 51, 0.16), transparent 70%);
     pointer-events: none;
+    z-index: 0;
   }
   .cta-inner {
     position: relative;
+    z-index: 1;
     display: grid;
     gap: 1.25rem;
     justify-items: center;

@@ -5,13 +5,18 @@
  * inline success/error states and Turnstile support when configured.
  */
 import BaseLayout from '@layouts/BaseLayout.astro';
+import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
 import SocialLinks from '@components/ui/SocialLinks.astro';
 import Icon from '@components/ui/Icon.astro';
 import { site } from '@lib/settings';
+import { pages, findSection } from '@lib/pages';
 
 const endpoint = site.forms.endpoint;
 const turnstileKey = site.forms.turnstileSiteKey;
+
+const p = pages.contact;
+const form = findSection(p.sections, 'form');
 ---
 
 <BaseLayout
@@ -21,13 +26,23 @@ const turnstileKey = site.forms.turnstileSiteKey;
   {turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />}
 
   <PageHero
-    kicker="Booking"
-    title="Let's work together"
-    intro="Performances, sessions, collaborations, scoring — tell me what you're planning and I'll get back to you personally."
+    kicker={p.hero.kicker}
+    title={p.hero.heading}
+    intro={p.hero.intro}
+    tone={p.hero.background}
+    backgroundImage={p.hero.backgroundImage}
+    backgroundAlt={p.hero.backgroundAlt}
+    parallax={p.hero.parallax}
   />
 
-  <section class="section-tight">
-    <div class="container-page contact-grid">
+  <Section
+    tone={form.background}
+    backgroundImage={form.backgroundImage}
+    backgroundAlt={form.backgroundAlt}
+    parallax={form.parallax}
+    padding="tight"
+    innerClass="contact-grid"
+  >
       <div class="contact-aside">
         <div class="contact-block">
           <h2 class="aside-h">Direct</h2>
@@ -106,8 +121,7 @@ const turnstileKey = site.forms.turnstileSiteKey;
 
         <p class="form-status" data-status role="status" aria-live="polite"></p>
       </form>
-    </div>
-  </section>
+  </Section>
 </BaseLayout>
 
 <script>
