@@ -32,6 +32,15 @@ const imagePath = z
   .string()
   .describe('Path to an image under /src/assets/images/uploads/');
 
+/**
+ * An optional URL that tolerates the empty strings the CMS writes for blank
+ * fields — `""` is coerced to `undefined` rather than failing validation.
+ */
+const optionalUrl = z.preprocess(
+  (v) => (v === '' ? undefined : v),
+  z.string().url().optional()
+);
+
 /** SEO overrides available on any routable content entry. */
 const seo = z
   .object({
@@ -81,11 +90,11 @@ const albums = defineCollection({
       .default([]),
     links: z
       .object({
-        spotify: z.string().url().optional(),
-        appleMusic: z.string().url().optional(),
-        bandcamp: z.string().url().optional(),
-        youtube: z.string().url().optional(),
-        soundcloud: z.string().url().optional(),
+        spotify: optionalUrl,
+        appleMusic: optionalUrl,
+        bandcamp: optionalUrl,
+        youtube: optionalUrl,
+        soundcloud: optionalUrl,
       })
       .default({}),
     featured: z.boolean().default(false),
@@ -129,7 +138,7 @@ const events = defineCollection({
     doorsTime: z.string().optional().describe('Human label, e.g. "Doors 7:30pm"'),
     role: z.string().optional().describe('e.g. "Drums — supporting The Vipers"'),
     lineup: z.array(z.string()).default([]),
-    ticketUrl: z.string().url().optional(),
+    ticketUrl: optionalUrl,
     price: z.string().optional(),
     soldOut: z.boolean().default(false),
     cancelled: z.boolean().default(false),
@@ -175,7 +184,7 @@ const gear = defineCollection({
     description: z.string().describe('Short note on the item and how Andy uses it'),
     featured: z.boolean().default(false),
     order: z.number().default(0),
-    link: z.string().url().optional().describe('Manufacturer / product page'),
+    link: optionalUrl.describe('Manufacturer / product page'),
     draft: z.boolean().default(false),
   }),
 });

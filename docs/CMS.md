@@ -32,19 +32,25 @@ and secure. When you save in the CMS:
 > `docs/DEPLOYMENT.md` is switched on. Until then, edits land in GitHub and a
 > maintainer runs a quick build + upload.
 
-## Editing locally (optional, no GitHub needed)
+## Editing locally (no GitHub needed)
 
-To preview edits on your own machine before they go live:
+To edit on your own machine before the site is live:
 
 ```bash
 nvm use            # Node 22
 npm run dev        # start the site at http://localhost:4321
-# in a second terminal:
-npx @sveltia/cms-proxy-server
 ```
 
-Then open http://localhost:4321/admin/ — because `local_backend: true` is set,
-you can edit the local files directly and watch the site update live.
+Then, **in Chrome or Edge**, open http://localhost:4321/admin/index.html and
+click **"Work with Local Repository"**. Pick this project folder when prompted
+and grant access. (In dev, use the full `/admin/index.html` path; the live site
+serves it at just `/admin/`.) Sveltia now reads and writes the project files directly (via the
+browser's File System Access API) — no proxy server, no login. Your edits appear
+in `src/content/` and the running dev site updates live.
+
+> Use Chrome or Edge for local editing — the File System Access API isn't
+> available in Safari/Firefox. (The live `/admin/` on the deployed site uses
+> GitHub instead and works in any browser.)
 
 ## Images
 

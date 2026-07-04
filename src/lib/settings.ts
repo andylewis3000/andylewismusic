@@ -15,7 +15,6 @@
 import { z } from 'astro:content';
 
 import siteJson from '../content/settings/site.json';
-import homeJson from '../content/settings/home.json';
 import navigationJson from '../content/settings/navigation.json';
 import footerJson from '../content/settings/footer.json';
 import socialJson from '../content/settings/social.json';
@@ -60,49 +59,7 @@ const ctaSchema = z.object({
   style: z.enum(['primary', 'secondary', 'ghost']).default('primary'),
 });
 
-const homeSchema = z.object({
-  hero: z.object({
-    kicker: z.string().optional(),
-    heading: z.string(),
-    subheading: z.string(),
-    backgroundImage: imagePath,
-    backgroundAlt: z.string(),
-    primaryCta: ctaSchema,
-    secondaryCta: ctaSchema.optional(),
-  }),
-  intro: z.object({
-    heading: z.string(),
-    body: z.string(),
-  }),
-  // Each homepage section can be toggled and reordered by the editor.
-  sections: z
-    .array(
-      z.object({
-        id: z.enum([
-          'featured-music',
-          'latest-video',
-          'events',
-          'news',
-          'instagram',
-          'cta',
-        ]),
-        enabled: z.boolean().default(true),
-        heading: z.string().optional(),
-        subheading: z.string().optional(),
-      })
-    )
-    .default([]),
-  instagram: z.object({
-    handle: z.string().default(''),
-    heading: z.string().default('On the road'),
-  }),
-  cta: z.object({
-    heading: z.string(),
-    body: z.string(),
-    primaryCta: ctaSchema,
-    secondaryCta: ctaSchema.optional(),
-  }),
-});
+/* Homepage content lives in src/lib/pages.ts (with the other page settings). */
 
 /* ── Navigation ────────────────────────────────────────────────────────── */
 const navItemSchema = z.object({
@@ -164,13 +121,11 @@ function parse<T extends z.ZodTypeAny>(schema: T, data: unknown, name: string): 
 }
 
 export const site = parse(siteSchema, siteJson, 'site');
-export const home = parse(homeSchema, homeJson, 'home');
 export const navigation = parse(navigationSchema, navigationJson, 'navigation');
 export const footer = parse(footerSchema, footerJson, 'footer');
 export const social = parse(socialSchema, socialJson, 'social');
 
 export type Site = z.infer<typeof siteSchema>;
-export type Home = z.infer<typeof homeSchema>;
 export type Navigation = z.infer<typeof navigationSchema>;
 export type Footer = z.infer<typeof footerSchema>;
 export type Social = z.infer<typeof socialSchema>;

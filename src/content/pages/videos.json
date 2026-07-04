@@ -1,0 +1,16 @@
+{
+  "hero": {
+    "kicker": "Watch",
+    "heading": "Videos",
+    "intro": "Live sessions, drum playthroughs and music videos — click any thumbnail to play.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "featured", "enabled": true, "heading": "Featured video", "background": "dark", "parallax": false },
+    { "id": "archive", "enabled": true, "heading": "Video archive", "background": "white", "parallax": false },
+    { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
+  ]
+}

@@ -1,10 +1,19 @@
 {
   "links": [
-    { "platform": "instagram", "label": "Instagram", "url": "https://instagram.com/andylewismusic" },
-    { "platform": "youtube", "label": "YouTube", "url": "https://youtube.com/@andylewismusic" },
-    { "platform": "spotify", "label": "Spotify", "url": "https://open.spotify.com/artist/000000000000" },
-    { "platform": "appleMusic", "label": "Apple Music", "url": "https://music.apple.com/artist/000000000" },
-    { "platform": "bandcamp", "label": "Bandcamp", "url": "https://andylewismusic.bandcamp.com" },
-    { "platform": "email", "label": "Email", "url": "mailto:hello@andylewismusic.com" }
+    {
+      "platform": "instagram",
+      "label": "Instagram",
+      "url": "https://instagram.com/andylewisdrums"
+    },
+    {
+      "platform": "youtube",
+      "label": "YouTube",
+      "url": "https://youtube.com/@andylewisdrums"
+    },
+    {
+      "platform": "email",
+      "label": "Email",
+      "url": "mailto:hello@andylewismusic.com"
+    }
   ]
 }

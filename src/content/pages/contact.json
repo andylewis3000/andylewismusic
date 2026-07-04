@@ -1,0 +1,14 @@
+{
+  "hero": {
+    "kicker": "Booking",
+    "heading": "Let's work together",
+    "intro": "Performances, sessions, collaborations, scoring — tell me what you're planning and I'll get back to you personally.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "form", "enabled": true, "background": "white", "parallax": false }
+  ]
+}

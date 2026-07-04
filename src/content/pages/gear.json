@@ -1,0 +1,15 @@
+{
+  "hero": {
+    "kicker": "Setup",
+    "heading": "Gear",
+    "intro": "The instruments and tools behind the sound. Tuned, road-worn and chosen for feel.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "gear", "enabled": true, "background": "white", "parallax": false },
+    { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
+  ]
+}

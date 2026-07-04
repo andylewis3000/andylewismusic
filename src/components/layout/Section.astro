@@ -1,0 +1,123 @@
+---
+/**
+ * Section — a full-width band with a CMS-controlled background.
+ *
+ * Options (all optional, typically from a page's section settings):
+ *   - tone: 'dark' | 'grey' | 'light' | 'white' | 'accent'  → re-scopes design
+ *     tokens for everything inside, so components adapt (see global.css tones).
+ *   - backgroundImage: a photo behind the content. When set, the section is
+ *     treated as dark (scrim + light text) regardless of `tone`, for legibility.
+ *   - parallax: fixes the background so it drifts on scroll (desktop only;
+ *     disabled on touch + reduced-motion). Only meaningful with an image.
+ *   - padding: vertical rhythm — 'normal' | 'tight' | 'none'.
+ *
+ * The inner content is wrapped in `.container-page` so every section aligns to
+ * the same width as the navigation.
+ */
+import { getImage } from 'astro:assets';
+import { resolveImage } from '@lib/images';
+
+export type Tone = 'dark' | 'grey' | 'light' | 'white' | 'accent';
+
+interface Props {
+  tone?: Tone;
+  backgroundImage?: string | null;
+  backgroundAlt?: string;
+  parallax?: boolean;
+  padding?: 'normal' | 'tight' | 'none';
+  class?: string;
+  innerClass?: string;
+  id?: string;
+  'aria-label'?: string;
+  'aria-labelledby'?: string;
+}
+
+const {
+  tone = 'dark',
+  backgroundImage,
+  parallax = false,
+  padding = 'normal',
+  class: className,
+  innerClass,
+  id,
+  ...aria
+} = Astro.props;
+
+// Resolve an optimized URL for the background image, if any.
+let bgUrl: string | undefined;
+const meta = resolveImage(backgroundImage);
+if (meta) {
+  bgUrl = (await getImage({ src: meta, width: 1920, format: 'webp' })).src;
+}
+const hasImage = Boolean(bgUrl);
+// A photo background is always treated as dark (scrim + light text).
+const effectiveTone = hasImage ? 'dark' : tone;
+---
+
+<section
+  id={id}
+  class:list={[
+    'tone-section',
+    `pad-${padding}`,
+    hasImage && 'has-bg',
+    hasImage && parallax && 'is-parallax',
+    className,
+  ]}
+  data-tone={effectiveTone}
+  style={hasImage ? `--bg-image:url('${bgUrl}')` : undefined}
+  {...aria}
+>
+  {hasImage && <div class="tone-scrim" aria-hidden="true"></div>}
+  <div class:list={['container-page', 'tone-inner', innerClass]}>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .tone-section {
+    position: relative;
+    background-color: var(--tone-bg);
+    color: var(--color-ink);
+  }
+  .pad-normal {
+    padding-block: var(--space-section);
+  }
+  .pad-tight {
+    padding-block: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  }
+  .pad-none {
+    padding-block: 0;
+  }
+
+  .has-bg {
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .is-parallax {
+    background-attachment: fixed;
+  }
+  /* Fixed backgrounds are janky on touch and inappropriate for reduced motion. */
+  @media (max-width: 820px) {
+    .is-parallax {
+      background-attachment: scroll;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-parallax {
+      background-attachment: scroll;
+    }
+  }
+
+  .tone-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0.72), rgba(10, 10, 11, 0.55));
+    pointer-events: none;
+  }
+  .tone-inner {
+    position: relative;
+    z-index: 1;
+  }
+</style>

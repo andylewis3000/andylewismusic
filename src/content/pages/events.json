@@ -1,0 +1,16 @@
+{
+  "hero": {
+    "kicker": "Live",
+    "heading": "Events",
+    "intro": "Where to catch a performance. New dates are announced here first.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "upcoming", "enabled": true, "heading": "Upcoming", "background": "white", "parallax": false },
+    { "id": "past", "enabled": true, "heading": "Past shows", "background": "grey", "parallax": false },
+    { "id": "cta", "enabled": true, "background": "dark", "parallax": false }
+  ]
+}

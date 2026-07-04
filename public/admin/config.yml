@@ -5,9 +5,9 @@
 #  src/lib/settings.ts. Keep the two in sync: the schema is the guardrail
 #  (a bad value fails the build); this file is the friendly editing form.
 #
-#  Editing locally:  run `npx @sveltia/cms-proxy-server` in one terminal and
-#  `npm run dev` in another, then open http://localhost:4321/admin/ — with
-#  `local_backend: true` you can edit without any GitHub login.
+#  Editing locally:  run `npm run dev`, then open http://localhost:4321/admin/
+#  in Chrome or Edge and choose "Work with Local Repository" — Sveltia edits the
+#  project files directly via the File System Access API. No proxy, no login.
 #
 #  Editing in production: visit https://andylewismusic.com/admin/ and sign in
 #  with GitHub (repo access). Saves commit to the branch below.

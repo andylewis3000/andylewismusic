@@ -1,0 +1,14 @@
+{
+  "hero": {
+    "kicker": "Journal",
+    "heading": "News",
+    "intro": "Releases, tour updates, studio notes and the occasional tangent.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "articles", "enabled": true, "background": "white", "parallax": false }
+  ]
+}

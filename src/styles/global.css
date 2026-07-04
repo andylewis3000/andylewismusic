@@ -82,6 +82,11 @@
   --color-accent-ember: #cfe84a;
   --color-accent-contrast: #0a0a0b;
   --color-accent-soft: rgba(154, 205, 51, 0.14);
+  /* Accent used as *foreground/text*. Lime on dark; overridden to a darker
+     green on light tones (see tone blocks) so it always clears AA contrast. */
+  --color-accent-ink: #9acd33;
+  /* The section's own background; set per tone. Defaults to page background. */
+  --tone-bg: transparent;
 
   /* — Color: functional — */
   --color-focus: #7cc7ff;
@@ -147,6 +152,55 @@
   --container-pad: clamp(1.25rem, 0.5rem + 3vw, 3rem);
 
   color-scheme: dark;
+}
+
+/* ── Section tones ───────────────────────────────────────────────────────
+   A section carries a `data-tone`, which re-scopes the design-token variables
+   for everything inside it. Components reference the same token names, so they
+   adapt automatically. Light tones flip text to dark and swap the accent to a
+   darker green (--color-accent-ink) that clears AA contrast on light. */
+[data-tone='dark'] {
+  --tone-bg: var(--color-bg);
+}
+[data-tone='grey'] {
+  --tone-bg: #141418;
+}
+[data-tone='light'],
+[data-tone='white'] {
+  --color-ink: #17160f;
+  --color-ink-muted: #4e4a42;
+  --color-ink-faint: #6d685e;
+  --color-line: rgba(20, 18, 12, 0.12);
+  --color-line-strong: rgba(20, 18, 12, 0.24);
+  --color-bg-elevated: #faf8f4;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1eee7;
+  --color-accent-ink: #46660e;
+  --color-accent-soft: rgba(154, 205, 51, 0.22);
+  --shadow-sm: 0 1px 2px rgba(20, 18, 12, 0.08);
+  --shadow-md: 0 10px 26px -12px rgba(20, 18, 12, 0.2);
+  --shadow-lg: 0 26px 60px -24px rgba(20, 18, 12, 0.25);
+  --shadow-glow: 0 0 50px -14px rgba(154, 205, 51, 0.5);
+  color-scheme: light;
+}
+[data-tone='light'] {
+  --tone-bg: #ece9e1;
+}
+[data-tone='white'] {
+  --tone-bg: #ffffff;
+}
+[data-tone='accent'] {
+  --tone-bg: var(--color-accent);
+  --color-ink: #0e1305;
+  --color-ink-muted: #26340c;
+  --color-ink-faint: #3a4a17;
+  --color-line: rgba(14, 19, 5, 0.16);
+  --color-line-strong: rgba(14, 19, 5, 0.28);
+  --color-accent-ink: #0e1305;
+  --color-surface: rgba(255, 255, 255, 0.14);
+  --color-surface-2: rgba(255, 255, 255, 0.2);
+  --color-accent-soft: rgba(14, 19, 5, 0.1);
+  color-scheme: light;
 }
 
 /* 4 ─ Base layer ────────────────────────────────────────────────────── */

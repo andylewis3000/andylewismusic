@@ -2,9 +2,11 @@
   "hero": {
     "kicker": "Drummer · Guitarist · Composer",
     "heading": "Rhythm with intent. Music with a pulse.",
-    "subheading": "Two decades behind the kit and the guitar — scoring, sessions and stages. Available for performances, recording and collaboration.",
-    "backgroundImage": "/src/assets/images/uploads/hero-live.jpg",
+    "subheading": "Three decades behind the kit and the guitar — stages, sessions and scoring. Available for performances, recording and collaboration.",
+    "background": "dark",
+    "backgroundImage": "/src/assets/images/uploads/al-drums-danforth.jpg",
     "backgroundAlt": "Andy Lewis performing live, lit in deep red stage light",
+    "parallax": false,
     "primaryCta": { "label": "Book Andy", "href": "/contact/", "style": "primary" },
     "secondaryCta": { "label": "Listen", "href": "/music/", "style": "ghost" }
   },
@@ -13,15 +15,15 @@
     "body": "From the driving backbone of a live set to the quiet detail of a film cue, I bring feel, precision and a producer's ear to every project — whether that's a stadium support slot, a session date, or a score that needs to breathe."
   },
   "sections": [
-    { "id": "featured-music", "enabled": true, "heading": "Featured Music", "subheading": "Recent releases & selected work" },
-    { "id": "latest-video", "enabled": true, "heading": "Latest Video" },
-    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live" },
-    { "id": "news", "enabled": true, "heading": "Latest News" },
-    { "id": "instagram", "enabled": true, "heading": "On the Road" },
-    { "id": "cta", "enabled": true }
+    { "id": "featured-music", "enabled": true, "heading": "Featured Music", "subheading": "Recent releases & selected work", "background": "light", "parallax": false },
+    { "id": "latest-video", "enabled": true, "heading": "Latest Video", "subheading": "", "background": "dark", "parallax": false },
+    { "id": "events", "enabled": true, "heading": "Upcoming Shows", "subheading": "Catch a performance live", "background": "white", "parallax": false },
+    { "id": "news", "enabled": true, "heading": "Latest News", "subheading": "", "background": "light", "parallax": false },
+    { "id": "instagram", "enabled": true, "heading": "On the Road", "subheading": "", "background": "dark", "parallax": false },
+    { "id": "cta", "enabled": true, "heading": "", "subheading": "", "background": "accent", "parallax": false }
   ],
   "instagram": {
-    "handle": "andylewismusic",
+    "handle": "andylewisdrums",
     "heading": "On the Road"
   },
   "cta": {
