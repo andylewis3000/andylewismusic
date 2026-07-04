@@ -13,8 +13,15 @@
   <div id="pagefind-search"></div>
 </div>
 
-<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-<script src="/pagefind/pagefind-ui.js" is:inline></script>
+{/* Load Pagefind's CSS without blocking render (search is an enhancement). */}
+<link
+  rel="stylesheet"
+  href="/pagefind/pagefind-ui.css"
+  media="print"
+  onload="this.media='all'"
+/>
+<noscript><link rel="stylesheet" href="/pagefind/pagefind-ui.css" /></noscript>
+<script src="/pagefind/pagefind-ui.js" is:inline defer></script>
 <script is:inline>
   function initPagefind() {
     if (!window.PagefindUI) return;
@@ -28,6 +35,10 @@
       pageSize: 5,
       placeholder: 'Search news…',
     });
+    // Pagefind's input ships with only a placeholder; give it a real
+    // accessible name (WCAG 2.4.6 / label-title-only).
+    const input = el.querySelector('input');
+    if (input) input.setAttribute('aria-label', 'Search news');
   }
   if (document.readyState !== 'loading') initPagefind();
   else document.addEventListener('DOMContentLoaded', initPagefind);

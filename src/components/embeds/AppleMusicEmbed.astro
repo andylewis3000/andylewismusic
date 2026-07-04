@@ -1,8 +1,11 @@
 ---
 /**
- * AppleMusicEmbed — lazy Apple Music player from a music.apple.com URL.
- * Swaps the host to embed.music.apple.com and lazy-loads the iframe.
+ * AppleMusicEmbed — click-to-load Apple Music facade. No third-party iframe or
+ * cookies until the visitor opts in. Uses the shared `.embed-facade` handler
+ * (see SpotifyEmbed) — bound once per page.
  */
+import Icon from '@components/ui/Icon.astro';
+
 interface Props {
   url: string;
   title?: string;
@@ -11,29 +14,98 @@ const { url, title = 'Apple Music player' } = Astro.props;
 
 const isApple = /music\.apple\.com/.test(url);
 const embedUrl = isApple ? url.replace('music.apple.com', 'embed.music.apple.com') : null;
+const height = 450;
 ---
 
 {
   embedUrl && (
-    <iframe
-      class="apple-embed"
-      src={embedUrl}
-      title={title}
-      height="450"
-      loading="lazy"
-      allow="autoplay *; encrypted-media *; clipboard-write"
-      sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-    />
+    <button
+      class="embed-facade apple"
+      type="button"
+      data-embed-src={embedUrl}
+      data-embed-title={title}
+      data-embed-height={height}
+      aria-label={`Load the Apple Music player for ${title}`}
+    >
+      <span class="embed-badge">
+        <Icon name="appleMusic" size={26} />
+      </span>
+      <span class="embed-text">
+        <strong>Play on Apple Music</strong>
+        <small>Loads the Apple Music player</small>
+      </span>
+    </button>
   )
 }
 
+<script>
+  if (!(window as any).__embedFacadeBound) {
+    (window as any).__embedFacadeBound = true;
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        '.embed-facade[data-embed-src]'
+      );
+      if (!btn || btn.dataset.loaded) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = btn.dataset.embedSrc!;
+      iframe.title = btn.dataset.embedTitle || 'Player';
+      iframe.loading = 'lazy';
+      iframe.style.width = '100%';
+      iframe.style.height = `${btn.dataset.embedHeight || 352}px`;
+      iframe.style.border = '0';
+      iframe.style.borderRadius = '12px';
+      iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+      iframe.setAttribute('allowfullscreen', '');
+      btn.dataset.loaded = '1';
+      btn.replaceWith(iframe);
+    });
+  }
+</script>
+
 <style>
-  .apple-embed {
+  .embed-facade {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     width: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    border: 0;
+    padding: 1.25rem 1.4rem;
+    text-align: left;
+    background: linear-gradient(180deg, var(--color-surface), var(--color-bg-elevated));
+    border: 1px solid var(--color-line);
     border-radius: 12px;
-    background: transparent;
+    cursor: pointer;
+    color: var(--color-ink);
+    align-content: start;
+    transition:
+      border-color var(--dur-base) var(--ease-standard),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .embed-facade.apple {
+    align-items: flex-start;
+  }
+  .embed-facade:hover {
+    border-color: var(--color-line-strong);
+    transform: translateY(-2px);
+  }
+  .embed-badge {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+  .embed-text {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .embed-text strong {
+    font-weight: 600;
+  }
+  .embed-text small {
+    color: var(--color-ink-muted);
+    font-size: var(--text-caption);
   }
 </style>
