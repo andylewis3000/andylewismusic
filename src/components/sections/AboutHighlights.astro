@@ -1,0 +1,65 @@
+---
+/**
+ * About highlights block — career stat grid (from about.md).
+ */
+import Section from '@components/layout/Section.astro';
+import { getAbout } from '@lib/content';
+import type { BlockProps } from '@lib/blocks';
+
+const { heading, tone = 'dark', backgroundImage, backgroundAlt, parallax = false } = Astro.props as BlockProps;
+const about = await getAbout();
+const highlights = about?.data.highlights ?? [];
+---
+
+{
+  highlights.length > 0 && (
+    <Section
+      tone={tone}
+      backgroundImage={backgroundImage}
+      backgroundAlt={backgroundAlt}
+      parallax={parallax}
+      padding="tight"
+    >
+      {heading ? <h2 class="hl-heading">{heading}</h2> : <h2 class="sr-only">Career highlights</h2>}
+      <dl class="highlight-grid">
+        {highlights.map((h) => (
+          <div class="highlight">
+            <dt>{h.value}</dt>
+            <dd>{h.label}</dd>
+          </div>
+        ))}
+      </dl>
+    </Section>
+  )
+}
+
+<style>
+  .hl-heading {
+    font-size: var(--text-h3);
+    margin-bottom: 1.75rem;
+  }
+  .highlight-grid {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1rem;
+  }
+  @media (min-width: 720px) {
+    .highlight-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .highlight dt {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(2rem, 1.4rem + 2.5vw, 3.25rem);
+    letter-spacing: -0.03em;
+    color: var(--color-accent-ink);
+    line-height: 1;
+  }
+  .highlight dd {
+    margin: 0.5rem 0 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+</style>

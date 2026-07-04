@@ -54,6 +54,11 @@ export const SECTION_TYPES = [
   'instagram',
   'gear',
   'contact-form',
+  'about-bio',
+  'about-highlights',
+  'about-experience',
+  'about-influences',
+  'about-equipment',
   'rich-text',
   'cta',
 ] as const;

@@ -1,0 +1,70 @@
+---
+/**
+ * About influences block — a chip list of influences (from about.md).
+ */
+import Section from '@components/layout/Section.astro';
+import { getAbout } from '@lib/content';
+import type { BlockProps } from '@lib/blocks';
+
+const {
+  heading = 'Influences',
+  tone = 'light',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props as BlockProps;
+const about = await getAbout();
+const influences = about?.data.influences ?? [];
+---
+
+{
+  influences.length > 0 && (
+    <Section
+      tone={tone}
+      backgroundImage={backgroundImage}
+      backgroundAlt={backgroundAlt}
+      parallax={parallax}
+      padding="tight"
+      innerClass="two-col"
+    >
+      <h2 class="col-title">{heading}</h2>
+      <ul class="chips">
+        {influences.map((name) => (
+          <li class="chip">{name}</li>
+        ))}
+      </ul>
+    </Section>
+  )
+}
+
+<style>
+  .two-col {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 820px) {
+    .two-col {
+      grid-template-columns: 14rem 1fr;
+      gap: 3rem;
+    }
+  }
+  .col-title {
+    font-size: var(--text-h3);
+  }
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-content: start;
+  }
+  .chip {
+    padding: 0.5em 1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-ink);
+    font-size: var(--text-small);
+  }
+</style>

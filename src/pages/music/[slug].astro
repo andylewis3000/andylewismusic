@@ -1,10 +1,12 @@
 ---
 /**
- * Music detail — a single release: artwork, metadata, streaming embeds,
- * tracklist, credits and liner notes. Static page per album.
+ * Music detail — a single release. The hero uses the album artwork as an
+ * immersive (blurred, scrimmed) background by default, with the sharp cover,
+ * title, streaming links, tracklist, embeds, credits and liner notes below.
  */
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Image from '@components/media/Image.astro';
 import Button from '@components/ui/Button.astro';
@@ -13,6 +15,7 @@ import SpotifyEmbed from '@components/embeds/SpotifyEmbed.astro';
 import AppleMusicEmbed from '@components/embeds/AppleMusicEmbed.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import { getAlbums } from '@lib/content';
+import { resolveImage } from '@lib/images';
 import { formatDate, year } from '@lib/format';
 import { musicAlbumSchema, breadcrumbSchema, resolveImageUrl } from '@lib/seo';
 import type { IconName } from '@components/ui/icons';
@@ -37,6 +40,10 @@ const linkDefs: { key: keyof typeof d.links; label: string; icon: IconName }[] =
 ];
 const links = linkDefs.filter((l) => d.links[l.key]);
 
+// Blurred artwork background for the hero (small — blur hides detail).
+const coverMeta = resolveImage(d.cover);
+const heroBg = coverMeta ? (await getImage({ src: coverMeta, width: 640, format: 'webp' })).src : undefined;
+
 const coverUrl = await resolveImageUrl(d.cover);
 const schemas = [
   musicAlbumSchema(album, coverUrl),
@@ -48,63 +55,46 @@ const schemas = [
 ];
 ---
 
-<BaseLayout
-  title={d.title}
-  description={d.description}
-  image={d.cover}
-  type="music.album"
-  schemas={schemas}
->
-  <article class="section-tight">
-    <div class="container-page release">
-      <div class="release-cover">
-        <Image
-          path={d.cover}
-          alt={d.coverAlt}
-          aspect="1/1"
-          sizes="(max-width: 900px) 90vw, 420px"
-          loading="eager"
-          fetchpriority="high"
-          placeholderLabel={d.title}
-        />
-      </div>
-
-      <div class="release-info">
-        <a class="back" href="/music/">
-          <Icon name="arrow-right" size={16} class="flip" /> All music
-        </a>
-        <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
-        <h1 class="release-title">{d.title}</h1>
-        <p class="release-artist">{d.artist}</p>
-        <p class="release-desc">{d.description}</p>
-
-        <dl class="release-facts">
-          <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
-          {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
+<BaseLayout title={d.title} description={d.description} image={d.cover} type="music.album" schemas={schemas}>
+  <header class="album-hero" data-tone="dark">
+    {heroBg && <div class="album-hero-bg" style={`background-image:url('${heroBg}')`} aria-hidden="true"></div>}
+    <div class="album-hero-scrim" aria-hidden="true"></div>
+    <div class="container-page album-hero-inner">
+      <a class="back" href="/music/">
+        <Icon name="arrow-right" size={16} class="flip" /> All music
+      </a>
+      <div class="album-lockup">
+        <div class="album-cover">
+          <Image
+            path={d.cover}
+            alt={d.coverAlt}
+            aspect="1/1"
+            sizes="(max-width: 640px) 55vw, 320px"
+            loading="eager"
+            fetchpriority="high"
+            placeholderLabel={d.title}
+          />
+        </div>
+        <div class="album-info">
+          <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
+          <h1 class="album-title">{d.title}</h1>
+          <p class="album-artist">{d.artist}</p>
+          <p class="album-desc">{d.description}</p>
           {
-            d.roles.length > 0 && (
-              <div>
-                <dt>Andy plays</dt>
-                <dd>{d.roles.join(', ')}</dd>
+            links.length > 0 && (
+              <div class="release-links">
+                {links.map((l) => (
+                  <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
+                    {l.label}
+                  </Button>
+                ))}
               </div>
             )
           }
-        </dl>
-
-        {
-          links.length > 0 && (
-            <div class="release-links">
-              {links.map((l) => (
-                <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
-                  {l.label}
-                </Button>
-              ))}
-            </div>
-          )
-        }
+        </div>
       </div>
     </div>
-  </article>
+  </header>
 
   {
     (d.links.spotify || d.links.appleMusic) && (
@@ -139,6 +129,13 @@ const schemas = [
       }
 
       <div class="detail-side">
+        <dl class="release-facts">
+          <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
+          {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
+          {d.roles.length > 0 && (
+            <div><dt>Andy plays</dt><dd>{d.roles.join(', ')}</dd></div>
+          )}
+        </dl>
         {
           hasBody && (
             <div class="liner prose">
@@ -170,83 +167,89 @@ const schemas = [
 </BaseLayout>
 
 <style>
-  .release {
-    display: grid;
-    gap: 2rem;
-    align-items: start;
+  .album-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3rem, 2rem + 6vw, 6rem);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-bg);
   }
-  @media (min-width: 900px) {
-    .release {
-      grid-template-columns: 0.85fr 1.15fr;
-      gap: 3.5rem;
-    }
+  .album-hero-bg {
+    position: absolute;
+    inset: -12%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(52px) brightness(0.5) saturate(1.1);
+    transform: scale(1.15);
+    z-index: 0;
   }
-  .release-cover :global(img),
-  .release-cover :global(.media-placeholder) {
-    width: 100%;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line);
-    box-shadow: var(--shadow-lg);
+  .album-hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0.5), rgba(10, 10, 11, 0.82));
+    z-index: 0;
   }
-  .release-info {
-    display: grid;
-    gap: 0.85rem;
-    align-content: start;
+  .album-hero-inner {
+    position: relative;
+    z-index: 1;
   }
   .back {
     display: inline-flex;
     align-items: center;
     gap: 0.35em;
+    margin-bottom: 2rem;
     color: var(--color-ink-muted);
     font-size: var(--text-small);
-    width: fit-content;
   }
   .back:hover {
-    color: var(--color-accent-ink);
+    color: var(--color-ink);
   }
   .flip {
     transform: rotate(180deg);
   }
-  .release-title {
-    font-size: var(--text-h1);
+  .album-lockup {
+    display: grid;
+    gap: 1.75rem 2.5rem;
+    align-items: end;
   }
-  .release-artist {
+  @media (min-width: 720px) {
+    .album-lockup {
+      grid-template-columns: minmax(0, 18rem) 1fr;
+    }
+  }
+  .album-cover {
+    width: min(60vw, 18rem);
+  }
+  .album-cover :global(img),
+  .album-cover :global(.media-placeholder) {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line-strong);
+    box-shadow: var(--shadow-lg);
+  }
+  .album-info {
+    display: grid;
+    gap: 0.7rem;
+    align-content: end;
+  }
+  .album-title {
+    font-size: var(--text-display);
+  }
+  .album-artist {
     margin: 0;
     color: var(--color-ink-muted);
   }
-  .release-desc {
-    margin: 0.25rem 0 0;
+  .album-desc {
+    margin: 0.15rem 0 0;
     font-size: var(--text-lead);
     color: var(--color-ink);
-    max-width: 48ch;
-  }
-  .release-facts {
-    display: grid;
-    gap: 0.75rem;
-    margin: 0.5rem 0 0;
-    padding: 1.1rem 0;
-    border-block: 1px solid var(--color-line);
-  }
-  .release-facts div {
-    display: grid;
-    grid-template-columns: 8rem 1fr;
-    gap: 1rem;
-  }
-  .release-facts dt {
-    color: var(--color-ink-faint);
-    font-size: var(--text-small);
-  }
-  .release-facts dd {
-    margin: 0;
-    color: var(--color-ink);
-    font-size: var(--text-small);
-    text-transform: capitalize;
+    max-width: 52ch;
   }
   .release-links {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
   }
 
   .player-grid {
@@ -308,6 +311,27 @@ const schemas = [
     display: grid;
     gap: 2.5rem;
     align-content: start;
+  }
+  .release-facts {
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .release-facts div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 1rem;
+  }
+  .release-facts dt {
+    color: var(--color-ink-faint);
+    font-size: var(--text-small);
+  }
+  .release-facts dd {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-small);
+    text-transform: capitalize;
   }
   .credits dl {
     margin: 0;

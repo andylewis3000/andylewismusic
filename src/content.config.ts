@@ -226,12 +226,22 @@ const about = defineCollection({
       .array(z.object({ label: z.string(), items: z.array(z.string()) }))
       .default([])
       .describe('Equipment highlight groups shown on the About page'),
-    // Hero + per-section styling, mirroring the other pages' options.
+    // Hero + composable sections, mirroring the other pages' options.
     hero: z.object({ kicker: z.string().optional(), ...sectionStyleShape }).default({}),
     sections: z
-      .array(z.object({ id: z.string(), ...sectionStyleShape }))
+      .array(
+        z.object({
+          id: z.string(),
+          enabled: z.boolean().default(true),
+          heading: z.string().optional(),
+          subheading: z.string().optional(),
+          limit: z.number().optional(),
+          body: z.string().optional(),
+          ...sectionStyleShape,
+        })
+      )
       .default([])
-      .describe('Background tone/image/parallax for each About section'),
+      .describe('Composable sections for the About page'),
     seo,
   }),
 });

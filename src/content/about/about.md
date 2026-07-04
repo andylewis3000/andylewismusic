@@ -53,24 +53,28 @@ equipment:
       - Neumann & Coles mics
       - Tape machine
 sections:
-  - id: bio
+  - id: about-bio
     background: light
     backgroundAlt: ''
     parallax: false
-  - id: highlights
+  - id: about-highlights
     background: dark
     backgroundAlt: ''
     parallax: false
-  - id: experience
+  - id: about-experience
     background: white
     backgroundAlt: ''
     parallax: false
-  - id: influences
+  - id: about-influences
     background: light
     backgroundAlt: ''
     parallax: false
-  - id: equipment
+  - id: about-equipment
     background: white
+    backgroundAlt: ''
+    parallax: false
+  - id: cta
+    background: grey
     backgroundAlt: ''
     parallax: false
 seo:
