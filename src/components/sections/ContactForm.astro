@@ -26,9 +26,10 @@ const turnstileKey = site.forms.turnstileSiteKey;
   backgroundImage={backgroundImage}
   backgroundAlt={backgroundAlt}
   parallax={parallax}
-  innerClass="contact-grid"
 >
-  <div class="contact-aside">
+  {/* Wrapper lives in this component so its scoped 2-column grid applies. */}
+  <div class="contact-grid">
+    <div class="contact-aside">
     <div class="contact-block">
       <h2 class="aside-h">Direct</h2>
       <ul class="contact-list">
@@ -99,6 +100,7 @@ const turnstileKey = site.forms.turnstileSiteKey;
 
     <p class="form-status" data-status role="status" aria-live="polite"></p>
   </form>
+  </div>
 </Section>
 
 <script>
