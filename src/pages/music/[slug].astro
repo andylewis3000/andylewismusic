@@ -63,35 +63,21 @@ const schemas = [
       <a class="back" href="/music/">
         <Icon name="arrow-right" size={16} class="flip" /> All music
       </a>
-      <div class="album-lockup">
-        <div class="album-cover">
-          <Image
-            path={d.cover}
-            alt={d.coverAlt}
-            aspect="1/1"
-            sizes="(max-width: 640px) 55vw, 320px"
-            loading="eager"
-            fetchpriority="high"
-            placeholderLabel={d.title}
-          />
-        </div>
-        <div class="album-info">
-          <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
-          <h1 class="album-title">{d.title}</h1>
-          <p class="album-artist">{d.artist}</p>
-          <p class="album-desc">{d.description}</p>
-          {
-            links.length > 0 && (
-              <div class="release-links">
-                {links.map((l) => (
-                  <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
-                    {l.label}
-                  </Button>
-                ))}
-              </div>
-            )
-          }
-        </div>
+      <div class="album-info">
+        <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
+        <h1 class="album-title">{d.title}</h1>
+        <p class="album-artist">{d.artist}</p>
+        {
+          links.length > 0 && (
+            <div class="release-links">
+              {links.map((l) => (
+                <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
+                  {l.label}
+                </Button>
+              ))}
+            </div>
+          )
+        }
       </div>
     </div>
   </header>
@@ -111,24 +97,37 @@ const schemas = [
 
   <section class="section-tight">
     <div class="container-page detail-cols">
-      {
-        d.tracklist.length > 0 && (
-          <div class="tracklist-wrap">
-            <h2 class="detail-h">Tracklist</h2>
-            <ol class="tracklist">
-              {d.tracklist.map((track, i) => (
-                <li>
-                  <span class="track-no">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="track-title">{track.title}</span>
-                  {track.duration && <span class="track-dur">{track.duration}</span>}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )
-      }
+      <div class="tracklist-wrap">
+        <div class="album-cover">
+          <Image
+            path={d.cover}
+            alt={d.coverAlt}
+            aspect="1/1"
+            sizes="(max-width: 900px) 90vw, 420px"
+            loading="eager"
+            placeholderLabel={d.title}
+          />
+        </div>
+        {
+          d.tracklist.length > 0 && (
+            <>
+              <h2 class="detail-h">Tracklist</h2>
+              <ol class="tracklist">
+                {d.tracklist.map((track, i) => (
+                  <li>
+                    <span class="track-no">{String(i + 1).padStart(2, '0')}</span>
+                    <span class="track-title">{track.title}</span>
+                    {track.duration && <span class="track-dur">{track.duration}</span>}
+                  </li>
+                ))}
+              </ol>
+            </>
+          )
+        }
+      </div>
 
       <div class="detail-side">
+        <p class="album-desc">{d.description}</p>
         <dl class="release-facts">
           <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
           {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
@@ -179,8 +178,8 @@ const schemas = [
     inset: -12%;
     background-size: cover;
     background-position: center;
-    filter: blur(52px) brightness(0.5) saturate(1.1);
-    transform: scale(1.15);
+    filter: blur(34px) brightness(0.5) saturate(1.1);
+    transform: scale(1.12);
     z-index: 0;
   }
   .album-hero-scrim {
@@ -207,30 +206,23 @@ const schemas = [
   .flip {
     transform: rotate(180deg);
   }
-  .album-lockup {
+  .album-info {
     display: grid;
-    gap: 1.75rem 2.5rem;
-    align-items: end;
+    gap: 0.7rem;
+    max-width: 60ch;
   }
-  @media (min-width: 720px) {
-    .album-lockup {
-      grid-template-columns: minmax(0, 18rem) 1fr;
-    }
-  }
+  /* Sharp cover, now placed above the tracklist. */
   .album-cover {
-    width: min(60vw, 18rem);
+    width: 100%;
+    max-width: 22rem;
+    margin-bottom: 2.5rem;
   }
   .album-cover :global(img),
   .album-cover :global(.media-placeholder) {
     width: 100%;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--color-line-strong);
-    box-shadow: var(--shadow-lg);
-  }
-  .album-info {
-    display: grid;
-    gap: 0.7rem;
-    align-content: end;
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-md);
   }
   .album-title {
     font-size: var(--text-display);

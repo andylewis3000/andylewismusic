@@ -5,7 +5,7 @@
 }
 
 .menu-toggle {
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.75rem;
@@ -96,10 +96,11 @@
   margin-top: auto;
 }
 
-/* Only show the mobile drawer + toggle below the desktop breakpoint. */
-@media (max-width: 899px) {
-  .menu-toggle {
-    display: inline-flex;
+/* The mobile drawer only exists below the desktop breakpoint — hiding the
+   whole unit keeps the off-screen panel out of the DOM box on desktop. */
+@media (min-width: 900px) {
+  .mobile-nav {
+    display: none;
   }
 }
 

@@ -235,6 +235,9 @@
     font-family: var(--font-sans);
     font-size: var(--text-base);
     line-height: 1.65;
+    /* Clip the off-screen mobile drawer so it can't be reached by scrolling
+       horizontally. `clip` (not `hidden`) keeps the sticky header working. */
+    overflow-x: clip;
     font-synthesis-weight: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
