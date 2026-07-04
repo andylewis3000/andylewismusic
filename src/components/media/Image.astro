@@ -44,7 +44,9 @@ const {
 } = Astro.props;
 
 const img = resolveImage(path);
-const style = aspect ? `aspect-ratio:${aspect};` : undefined;
+// When we force an aspect ratio, also crop with object-fit so non-matching
+// source images don't distort (which fails Lighthouse's image-aspect-ratio).
+const style = aspect ? `aspect-ratio:${aspect};object-fit:cover;width:100%;` : undefined;
 ---
 
 {

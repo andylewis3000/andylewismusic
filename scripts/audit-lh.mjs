@@ -6,10 +6,24 @@
  */
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
+import { readdirSync, existsSync } from 'node:fs';
 
 const base = process.argv[2] || 'http://localhost:4321';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const routes = ['/', '/about/', '/music/nightshift/', '/videos/', '/events/', '/blog/', '/blog/nightshift-out-now/', '/contact/'];
+
+const album = existsSync('dist/music')
+  ? readdirSync('dist/music', { withFileTypes: true }).find((e) => e.isDirectory())?.name
+  : undefined;
+const post = existsSync('dist/blog')
+  ? readdirSync('dist/blog', { withFileTypes: true }).find(
+      (e) => e.isDirectory() && !['category', 'tag'].includes(e.name)
+    )?.name
+  : undefined;
+
+const routes = [
+  '/', '/about/', album && `/music/${album}/`, '/videos/', '/events/',
+  '/blog/', post && `/blog/${post}/`, '/gear/', '/contact/',
+].filter(Boolean);
 
 const chrome = await chromeLauncher.launch({
   chromePath: CHROME,

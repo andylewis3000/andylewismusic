@@ -30,7 +30,7 @@ const d = item.data;
     {
       d.link && (
         <a class="gear-link" href={d.link} target="_blank" rel="noopener noreferrer">
-          More <Icon name="arrow-up-right" size={16} />
+          More<span class="sr-only"> about {d.name}</span> <Icon name="arrow-up-right" size={16} />
         </a>
       )
     }

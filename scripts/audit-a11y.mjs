@@ -5,7 +5,7 @@
  * Usage: node scripts/audit-a11y.mjs [baseUrl]
  */
 import puppeteer from 'puppeteer-core';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -15,7 +15,18 @@ const axeSource = readFileSync(axePath, 'utf8');
 const base = process.argv[2] || 'http://localhost:4321';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const routes = ['/', '/about/', '/music/', '/music/nightshift/', '/videos/', '/events/', '/blog/', '/blog/nightshift-out-now/', '/gear/', '/contact/'];
+// Derive one real album + post detail URL from the build (content-agnostic).
+const firstDir = (dir) =>
+  existsSync(dir) ? readdirSync(dir, { withFileTypes: true }).find((e) => e.isDirectory())?.name : undefined;
+const album = firstDir('dist/music');
+const post = readdirSync('dist/blog', { withFileTypes: true }).find(
+  (e) => e.isDirectory() && !['category', 'tag'].includes(e.name)
+)?.name;
+
+const routes = [
+  '/', '/about/', '/music/', album && `/music/${album}/`, '/videos/', '/events/',
+  '/blog/', post && `/blog/${post}/`, '/gear/', '/contact/',
+].filter(Boolean);
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new', args: ['--no-sandbox'] });
 let totalViolations = 0;
