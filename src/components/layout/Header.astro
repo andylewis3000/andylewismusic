@@ -6,7 +6,7 @@
  */
 import { navigation, site } from '@lib/settings';
 import Button from '@components/ui/Button.astro';
-import MobileMenu from './MobileMenu.tsx';
+import MobileMenu from './MobileMenu.astro';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
@@ -40,12 +40,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
           </Button>
         )
       }
-      <MobileMenu
-        client:idle
-        links={navigation.primary}
-        cta={navigation.cta ?? null}
-        currentPath={path}
-      />
+      <MobileMenu links={navigation.primary} cta={navigation.cta ?? null} currentPath={path} />
     </div>
   </div>
 </header>

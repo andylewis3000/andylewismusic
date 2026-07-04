@@ -1,0 +1,143 @@
+---
+/**
+ * MobileMenu — accessible slide-in nav drawer, vanilla (no framework JS).
+ *
+ * Accessibility:
+ *  - Trigger exposes aria-expanded / aria-controls.
+ *  - Closed panel is `inert` (removed from tab order + a11y tree) yet stays in
+ *    the DOM so it can animate.
+ *  - Open traps focus (Tab/Shift+Tab cycle); Escape closes and restores focus.
+ *  - Backdrop click closes; body scroll locks while open.
+ *  - Fresh markup after each view transition starts closed automatically.
+ */
+import './MobileMenu.css';
+import type { Cta } from '@lib/settings';
+
+interface Props {
+  links: { label: string; href: string }[];
+  cta?: Cta | null;
+  currentPath: string;
+}
+const { links, cta, currentPath } = Astro.props as Props;
+const isActive = (href: string) =>
+  href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<div class="mobile-nav" data-mobile-nav>
+  <button
+    type="button"
+    class="menu-toggle"
+    data-menu-toggle
+    aria-expanded="false"
+    aria-controls="mobile-menu-panel"
+    aria-label="Open menu"
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.75"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <path class="icon-open" d="M4 7h16M4 12h16M4 17h16"></path>
+      <path class="icon-close" d="M6 6l12 12M18 6L6 18"></path>
+    </svg>
+  </button>
+
+  <div class="menu-backdrop" data-menu-backdrop aria-hidden="true"></div>
+
+  <div
+    id="mobile-menu-panel"
+    class="menu-panel"
+    data-menu-panel
+    role="dialog"
+    aria-modal="true"
+    aria-label="Site navigation"
+    inert
+  >
+    <nav aria-label="Mobile">
+      <ul>
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    {
+      cta && (
+        <a class="btn btn-primary menu-cta" href={cta.href}>
+          {cta.label}
+        </a>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  function setupMobileMenu() {
+    const root = document.querySelector<HTMLElement>('[data-mobile-nav]');
+    if (!root || root.dataset.bound) return;
+    root.dataset.bound = '1';
+
+    const toggle = root.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+    const panel = root.querySelector<HTMLElement>('[data-menu-panel]')!;
+    const backdrop = root.querySelector<HTMLElement>('[data-menu-backdrop]')!;
+    const focusables = () => Array.from(panel.querySelectorAll<HTMLElement>('a, button'));
+    const isOpen = () => panel.classList.contains('is-open');
+
+    function open() {
+      panel.classList.add('is-open');
+      backdrop.classList.add('is-open');
+      panel.removeAttribute('inert');
+      document.body.style.overflow = 'hidden';
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close menu');
+      focusables()[0]?.focus();
+    }
+    function close() {
+      panel.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      panel.setAttribute('inert', '');
+      document.body.style.overflow = '';
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open menu');
+    }
+
+    toggle.addEventListener('click', () => (isOpen() ? close() : (open(), true)));
+    backdrop.addEventListener('click', close);
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        close();
+        toggle.focus();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const f = focusables();
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
+  setupMobileMenu();
+  // Re-bind against fresh markup after each view transition (guard once).
+  if (!(window as any).__menuNavBound) {
+    (window as any).__menuNavBound = true;
+    document.addEventListener('astro:page-load', setupMobileMenu);
+  }
+</script>

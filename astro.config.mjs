@@ -2,7 +2,6 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import preact from '@astrojs/preact';
 import tailwindcss from '@tailwindcss/vite';
 
 // The canonical production origin. Everything SEO-related derives from this.
@@ -25,7 +24,6 @@ export default defineConfig({
   },
   integrations: [
     mdx(),
-    preact({ compat: true }),
     sitemap({
       // News/blog changes most often; tune priorities for crawlers.
       changefreq: 'weekly',

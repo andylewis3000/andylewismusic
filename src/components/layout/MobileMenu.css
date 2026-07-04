@@ -21,6 +21,17 @@
   background: rgba(244, 242, 238, 0.05);
 }
 
+/* Swap hamburger ↔ close glyph based on the trigger's state. */
+.icon-close {
+  display: none;
+}
+[data-menu-toggle][aria-expanded='true'] .icon-open {
+  display: none;
+}
+[data-menu-toggle][aria-expanded='true'] .icon-close {
+  display: inline;
+}
+
 .menu-backdrop {
   position: fixed;
   inset: 0;
@@ -29,10 +40,12 @@
   -webkit-backdrop-filter: blur(3px);
   backdrop-filter: blur(3px);
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--dur-base) var(--ease-standard);
 }
 .menu-backdrop.is-open {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .menu-panel {

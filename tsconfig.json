@@ -8,8 +8,6 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
