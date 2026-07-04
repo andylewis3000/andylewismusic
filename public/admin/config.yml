@@ -218,20 +218,88 @@ collections:
       - { label: Draft, name: draft, widget: boolean, default: false }
 
   # ── SITE SETTINGS (singletons) ─────────────────────────────────────────
-  - name: settings
-    label: 'Site Settings'
+  # ── PAGES ──────────────────────────────────────────────────────────────
+  #  Every page's hero and sections, each with background tone / image /
+  #  parallax options. Home & About live here too.
+  - name: pages
+    label: 'Pages'
     editor: { preview: false }
     files:
-      # ---- About page ----
+      # ---- Homepage ----
+      - name: home
+        label: 'Home'
+        file: 'src/content/settings/home.json'
+        fields:
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Kicker, name: kicker, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Subheading, name: subheading, widget: text }
+              - &f_bg { label: 'Background colour', name: background, widget: select, options: [dark, grey, light, white, accent], default: dark }
+              - &f_bgimg { label: 'Background image', name: backgroundImage, widget: image, required: false }
+              - &f_bgalt { label: 'Background image alt text', name: backgroundAlt, widget: string, required: false }
+              - &f_para { label: 'Parallax background', name: parallax, widget: boolean, default: false, hint: 'Background image drifts on scroll (desktop only)' }
+              - { label: 'Primary button', name: primaryCta, widget: object, fields: &cta_fields [
+                    { label: Label, name: label, widget: string },
+                    { label: Link, name: href, widget: string },
+                    { label: Style, name: style, widget: select, options: [primary, secondary, ghost], default: primary },
+                  ] }
+              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
+          - label: Intro
+            name: intro
+            widget: object
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body, name: body, widget: text }
+          - label: 'Homepage sections'
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [featured-music, latest-video, events, news, instagram, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - { label: Subheading, name: subheading, widget: string, required: false }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+          - label: Instagram
+            name: instagram
+            widget: object
+            fields:
+              - { label: Handle, name: handle, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string, default: 'On the road' }
+          - label: 'Call to action'
+            name: cta
+            widget: object
+            fields:
+              - { label: Heading, name: heading, widget: string }
+              - { label: Body, name: body, widget: text }
+              - { label: 'Primary button', name: primaryCta, widget: object, fields: *cta_fields }
+              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
+
+      # ---- About ----
       - name: about
-        label: 'About page'
+        label: 'About'
         file: 'src/content/about/about.md'
         format: frontmatter
         fields:
           - { label: Title, name: title, widget: string, default: About }
-          - { label: Headline, name: headline, widget: string }
+          - { label: 'Headline (hero title)', name: headline, widget: string }
           - { label: Portrait, name: portrait, widget: image }
           - { label: 'Portrait alt text', name: portraitAlt, widget: string }
+          - label: 'Hero background'
+            name: hero
+            widget: object
+            fields:
+              - { label: Kicker, name: kicker, widget: string, required: false, default: About }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
           - label: Highlights
             name: highlights
             widget: list
@@ -252,8 +320,145 @@ collections:
             fields:
               - { label: Group, name: label, widget: string }
               - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
+          - label: 'Section backgrounds'
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [bio, highlights, experience, influences, equipment] }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
           - { label: Biography, name: body, widget: markdown }
 
+      # ---- Music ----
+      - name: music
+        label: 'Music'
+        file: 'src/content/pages/music.json'
+        fields:
+          - &page_hero
+            label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Kicker, name: kicker, widget: string, required: false }
+              - { label: Heading, name: heading, widget: string }
+              - { label: Intro, name: intro, widget: text, required: false }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [releases, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+      # ---- Videos ----
+      - name: videos-page
+        label: 'Videos'
+        file: 'src/content/pages/videos.json'
+        fields:
+          - *page_hero
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [featured, archive, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+      # ---- Events ----
+      - name: events-page
+        label: 'Events'
+        file: 'src/content/pages/events.json'
+        fields:
+          - *page_hero
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [upcoming, past, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Heading, name: heading, widget: string, required: false }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+      # ---- News / Blog ----
+      - name: blog-page
+        label: 'News'
+        file: 'src/content/pages/blog.json'
+        fields:
+          - *page_hero
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [articles] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+      # ---- Gear ----
+      - name: gear-page
+        label: 'Gear'
+        file: 'src/content/pages/gear.json'
+        fields:
+          - *page_hero
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [gear, cta] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+      # ---- Contact ----
+      - name: contact-page
+        label: 'Contact'
+        file: 'src/content/pages/contact.json'
+        fields:
+          - *page_hero
+          - label: Sections
+            name: sections
+            widget: list
+            summary: '{{fields.id}} · {{fields.background}}'
+            fields:
+              - { label: Section, name: id, widget: select, options: [form] }
+              - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - *f_bg
+              - *f_bgimg
+              - *f_bgalt
+              - *f_para
+
+  # ── SITE SETTINGS ──────────────────────────────────────────────────────
+  - name: settings
+    label: 'Site Settings'
+    editor: { preview: false }
+    files:
       # ---- Global settings ----
       - name: site
         label: 'Global (site-wide)'
@@ -290,56 +495,6 @@ collections:
             fields:
               - { label: 'Form endpoint', name: endpoint, widget: string, default: '/form.php' }
               - { label: 'Turnstile site key', name: turnstileSiteKey, widget: string, required: false }
-
-      # ---- Homepage ----
-      - name: home
-        label: 'Homepage'
-        file: 'src/content/settings/home.json'
-        fields:
-          - label: Hero
-            name: hero
-            widget: object
-            fields:
-              - { label: Kicker, name: kicker, widget: string, required: false }
-              - { label: Heading, name: heading, widget: string }
-              - { label: Subheading, name: subheading, widget: text }
-              - { label: 'Background image', name: backgroundImage, widget: image }
-              - { label: 'Background alt text', name: backgroundAlt, widget: string }
-              - { label: 'Primary button', name: primaryCta, widget: object, fields: &cta_fields [
-                    { label: Label, name: label, widget: string },
-                    { label: Link, name: href, widget: string },
-                    { label: Style, name: style, widget: select, options: [primary, secondary, ghost], default: primary },
-                  ] }
-              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
-          - label: Intro
-            name: intro
-            widget: object
-            fields:
-              - { label: Heading, name: heading, widget: string }
-              - { label: Body, name: body, widget: text }
-          - label: 'Homepage sections'
-            name: sections
-            widget: list
-            summary: '{{fields.id}} ({{fields.enabled}})'
-            fields:
-              - { label: Section, name: id, widget: select, options: [featured-music, latest-video, events, news, instagram, cta] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - { label: Heading, name: heading, widget: string, required: false }
-              - { label: Subheading, name: subheading, widget: string, required: false }
-          - label: Instagram
-            name: instagram
-            widget: object
-            fields:
-              - { label: Handle, name: handle, widget: string, required: false }
-              - { label: Heading, name: heading, widget: string, default: 'On the road' }
-          - label: 'Call to action'
-            name: cta
-            widget: object
-            fields:
-              - { label: Heading, name: heading, widget: string }
-              - { label: Body, name: body, widget: text }
-              - { label: 'Primary button', name: primaryCta, widget: object, fields: *cta_fields }
-              - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
 
       # ---- Navigation ----
       - name: navigation
