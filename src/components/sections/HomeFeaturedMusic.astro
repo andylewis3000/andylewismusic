@@ -38,9 +38,12 @@ const albums = take(featured, limit, 3);
 }
 
 <style>
+  /* auto-fit collapses empty tracks and stretches the actual cards to fill the
+     container, so N cards produce N equal, full-width columns (down to the min
+     width, then they wrap). No per-count logic needed. */
   .grid-cards {
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   }
 </style>
