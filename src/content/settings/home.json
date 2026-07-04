@@ -39,6 +39,8 @@
       "enabled": true,
       "heading": "Latest Video",
       "subheading": "",
+      "limit": 2,
+      "body": "",
       "background": "dark",
       "backgroundAlt": "",
       "parallax": false

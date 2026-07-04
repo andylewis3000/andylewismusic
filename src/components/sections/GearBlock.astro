@@ -26,21 +26,23 @@ const groups = await getGearByCategory();
       backgroundImage={backgroundImage}
       backgroundAlt={backgroundAlt}
       parallax={parallax}
-      innerClass="gear-sections"
     >
       {(heading || subheading) && <SectionHeader kicker="Setup" heading={heading} subheading={subheading} />}
-      {groups.map((group) => (
-        <section class="gear-group" aria-labelledby={`gear-${group.id}`}>
-          <h2 id={`gear-${group.id}`} class="gear-heading">
-            {group.label}
-          </h2>
-          <div class="grid-gear">
-            {group.items.map((item) => (
-              <GearCard item={item} />
-            ))}
-          </div>
-        </section>
-      ))}
+      {/* Wrapper lives in this component so its scoped grid gap actually applies. */}
+      <div class="gear-sections">
+        {groups.map((group) => (
+          <section class="gear-group" aria-labelledby={`gear-${group.id}`}>
+            <h2 id={`gear-${group.id}`} class="gear-heading">
+              {group.label}
+            </h2>
+            <div class="grid-gear">
+              {group.items.map((item) => (
+                <GearCard item={item} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </Section>
   )
 }

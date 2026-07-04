@@ -40,7 +40,7 @@ links:
   bandcamp: ''
   youtube: ''
   soundcloud: ''
-featured: true
+featured: false
 order: 3
 draft: false
 ---
