@@ -264,13 +264,14 @@ const about = defineCollection({
   }),
 });
 
-/* ── CUSTOM PAGES — editor-created pages composed from the section library ── */
-const sitePages = defineCollection({
-  loader: glob({ pattern: '**/*.json', base: './src/content/site-pages' }),
+/* ── PAGES — every page (except home) as a create/draft/delete-able entry ── */
+const pages = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/pages' }),
   schema: z.object({
     title: z.string(),
     draft: z.boolean().default(false),
     hero: z.object({
+      hidden: z.boolean().default(false),
       kicker: optString,
       heading: z.string(),
       intro: optString,
@@ -281,4 +282,4 @@ const sitePages = defineCollection({
   }),
 });
 
-export const collections = { albums, videos, events, posts, gear, about, sitePages };
+export const collections = { albums, videos, events, posts, gear, about, pages };

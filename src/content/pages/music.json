@@ -6,10 +6,24 @@
     "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false
+    "parallax": false,
+    "hidden": false
   },
   "sections": [
-    { "id": "discography", "enabled": true, "heading": "", "background": "light", "parallax": false },
-    { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
-  ]
+    {
+      "id": "discography",
+      "enabled": true,
+      "heading": "",
+      "background": "light",
+      "parallax": false
+    },
+    {
+      "id": "cta",
+      "enabled": true,
+      "background": "grey",
+      "parallax": false
+    }
+  ],
+  "title": "Music",
+  "draft": false
 }

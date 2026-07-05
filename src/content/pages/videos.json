@@ -6,11 +6,31 @@
     "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false
+    "parallax": false,
+    "hidden": false
   },
   "sections": [
-    { "id": "latest-video", "enabled": true, "heading": "Featured", "background": "dark", "parallax": false },
-    { "id": "video-archive", "enabled": true, "heading": "All videos", "background": "white", "parallax": false },
-    { "id": "cta", "enabled": true, "background": "grey", "parallax": false }
-  ]
+    {
+      "id": "latest-video",
+      "enabled": true,
+      "heading": "Featured",
+      "background": "dark",
+      "parallax": false
+    },
+    {
+      "id": "video-archive",
+      "enabled": true,
+      "heading": "All videos",
+      "background": "white",
+      "parallax": false
+    },
+    {
+      "id": "cta",
+      "enabled": true,
+      "background": "grey",
+      "parallax": false
+    }
+  ],
+  "title": "Videos",
+  "draft": false
 }

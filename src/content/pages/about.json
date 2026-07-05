@@ -1,0 +1,55 @@
+{
+  "title": "About",
+  "draft": false,
+  "hero": {
+    "hidden": false,
+    "kicker": "About",
+    "heading": "I've spent twenty years chasing the feel of a great take.",
+    "intro": "",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    {
+      "id": "about-bio",
+      "background": "light",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
+      "id": "about-highlights",
+      "background": "dark",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
+      "id": "about-experience",
+      "background": "white",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
+      "id": "about-influences",
+      "background": "light",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
+      "id": "about-equipment",
+      "background": "white",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
+      "id": "cta",
+      "background": "grey",
+      "backgroundAlt": "",
+      "parallax": false
+    }
+  ],
+  "seo": {
+    "description": "Andy Lewis is a drummer, guitarist and composer with 20+ years of stage and studio experience."
+  }
+}

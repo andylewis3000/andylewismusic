@@ -4,6 +4,7 @@
  * Hero + section styling from the CMS (Pages → News). Page 1 at /blog/.
  */
 import type { GetStaticPaths } from 'astro';
+import { getEntry } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Section from '@components/layout/Section.astro';
 import PageHero from '@components/sections/PageHero.astro';
@@ -11,9 +12,12 @@ import BlogCard from '@components/cards/BlogCard.astro';
 import Pagination from '@components/ui/Pagination.astro';
 import Search from '@components/ui/Search.astro';
 import { getPosts, getPostTaxonomies } from '@lib/content';
-import { pages, findSection } from '@lib/pages';
+import { findSection } from '@lib/pages';
 
 export const getStaticPaths = (async ({ paginate }) => {
+  // Don't build the blog if its page entry is drafted.
+  const entry = await getEntry('pages', 'blog');
+  if (import.meta.env.PROD && entry?.data.draft) return [];
   const posts = await getPosts();
   return paginate(posts, { pageSize: 6 });
 }) satisfies GetStaticPaths;
@@ -21,7 +25,8 @@ export const getStaticPaths = (async ({ paginate }) => {
 const { page } = Astro.props;
 const { categories } = await getPostTaxonomies();
 
-const p = pages.blog;
+const blog = await getEntry('pages', 'blog');
+const p = blog!.data;
 const articles = findSection(p.sections, 'articles');
 ---
 

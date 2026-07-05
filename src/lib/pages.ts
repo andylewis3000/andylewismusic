@@ -14,12 +14,6 @@
 import { z, getCollection } from 'astro:content';
 
 import homeJson from '../content/settings/home.json';
-import musicJson from '../content/pages/music.json';
-import videosJson from '../content/pages/videos.json';
-import eventsJson from '../content/pages/events.json';
-import blogJson from '../content/pages/blog.json';
-import gearJson from '../content/pages/gear.json';
-import contactJson from '../content/pages/contact.json';
 
 export const TONES = ['dark', 'grey', 'light', 'white', 'accent'] as const;
 const toneSchema = z.enum(TONES);
@@ -83,20 +77,6 @@ const pageSectionSchema = z.object({
   ...styleShape,
 });
 
-export const pageHeroSchema = z.object({
-  kicker: z.string().optional(),
-  heading: z.string(),
-  intro: z.string().optional(),
-  /** Hidden pages are removed from all nav menus. */
-  hidden: z.boolean().default(false),
-  ...styleShape,
-});
-
-const genericPageSchema = z.object({
-  hero: pageHeroSchema,
-  sections: z.array(pageSectionSchema).default([]),
-});
-
 const homeSchema = z.object({
   hero: z.object({
     kicker: z.string().optional(),
@@ -133,42 +113,20 @@ function parse<T extends z.ZodTypeAny>(schema: T, data: unknown, name: string): 
 
 export const home = parse(homeSchema, homeJson, 'home');
 
-export const pages = {
-  music: parse(genericPageSchema, musicJson, 'music'),
-  videos: parse(genericPageSchema, videosJson, 'videos'),
-  events: parse(genericPageSchema, eventsJson, 'events'),
-  blog: parse(genericPageSchema, blogJson, 'blog'),
-  gear: parse(genericPageSchema, gearJson, 'gear'),
-  contact: parse(genericPageSchema, contactJson, 'contact'),
-};
-
 export type Tone = z.infer<typeof toneSchema>;
 export type PageSection = z.infer<typeof pageSectionSchema>;
-export type PageHero = z.infer<typeof pageHeroSchema>;
 export type Home = z.infer<typeof homeSchema>;
 
 /* ── Hidden pages → nav filtering ───────────────────────────────────────── */
 const norm = (h: string) => (h.startsWith('/') && !h.endsWith('/') ? `${h}/` : h);
 
-const GENERIC_HREF: Record<string, string> = {
-  music: '/music/',
-  videos: '/videos/',
-  events: '/events/',
-  blog: '/blog/',
-  gear: '/gear/',
-  contact: '/contact/',
-};
-
-/** Hrefs of every page marked hidden (incl. drafted custom pages). */
+/** Hrefs of every page that is hidden or drafted (removed from nav/sitemap). */
 export async function getHiddenHrefs(): Promise<Set<string>> {
   const hidden = new Set<string>();
-  for (const [key, page] of Object.entries(pages)) {
-    if (page.hero.hidden && GENERIC_HREF[key]) hidden.add(GENERIC_HREF[key]);
+  const all = await getCollection('pages');
+  for (const p of all) {
+    if (p.data.hero.hidden || p.data.draft) hidden.add(norm(`/${p.id}/`));
   }
-  const about = await getCollection('about');
-  if (about[0]?.data.hero.hidden) hidden.add('/about/');
-  const custom = await getCollection('sitePages');
-  for (const p of custom) if (p.data.draft) hidden.add(norm(`/${p.id}/`));
   return hidden;
 }
 

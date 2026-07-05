@@ -217,17 +217,13 @@ collections:
       - { label: 'Product link', name: link, widget: string, required: false }
       - { label: Draft, name: draft, widget: boolean, default: false }
 
-  # ── SITE SETTINGS (singletons) ─────────────────────────────────────────
-  # ── PAGES ──────────────────────────────────────────────────────────────
-  #  Every page's hero and sections, each with background tone / image /
-  #  parallax options. Home & About live here too.
-  - name: pages
-    label: 'Pages'
+  # ── HOME ───────────────────────────────────────────────────────────────
+  - name: home
+    label: 'Home'
     editor: { preview: false }
     files:
-      # ---- Homepage ----
       - name: home
-        label: 'Home'
+        label: 'Homepage'
         file: 'src/content/settings/home.json'
         fields:
           - label: Hero
@@ -240,7 +236,7 @@ collections:
               - &f_bg { label: 'Background colour', name: background, widget: select, options: [dark, grey, light, white, accent], default: dark }
               - &f_bgimg { label: 'Background image', name: backgroundImage, widget: image, required: false }
               - &f_bgalt { label: 'Background image alt text', name: backgroundAlt, widget: string, required: false }
-              - &f_para { label: 'Parallax background', name: parallax, widget: boolean, default: false, hint: 'Background image drifts on scroll (desktop only)' }
+              - &f_para { label: 'Parallax background', name: parallax, widget: boolean, default: false }
               - { label: 'Primary button', name: primaryCta, widget: object, fields: &cta_fields [
                     { label: Label, name: label, widget: string },
                     { label: Link, name: href, widget: string },
@@ -257,15 +253,13 @@ collections:
             name: sections
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
-            # Shared section library — any of these blocks can be added to any
-            # page. Reused via *section_fields on every composable page.
             fields: &section_fields
               - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
               - { label: Enabled, name: enabled, widget: boolean, default: true }
               - { label: Heading, name: heading, widget: string, required: false }
               - { label: Subheading, name: subheading, widget: string, required: false }
-              - { label: 'Item limit (0 = all)', name: limit, widget: number, required: false, value_type: int, hint: 'For list blocks (music, news, events…)' }
-              - { label: 'Rich text body', name: body, widget: markdown, required: false, hint: 'Only used by the “Rich text” section type' }
+              - { label: 'Item limit (0 = all)', name: limit, widget: number, required: false, value_type: int }
+              - { label: 'Rich text body', name: body, widget: markdown, required: false }
               - *f_bg
               - *f_bgimg
               - *f_bgalt
@@ -276,7 +270,7 @@ collections:
             fields:
               - { label: Handle, name: handle, widget: string, required: false }
               - { label: Heading, name: heading, widget: string, default: 'On the road' }
-              - { label: 'Reels feed URL (Behold.so)', name: feedUrl, widget: string, required: false, hint: 'Paste your Behold JSON feed URL to show live reels; blank shows a placeholder' }
+              - { label: 'Reels feed URL (Behold.so)', name: feedUrl, widget: string, required: false }
           - label: 'Call to action'
             name: cta
             widget: object
@@ -286,162 +280,26 @@ collections:
               - { label: 'Primary button', name: primaryCta, widget: object, fields: *cta_fields }
               - { label: 'Secondary button', name: secondaryCta, widget: object, required: false, fields: *cta_fields }
 
-      # ---- About ----
-      - name: about
-        label: 'About'
-        file: 'src/content/about/about.md'
-        format: frontmatter
-        fields:
-          - { label: Title, name: title, widget: string, default: About }
-          - { label: 'Headline (hero title)', name: headline, widget: string }
-          - { label: Portrait, name: portrait, widget: image }
-          - { label: 'Portrait alt text', name: portraitAlt, widget: string }
-          - label: 'Hero background'
-            name: hero
-            widget: object
-            fields:
-              - { label: 'Hide this page (removes it from all menus)', name: hidden, widget: boolean, default: false }
-              - { label: Kicker, name: kicker, widget: string, required: false, default: About }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
-          - label: Highlights
-            name: highlights
-            widget: list
-            fields:
-              - { label: Label, name: label, widget: string }
-              - { label: Value, name: value, widget: string }
-          - { label: Influences, name: influences, widget: list, field: { label: Influence, name: influence, widget: string } }
-          - label: 'Experience timeline'
-            name: experience
-            widget: list
-            fields:
-              - { label: Year, name: year, widget: string }
-              - { label: Title, name: title, widget: string }
-              - { label: Detail, name: detail, widget: string, required: false }
-          - label: 'Equipment highlights'
-            name: equipment
-            widget: list
-            fields:
-              - { label: Group, name: label, widget: string }
-              - { label: Items, name: items, widget: list, field: { label: Item, name: item, widget: string } }
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-          - { label: Biography, name: body, widget: markdown }
-
-      # ---- Music ----
-      - name: music
-        label: 'Music'
-        file: 'src/content/pages/music.json'
-        fields:
-          - &page_hero
-            label: Hero
-            name: hero
-            widget: object
-            fields:
-              - { label: 'Hide this page (removes it from all menus)', name: hidden, widget: boolean, default: false }
-              - { label: Kicker, name: kicker, widget: string, required: false }
-              - { label: Heading, name: heading, widget: string }
-              - { label: Intro, name: intro, widget: text, required: false }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-
-      # ---- Videos ----
-      - name: videos-page
-        label: 'Videos'
-        file: 'src/content/pages/videos.json'
-        fields:
-          - *page_hero
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-
-      # ---- Events ----
-      - name: events-page
-        label: 'Events'
-        file: 'src/content/pages/events.json'
-        fields:
-          - *page_hero
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-
-      # ---- News / Blog ----
-      - name: blog-page
-        label: 'News'
-        file: 'src/content/pages/blog.json'
-        fields:
-          - *page_hero
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields:
-              - { label: Section, name: id, widget: select, options: [articles] }
-              - { label: Enabled, name: enabled, widget: boolean, default: true }
-              - *f_bg
-              - *f_bgimg
-              - *f_bgalt
-              - *f_para
-
-      # ---- Gear ----
-      - name: gear-page
-        label: 'Gear'
-        file: 'src/content/pages/gear.json'
-        fields:
-          - *page_hero
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-
-      # ---- Contact ----
-      - name: contact-page
-        label: 'Contact'
-        file: 'src/content/pages/contact.json'
-        fields:
-          - *page_hero
-          - label: Sections
-            name: sections
-            widget: list
-            summary: '{{fields.id}} · {{fields.background}}'
-            fields: *section_fields
-
-  # ── CUSTOM PAGES ───────────────────────────────────────────────────────
-  #  Editor-created pages. Each becomes a route at /<slug>/ and is composed
-  #  from the same section library. Remember to add a Navigation link.
-  - name: custom-pages
-    label: 'Custom Pages'
+  # ── PAGES (create / draft / delete) ────────────────────────────────────
+  - name: pages
+    label: 'Pages'
     label_singular: 'Page'
-    folder: 'src/content/site-pages'
+    folder: 'src/content/pages'
     create: true
+    delete: true
     extension: json
     format: json
+    identifier_field: title
     slug: '{{slug}}'
     summary: '{{title}}'
     fields:
       - { label: Title, name: title, widget: string }
-      - { label: 'Draft (hide from live site)', name: draft, widget: boolean, default: false }
+      - { label: 'Draft (unpublished)', name: draft, widget: boolean, default: false }
       - label: Hero
         name: hero
         widget: object
         fields:
+          - { label: 'Hide this page (removes it from all menus)', name: hidden, widget: boolean, default: false }
           - { label: Kicker, name: kicker, widget: string, required: false }
           - { label: Heading, name: heading, widget: string }
           - { label: Intro, name: intro, widget: text, required: false }

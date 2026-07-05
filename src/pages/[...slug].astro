@@ -1,10 +1,9 @@
 ---
 /**
- * Custom pages — renders editor-created pages (CMS → "Custom Pages") from the
- * shared section library. The slug is the file name, e.g. site-pages/studio.json
- * → /studio/. Reserved routes (about, music, videos, events, blog, gear,
- * contact) are owned by their own files and take precedence, so avoid those
- * slugs when creating pages.
+ * Pages — renders every page in the `pages` collection at /<slug>/ from the
+ * shared section library. The file name is the slug (music.json → /music/).
+ * `blog` is excluded here because it has its own paginated route. Drafts are
+ * dropped from the production build.
  */
 import type { GetStaticPaths } from 'astro';
 import { getCollection } from 'astro:content';
@@ -13,10 +12,12 @@ import PageHero from '@components/sections/PageHero.astro';
 import SectionRenderer from '@components/sections/SectionRenderer.astro';
 
 export const getStaticPaths = (async () => {
-  const pages = await getCollection('sitePages', (entry) =>
+  const all = await getCollection('pages', (entry) =>
     import.meta.env.PROD ? entry.data.draft !== true : true
   );
-  return pages.map((page) => ({ params: { slug: page.id }, props: { page } }));
+  return all
+    .filter((page) => page.id !== 'blog')
+    .map((page) => ({ params: { slug: page.id }, props: { page } }));
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;

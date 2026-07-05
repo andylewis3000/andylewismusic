@@ -6,9 +6,17 @@
     "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false
+    "parallax": false,
+    "hidden": false
   },
   "sections": [
-    { "id": "contact-form", "enabled": true, "background": "light", "parallax": false }
-  ]
+    {
+      "id": "contact-form",
+      "enabled": true,
+      "background": "light",
+      "parallax": false
+    }
+  ],
+  "title": "Let's work together",
+  "draft": false
 }

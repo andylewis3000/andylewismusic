@@ -6,11 +6,33 @@
     "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false
+    "parallax": false,
+    "hidden": false
   },
   "sections": [
-    { "id": "upcoming-events", "enabled": true, "heading": "Upcoming", "background": "light", "parallax": false, "limit": 0 },
-    { "id": "past-events", "enabled": true, "heading": "Past shows", "background": "grey", "parallax": false, "limit": 0 },
-    { "id": "cta", "enabled": true, "background": "dark", "parallax": false }
-  ]
+    {
+      "id": "upcoming-events",
+      "enabled": true,
+      "heading": "Upcoming",
+      "background": "light",
+      "parallax": false,
+      "limit": 0
+    },
+    {
+      "id": "past-events",
+      "enabled": true,
+      "heading": "Past shows",
+      "background": "grey",
+      "parallax": false,
+      "limit": 0
+    },
+    {
+      "id": "cta",
+      "enabled": true,
+      "background": "dark",
+      "parallax": false
+    }
+  ],
+  "title": "Events",
+  "draft": false
 }

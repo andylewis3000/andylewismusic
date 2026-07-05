@@ -12,29 +12,11 @@ const SITE = 'https://andylewismusic.com';
 // straight from the content files since the config runs before the content API.
 function hiddenPaths() {
   const paths = new Set();
-  const generic = {
-    music: '/music/',
-    videos: '/videos/',
-    events: '/events/',
-    blog: '/blog/',
-    gear: '/gear/',
-    contact: '/contact/',
-  };
-  for (const [key, href] of Object.entries(generic)) {
-    try {
-      const j = JSON.parse(readFileSync(`./src/content/pages/${key}.json`, 'utf8'));
-      if (j.hero?.hidden) paths.add(href);
-    } catch {}
-  }
   try {
-    const fm = readFileSync('./src/content/about/about.md', 'utf8').split('---')[1] ?? '';
-    if (/hidden:\s*true/.test(fm)) paths.add('/about/');
-  } catch {}
-  try {
-    for (const f of readdirSync('./src/content/site-pages')) {
+    for (const f of readdirSync('./src/content/pages')) {
       if (!f.endsWith('.json')) continue;
-      const j = JSON.parse(readFileSync(`./src/content/site-pages/${f}`, 'utf8'));
-      if (j.draft) paths.add(`/${f.replace(/\.json$/, '')}/`);
+      const j = JSON.parse(readFileSync(`./src/content/pages/${f}`, 'utf8'));
+      if (j.hero?.hidden || j.draft) paths.add(`/${f.replace(/\.json$/, '')}/`);
     }
   } catch {}
   return [...paths];
