@@ -124,8 +124,10 @@ Upcoming vs. past is derived from `date` at build time — no manual archiving.
 Pages are composed from a shared library of **section blocks**, so any block can
 appear on any page. This is driven by three things:
 
-- **Page settings** (`src/lib/pages.ts` + `src/content/pages/*.json`, `home.json`,
-  `about.md`) — each page has a `hero` and a `sections[]` list.
+- **Page content** — every page (except Home) is an entry in the **`pages`**
+  content collection (`src/content/pages/*.json`), each with `title`, `draft`, a
+  `hero`, a `sections[]` list, and `seo`. Home is separate (`settings/home.json`,
+  loaded by `src/lib/pages.ts`).
 - **`SECTION_TYPES`** (`src/lib/pages.ts`) — the canonical list of block ids.
   Keep it in sync with the CMS dropdown (`public/admin/config.yml`) and the map
   in `src/components/sections/SectionRenderer.astro`.
@@ -140,23 +142,23 @@ Each section carries: `id` (block type), `enabled`, optional `heading` /
 its id to `SECTION_TYPES`, register it in `SectionRenderer`, and add it to the
 `options:` list of `&section_fields` in the CMS config.
 
-### Page settings files
+### Where page content lives
 
-| Page | Source | Notes |
-|------|--------|-------|
-| Home | `settings/home.json` | hero (+CTAs), intro, ordered sections, Instagram (handle/heading/**Behold feedUrl**), closing CTA |
-| About | `about/about.md` | structured data (bio/highlights/…) + hero + sections |
-| Music/Videos/Events/News/Gear/Contact | `pages/<name>.json` | hero + sections |
+| Page | Source | Route | Notes |
+|------|--------|-------|-------|
+| Home | `settings/home.json` | `pages/index.astro` | hero (+CTAs), intro, ordered sections, Instagram (handle/heading/**Behold feedUrl**), closing CTA. Not draftable/deletable. |
+| About, Music, Videos, Events, Gear, Contact + custom | `content/pages/<slug>.json` | `pages/[...slug].astro` → `/<slug>/` | title, draft, hero, sections, seo |
+| News (blog) | `content/pages/blog.json` | `pages/blog/[...page].astro` | same shape, but its own **paginated** route (excluded from `[...slug]`) |
 
-Every page except Home has a **`hero.hidden`** flag. When true, the page is
-removed from all nav menus, `noindex`ed, and excluded from the sitemap.
-
-### Custom pages
-
-Editor-created pages live in `src/content/site-pages/*.json` (collection
-`sitePages`) and are rendered by `src/pages/[...slug].astro` at `/<slug>/`. Each
-has `title`, `draft`, a `hero`, `sections[]`, and `seo`. Draft pages are excluded
-from the production build (and their nav links removed).
+- The **`pages` collection is one CMS folder** (create / draft / delete). New
+  pages are just new entries; the slug is the file name.
+- **`draft`** — excluded from the production build and removed from menus.
+- **`hero.hidden`** — page stays built but is removed from all nav menus,
+  `noindex`ed, and excluded from the sitemap.
+- About's **editorial data** (portrait, bio body, highlights, timeline,
+  influences, equipment) stays in `about/about.md` (collection `about`); the
+  About *page* (`pages/about.json`) just composes the `about-*` blocks that read
+  it.
 
 ---
 

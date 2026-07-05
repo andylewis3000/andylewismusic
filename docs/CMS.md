@@ -8,13 +8,20 @@ guide is for the person updating content (that's you, Andy).
 Open **https://andylewismusic.com/admin/** and sign in with GitHub. You'll see
 a friendly dashboard with everything grouped:
 
+**Content:**
+
 - **Music** — albums, EPs, singles (cover art, tracklist, streaming links)
 - **Videos** — paste a YouTube ID, pick a category
 - **Events** — shows, with automatic upcoming/past sorting
 - **News & Blog** — posts with categories, tags, hero images
 - **Gear** — equipment by category
-- **Site Settings** — the About page, global settings, homepage, navigation,
-  footer, and social links
+
+**Pages & settings:**
+
+- **Home** — the homepage (hero, intro, sections, Instagram, CTA)
+- **Pages** — every other page (About, Music, Videos, Events, News, Gear,
+  Contact + any you create). Create, draft and delete pages here.
+- **Site Settings** — global settings, navigation, footer, social links
 
 Saving publishes a change to the site's content and triggers a rebuild.
 
@@ -74,9 +81,10 @@ in `src/content/` and the running dev site updates live.
 
 ## Pages & sections (the page builder)
 
-Every page under **Pages** (Home, About, Music, Videos, Events, News, Gear,
-Contact) is built from a list of **sections**. Open a page, expand **Sections**,
-and use **Add** to insert any block from the shared library:
+Every page — the **Home** entry and each entry under **Pages** (About, Music,
+Videos, Events, News, Gear, Contact + any you create) — is built from a list of
+**sections**. Open a page, expand **Sections**, and use **Add** to insert any
+block from the shared library:
 
 - **featured-music / discography** — release cards
 - **latest-video / featured-videos / video-archive** — video blocks
@@ -100,26 +108,36 @@ Any block can go on any page, in any order. Per section you can set:
 
 Each page also has a **Hero** (kicker, heading, intro, background).
 
-## Adding a new page
+## Managing pages (create, draft, delete)
 
-**Pages** collections are fixed, but you can create your own under **Custom
-Pages → New Page**. Give it a title (that becomes the URL, e.g. "Studio" →
-`/studio/`), set the hero, and add sections just like any other page. Then:
+**Pages** is one list containing every page except Home. From there you can:
 
-1. Turn **Draft** off to make it live.
-2. Add a link to it in **Site Settings → Navigation** so people can find it.
-3. Avoid the reserved slugs: about, music, videos, events, blog, gear, contact.
+- **Create** — click **New Page**, give it a title (that becomes the URL, e.g.
+  "Studio" → `/studio/`), set the hero, and add sections like any other page.
+- **Draft / publish** — the **"Draft (unpublished)"** toggle. Draft pages are
+  left out of the live site and removed from menus. Turn it off to publish.
+- **Delete** — remove a page entirely.
+
+A couple of things to remember:
+
+1. Add a link to any new page in **Site Settings → Navigation** so people can
+   find it (and remove the link if you delete a page).
+2. Avoid reusing a slug that has its own detail pages: `music` and `blog` (their
+   `/music/…` and `/blog/…` sub-pages come from Music/News content).
+
+> Home is a separate entry and can't be drafted or deleted — it's always the
+> site's front page.
 
 ## Hiding a page
 
-Every page (except Home) has a **"Hide this page"** toggle in its **Hero**
-section. Turning it on:
+Separately from Draft, every page except Home has a **"Hide this page"** toggle
+in its **Hero** section. Hiding keeps the page live at its URL but:
 
-- removes the page from **all menus** (header, mobile, footer),
+- removes it from **all menus** (header, mobile, footer),
 - **`noindex`**es it (kept out of search results), and
 - drops it from the **sitemap**.
 
-The page's direct URL still works if someone has the exact link.
+(Draft = not built at all; Hide = built but unlisted. Both remove it from menus.)
 
 ## Instagram Reels
 
