@@ -75,6 +75,17 @@ const sectionStyleShape = {
   parallax: z.boolean().default(false),
 };
 
+/** A composable section, matching the shared library (SECTION_TYPES). */
+const pageSectionObject = z.object({
+  id: z.string(),
+  enabled: z.boolean().default(true),
+  heading: optString,
+  subheading: optString,
+  limit: optNumber,
+  body: optString,
+  ...sectionStyleShape,
+});
+
 /* ── DISCOGRAPHY — albums, EPs & singles ──────────────────────────────── */
 const albums = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/albums' }),
@@ -251,4 +262,21 @@ const about = defineCollection({
   }),
 });
 
-export const collections = { albums, videos, events, posts, gear, about };
+/* ── CUSTOM PAGES — editor-created pages composed from the section library ── */
+const sitePages = defineCollection({
+  loader: glob({ pattern: '**/*.json', base: './src/content/site-pages' }),
+  schema: z.object({
+    title: z.string(),
+    draft: z.boolean().default(false),
+    hero: z.object({
+      kicker: optString,
+      heading: z.string(),
+      intro: optString,
+      ...sectionStyleShape,
+    }),
+    sections: z.array(pageSectionObject).default([]),
+    seo,
+  }),
+});
+
+export const collections = { albums, videos, events, posts, gear, about, sitePages };

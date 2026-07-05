@@ -420,6 +420,45 @@ collections:
             summary: '{{fields.id}} · {{fields.background}}'
             fields: *section_fields
 
+  # ── CUSTOM PAGES ───────────────────────────────────────────────────────
+  #  Editor-created pages. Each becomes a route at /<slug>/ and is composed
+  #  from the same section library. Remember to add a Navigation link.
+  - name: custom-pages
+    label: 'Custom Pages'
+    label_singular: 'Page'
+    folder: 'src/content/site-pages'
+    create: true
+    extension: json
+    format: json
+    slug: '{{slug}}'
+    summary: '{{title}}'
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: 'Draft (hide from live site)', name: draft, widget: boolean, default: false }
+      - label: Hero
+        name: hero
+        widget: object
+        fields:
+          - { label: Kicker, name: kicker, widget: string, required: false }
+          - { label: Heading, name: heading, widget: string }
+          - { label: Intro, name: intro, widget: text, required: false }
+          - *f_bg
+          - *f_bgimg
+          - *f_bgalt
+          - *f_para
+      - label: Sections
+        name: sections
+        widget: list
+        summary: '{{fields.id}} · {{fields.background}}'
+        fields: *section_fields
+      - label: SEO
+        name: seo
+        widget: object
+        required: false
+        fields:
+          - { label: 'Meta description', name: description, widget: text, required: false }
+          - { label: 'Hide from search engines', name: noindex, widget: boolean, default: false }
+
   # ── SITE SETTINGS ──────────────────────────────────────────────────────
   - name: settings
     label: 'Site Settings'

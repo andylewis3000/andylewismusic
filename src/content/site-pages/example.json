@@ -1,0 +1,20 @@
+{
+  "title": "Example Page",
+  "draft": true,
+  "hero": {
+    "kicker": "Custom page",
+    "heading": "A page you built in the CMS",
+    "intro": "This is a template. Duplicate it, rename the slug, set it live (draft off), then add a link to it in Site Settings → Navigation.",
+    "background": "dark",
+    "backgroundImage": "",
+    "backgroundAlt": "",
+    "parallax": false
+  },
+  "sections": [
+    { "id": "rich-text", "enabled": true, "background": "light", "parallax": false, "body": "## Add any section\n\nUse the **Sections** list to add any block from the library — featured music, a video grid, events, a contact form, rich text, and more." },
+    { "id": "cta", "enabled": true, "background": "accent", "parallax": false }
+  ],
+  "seo": {
+    "noindex": false
+  }
+}

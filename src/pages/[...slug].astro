@@ -1,0 +1,41 @@
+---
+/**
+ * Custom pages — renders editor-created pages (CMS → "Custom Pages") from the
+ * shared section library. The slug is the file name, e.g. site-pages/studio.json
+ * → /studio/. Reserved routes (about, music, videos, events, blog, gear,
+ * contact) are owned by their own files and take precedence, so avoid those
+ * slugs when creating pages.
+ */
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PageHero from '@components/sections/PageHero.astro';
+import SectionRenderer from '@components/sections/SectionRenderer.astro';
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection('sitePages', (entry) =>
+    import.meta.env.PROD ? entry.data.draft !== true : true
+  );
+  return pages.map((page) => ({ params: { slug: page.id }, props: { page } }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const d = page.data;
+---
+
+<BaseLayout
+  title={d.title}
+  description={d.seo.description ?? d.hero.intro}
+  noindex={d.seo.noindex}
+>
+  <PageHero
+    kicker={d.hero.kicker}
+    title={d.hero.heading}
+    intro={d.hero.intro}
+    tone={d.hero.background}
+    backgroundImage={d.hero.backgroundImage}
+    backgroundAlt={d.hero.backgroundAlt}
+    parallax={d.hero.parallax}
+  />
+  {d.sections.map((section) => <SectionRenderer section={section} />)}
+</BaseLayout>
