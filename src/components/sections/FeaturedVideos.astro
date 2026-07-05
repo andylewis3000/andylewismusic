@@ -1,0 +1,52 @@
+---
+/**
+ * Featured videos block — videos flagged "featured", shown in a grid whose
+ * column count matches the number of videos (auto-fit), exactly like the
+ * featured-music block. `limit` caps the count (0 = all).
+ */
+import Section from '@components/layout/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import VideoCard from '@components/cards/VideoCard.astro';
+import { getVideos } from '@lib/content';
+import { take, type BlockProps } from '@lib/blocks';
+
+const {
+  heading = 'Featured Videos',
+  subheading,
+  tone = 'dark',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+  limit,
+} = Astro.props as BlockProps;
+
+const all = await getVideos();
+const featured = all.filter((v) => v.data.featured);
+const videos = take(featured.length ? featured : all, limit, 3);
+---
+
+{
+  videos.length > 0 && (
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      {heading || subheading ? (
+        <SectionHeader kicker="Watch" heading={heading} subheading={subheading} href="/videos/" />
+      ) : (
+        <h2 class="sr-only">Featured videos</h2>
+      )}
+      <div class="grid-videos">
+        {videos.map((video) => (
+          <VideoCard video={video} />
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  /* auto-fit → N videos produce N equal, full-width columns (then wrap). */
+  .grid-videos {
+    display: grid;
+    gap: 2rem 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+</style>

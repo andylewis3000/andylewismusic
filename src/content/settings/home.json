@@ -35,9 +35,9 @@
       "parallax": false
     },
     {
-      "id": "latest-video",
+      "id": "featured-videos",
       "enabled": true,
-      "heading": "Latest Video",
+      "heading": "Featured Videos",
       "subheading": "",
       "limit": 2,
       "body": "",
@@ -50,6 +50,8 @@
       "enabled": true,
       "heading": "Upcoming Shows",
       "subheading": "Catch a performance live",
+      "limit": null,
+      "body": "",
       "background": "light",
       "backgroundAlt": "",
       "parallax": false
@@ -59,6 +61,8 @@
       "enabled": true,
       "heading": "Latest News",
       "subheading": "",
+      "limit": null,
+      "body": "",
       "background": "light",
       "backgroundAlt": "",
       "parallax": false
@@ -68,6 +72,8 @@
       "enabled": true,
       "heading": "On the Road",
       "subheading": "",
+      "limit": null,
+      "body": "",
       "background": "dark",
       "backgroundAlt": "",
       "parallax": false
@@ -77,13 +83,15 @@
       "enabled": true,
       "heading": "",
       "subheading": "",
+      "limit": null,
+      "body": "",
       "background": "accent",
       "backgroundAlt": "",
       "parallax": false
     }
   ],
   "instagram": {
-    "handle": "andylewisdrums",
+    "handle": "andyclewis",
     "heading": "Check this out"
   },
   "cta": {

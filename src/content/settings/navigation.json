@@ -1,11 +1,33 @@
 {
   "primary": [
-    { "label": "About", "href": "/about/" },
-    { "label": "Music", "href": "/music/" },
-    { "label": "Videos", "href": "/videos/" },
-    { "label": "Events", "href": "/events/" },
-    { "label": "News", "href": "/blog/" },
-    { "label": "Gear", "href": "/gear/" }
+    {
+      "label": "About",
+      "href": "/about/"
+    },
+    {
+      "label": "Music",
+      "href": "/music/"
+    },
+    {
+      "label": "Videos",
+      "href": "/videos/"
+    },
+    {
+      "label": "Events",
+      "href": "/events/"
+    },
+    {
+      "label": "News",
+      "href": "/blog/"
+    },
+    {
+      "label": "Gear",
+      "href": "/gear/"
+    }
   ],
-  "cta": { "label": "Book", "href": "/contact/", "style": "primary" }
+  "cta": {
+    "label": "Let's Talk",
+    "href": "/contact/",
+    "style": "primary"
+  }
 }

@@ -63,10 +63,15 @@ const disciplines = z.enum([
 
 /** Section styling shared with page settings (see src/lib/pages.ts). */
 const sectionTone = z.enum(['dark', 'grey', 'light', 'white', 'accent']);
+// The CMS writes `null` for blank number/image/markdown fields; coerce to
+// undefined so `.optional()` accepts them instead of throwing.
+const nz = (v: unknown) => (v === null ? undefined : v);
+const optNumber = z.preprocess(nz, z.number().optional());
+const optString = z.preprocess(nz, z.string().optional());
 const sectionStyleShape = {
   background: sectionTone.default('dark'),
-  backgroundImage: imagePath.optional(),
-  backgroundAlt: z.string().optional(),
+  backgroundImage: optString,
+  backgroundAlt: optString,
   parallax: z.boolean().default(false),
 };
 
@@ -233,10 +238,10 @@ const about = defineCollection({
         z.object({
           id: z.string(),
           enabled: z.boolean().default(true),
-          heading: z.string().optional(),
-          subheading: z.string().optional(),
-          limit: z.number().optional(),
-          body: z.string().optional(),
+          heading: optString,
+          subheading: optString,
+          limit: optNumber,
+          body: optString,
           ...sectionStyleShape,
         })
       )

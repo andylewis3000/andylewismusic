@@ -24,6 +24,12 @@ import contactJson from '../content/pages/contact.json';
 export const TONES = ['dark', 'grey', 'light', 'white', 'accent'] as const;
 const toneSchema = z.enum(TONES);
 
+// The CMS writes `null` for blank number/image/markdown fields — coerce to
+// undefined so `.optional()` accepts them (otherwise the whole page 500s).
+const nz = (v: unknown) => (v === null ? undefined : v);
+const optNumber = z.preprocess(nz, z.number().optional());
+const optString = z.preprocess(nz, z.string().optional());
+
 const ctaSchema = z.object({
   label: z.string(),
   href: z.string(),
@@ -33,8 +39,8 @@ const ctaSchema = z.object({
 /** Styling fields shared by heroes and sections. */
 const styleShape = {
   background: toneSchema.default('dark'),
-  backgroundImage: z.string().optional(),
-  backgroundAlt: z.string().optional(),
+  backgroundImage: optString,
+  backgroundAlt: optString,
   parallax: z.boolean().default(false),
 };
 
@@ -47,6 +53,7 @@ export const SECTION_TYPES = [
   'featured-music',
   'discography',
   'latest-video',
+  'featured-videos',
   'video-archive',
   'upcoming-events',
   'past-events',
@@ -67,12 +74,12 @@ const pageSectionSchema = z.object({
   // The section type, chosen from the shared library (SECTION_TYPES).
   id: z.string(),
   enabled: z.boolean().default(true),
-  heading: z.string().optional(),
-  subheading: z.string().optional(),
+  heading: optString,
+  subheading: optString,
   /** Max items for list blocks (featured-music, news, events…). 0 = all. */
-  limit: z.number().optional(),
+  limit: optNumber,
   /** Body content for the rich-text block (Markdown). */
-  body: z.string().optional(),
+  body: optString,
   ...styleShape,
 });
 
