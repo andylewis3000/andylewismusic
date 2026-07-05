@@ -1,8 +1,11 @@
 ---
 /**
- * InstagramSection — a tasteful "on the road" strip linking to the profile.
- * Instagram's official embed API needs tokens that don't suit a static build,
- * so we present an on-brand grid + follow CTA (swap for real posts later).
+ * InstagramSection — shows Instagram Reels as an on-brand grid.
+ *
+ * If a Behold.so JSON feed URL is configured (Site → Home → Instagram), the
+ * reels are fetched at BUILD TIME and rendered in our own styled grid (no
+ * third-party JS, no watermark). If the feed is empty or unset, it falls back
+ * to a tasteful placeholder that links to the profile.
  */
 import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
@@ -26,7 +29,38 @@ const {
 } = Astro.props;
 
 const handle = home.instagram.handle;
-const url = handle ? `https://instagram.com/${handle}` : '#';
+const profileUrl = handle ? `https://instagram.com/${handle}` : '#';
+const feedUrl = home.instagram.feedUrl;
+
+type Reel = { permalink: string; thumb: string; alt: string };
+let reels: Reel[] = [];
+if (feedUrl) {
+  try {
+    const res = await fetch(feedUrl);
+    if (res.ok) {
+      const data = await res.json();
+      const posts: any[] = Array.isArray(data) ? data : (data.posts ?? []);
+      reels = posts
+        .slice(0, 6)
+        .map((p) => ({
+          permalink: p.permalink ?? profileUrl,
+          thumb:
+            p.sizes?.medium?.mediaUrl ??
+            p.sizes?.small?.mediaUrl ??
+            p.sizes?.large?.mediaUrl ??
+            p.sizes?.full?.mediaUrl ??
+            p.thumbnailUrl ??
+            p.mediaUrl ??
+            '',
+          alt: String(p.prunedCaption ?? p.caption ?? 'Instagram reel').slice(0, 120),
+        }))
+        .filter((r) => r.thumb);
+    }
+  } catch {
+    /* network/JSON issue — fall through to the placeholder */
+  }
+}
+const hasReels = reels.length > 0;
 const tiles = Array.from({ length: 6 });
 ---
 
@@ -35,31 +69,118 @@ const tiles = Array.from({ length: 6 });
     kicker="Instagram"
     heading={heading}
     subheading={handle ? `@${handle}` : undefined}
-    href={url}
+    href={profileUrl}
     linkLabel="Follow"
   />
-  <ul class="ig-grid">
-    {
-      tiles.map(() => (
-        <li>
-          <a
-            class="ig-tile"
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`View ${handle ? '@' + handle : 'Andy Lewis'} on Instagram`}
-          >
-            <span class="ig-icon" aria-hidden="true">
-              <Icon name="instagram" size={22} />
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+
+  {
+    hasReels ? (
+      <ul class="reel-grid">
+        {reels.map((r) => (
+          <li>
+            <a class="reel" href={r.permalink} target="_blank" rel="noopener noreferrer" aria-label={r.alt}>
+              <img src={r.thumb} alt={r.alt} loading="lazy" decoding="async" />
+              <span class="reel-play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
+                  <path d="M8 5.5l11 6.5-11 6.5z" />
+                </svg>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <ul class="ig-grid">
+        {tiles.map(() => (
+          <li>
+            <a
+              class="ig-tile"
+              href={profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`View ${handle ? '@' + handle : 'Andy Lewis'} on Instagram`}
+            >
+              <span class="ig-icon" aria-hidden="true">
+                <Icon name="instagram" size={22} />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
 </Section>
 
 <style>
+  /* Reels (portrait) */
+  .reel-grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 560px) {
+    .reel-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 900px) {
+    .reel-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+  .reel {
+    position: relative;
+    display: block;
+    aspect-ratio: 9 / 16;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface-2);
+  }
+  .reel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .reel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(10, 10, 11, 0.55));
+    pointer-events: none;
+  }
+  .reel-play {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(10, 10, 11, 0.5);
+    color: #fff;
+    z-index: 1;
+    transition: background-color var(--dur-base) var(--ease-standard);
+  }
+  .reel:hover img {
+    transform: scale(1.05);
+  }
+  .reel:hover .reel-play {
+    background: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reel img {
+      transition: none;
+    }
+  }
+
+  /* Placeholder (no feed / empty) */
   .ig-grid {
     list-style: none;
     margin: 0;

@@ -111,6 +111,7 @@ const homeSchema = z.object({
   instagram: z.object({
     handle: z.string().default(''),
     heading: z.string().default('On the road'),
+    feedUrl: optString.describe('Behold.so JSON feed URL (reels). Blank = placeholder.'),
   }),
   cta: z.object({
     heading: z.string(),

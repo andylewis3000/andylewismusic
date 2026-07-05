@@ -276,6 +276,7 @@ collections:
             fields:
               - { label: Handle, name: handle, widget: string, required: false }
               - { label: Heading, name: heading, widget: string, default: 'On the road' }
+              - { label: 'Reels feed URL (Behold.so)', name: feedUrl, widget: string, required: false, hint: 'Paste your Behold JSON feed URL to show live reels; blank shows a placeholder' }
           - label: 'Call to action'
             name: cta
             widget: object
