@@ -18,6 +18,7 @@ import Header from '@components/layout/Header.astro';
 import Footer from '@components/layout/Footer.astro';
 import { site } from '@lib/settings';
 import { personSchema, websiteSchema, resolveImageUrl } from '@lib/seo';
+import { getHiddenHrefs, linkHidden } from '@lib/pages';
 
 interface Props {
   title?: string;
@@ -37,6 +38,9 @@ interface Props {
 const { mainClass, schemas = [], ...seo } = Astro.props;
 const lang = site.locale.replace('_', '-');
 
+// A hidden page is also noindexed (kept out of search), not just off the menus.
+const selfHidden = linkHidden(Astro.url.pathname, await getHiddenHrefs());
+
 // Sitewide identity graph is present on every page; pages append their own.
 const personImage = await resolveImageUrl(site.logo ?? site.defaultOgImage);
 const graph = [websiteSchema(), personSchema(personImage), ...schemas];
@@ -49,7 +53,7 @@ const graph = [websiteSchema(), personSchema(personImage), ...schemas];
     <script is:inline>
       document.documentElement.classList.add('js');
     </script>
-    <SEO {...seo} />
+    <SEO {...seo} noindex={seo.noindex || selfHidden} />
     {/* Preload the primary weights so headline/body text paints without FOUT. */}
     <link
       rel="preload"
