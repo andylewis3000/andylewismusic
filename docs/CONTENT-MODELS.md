@@ -119,6 +119,47 @@ Upcoming vs. past is derived from `date` at build time — no manual archiving.
 
 ---
 
+## Pages & the composable section library
+
+Pages are composed from a shared library of **section blocks**, so any block can
+appear on any page. This is driven by three things:
+
+- **Page settings** (`src/lib/pages.ts` + `src/content/pages/*.json`, `home.json`,
+  `about.md`) — each page has a `hero` and a `sections[]` list.
+- **`SECTION_TYPES`** (`src/lib/pages.ts`) — the canonical list of block ids.
+  Keep it in sync with the CMS dropdown (`public/admin/config.yml`) and the map
+  in `src/components/sections/SectionRenderer.astro`.
+- **`SectionRenderer`** — maps a section's `id` to its block component.
+
+Each section carries: `id` (block type), `enabled`, optional `heading` /
+`subheading`, `limit` (0 = all), `body` (for `rich-text`), plus styling —
+`background` tone (`dark | grey | light | white | accent`), `backgroundImage`,
+`backgroundAlt`, `parallax`.
+
+**Adding a new block type:** create the component in `components/sections/`, add
+its id to `SECTION_TYPES`, register it in `SectionRenderer`, and add it to the
+`options:` list of `&section_fields` in the CMS config.
+
+### Page settings files
+
+| Page | Source | Notes |
+|------|--------|-------|
+| Home | `settings/home.json` | hero (+CTAs), intro, ordered sections, Instagram (handle/heading/**Behold feedUrl**), closing CTA |
+| About | `about/about.md` | structured data (bio/highlights/…) + hero + sections |
+| Music/Videos/Events/News/Gear/Contact | `pages/<name>.json` | hero + sections |
+
+Every page except Home has a **`hero.hidden`** flag. When true, the page is
+removed from all nav menus, `noindex`ed, and excluded from the sitemap.
+
+### Custom pages
+
+Editor-created pages live in `src/content/site-pages/*.json` (collection
+`sitePages`) and are rendered by `src/pages/[...slug].astro` at `/<slug>/`. Each
+has `title`, `draft`, a `hero`, `sections[]`, and `seo`. Draft pages are excluded
+from the production build (and their nav links removed).
+
+---
+
 ## Image convention
 
 CMS images upload to `src/assets/images/uploads/` and are stored in content as a

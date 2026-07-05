@@ -85,6 +85,7 @@ from sections; the blog is a paginated listing.
 - [`docs/CMS.md`](docs/CMS.md) — editing guide
 - [`docs/CONTENT-MODELS.md`](docs/CONTENT-MODELS.md) — content types
 - [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) — how to publish
+- [`docs/ENVIRONMENT.md`](docs/ENVIRONMENT.md) — environment variables
 - [`docs/IMAGE-GUIDELINES.md`](docs/IMAGE-GUIDELINES.md) — image sizes & tips
 - [`docs/SEO.md`](docs/SEO.md) — SEO reference
 - [`docs/TESTING.md`](docs/TESTING.md) — Lighthouse/axe results & how to re-run
