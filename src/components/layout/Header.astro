@@ -5,11 +5,17 @@
  * All content is CMS-driven via the navigation + site singletons.
  */
 import { navigation, site } from '@lib/settings';
+import { getHiddenHrefs, filterLinks, linkHidden } from '@lib/pages';
 import Button from '@components/ui/Button.astro';
 import MobileMenu from './MobileMenu.astro';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+
+// Drop links to hidden pages from the nav.
+const hidden = await getHiddenHrefs();
+const primaryNav = filterLinks(navigation.primary, hidden);
+const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigation.cta : null;
 ---
 
 <header class="site-header glass" data-header>
@@ -21,7 +27,7 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
     <nav class="primary-nav" aria-label="Primary">
       <ul>
         {
-          navigation.primary.map((item) => (
+          primaryNav.map((item) => (
             <li>
               <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
                 {item.label}
@@ -34,13 +40,13 @@ const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWit
 
     <div class="header-actions">
       {
-        navigation.cta && (
-          <Button href={navigation.cta.href} variant="primary" class="header-cta">
-            {navigation.cta.label}
+        cta && (
+          <Button href={cta.href} variant="primary" class="header-cta">
+            {cta.label}
           </Button>
         )
       }
-      <MobileMenu links={navigation.primary} cta={navigation.cta ?? null} currentPath={path} />
+      <MobileMenu links={primaryNav} cta={cta} currentPath={path} />
     </div>
   </div>
 </header>

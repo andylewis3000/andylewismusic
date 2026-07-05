@@ -4,9 +4,17 @@
  * The wordmark and column contents come from the footer/site/social singletons.
  */
 import { footer, site } from '@lib/settings';
+import { getHiddenHrefs, filterLinks } from '@lib/pages';
 import SocialLinks from '@components/ui/SocialLinks.astro';
 
 const year = new Date().getFullYear();
+
+// Drop links to hidden pages; drop columns left empty as a result.
+const hidden = await getHiddenHrefs();
+const columns = footer.columns
+  .map((col) => ({ ...col, links: filterLinks(col.links, hidden) }))
+  .filter((col) => col.links.length > 0);
+const legal = filterLinks(footer.legal, hidden);
 ---
 
 <footer class="site-footer">
@@ -21,7 +29,7 @@ const year = new Date().getFullYear();
 
     <nav class="footer-cols" aria-label="Footer">
       {
-        footer.columns.map((col) => (
+        columns.map((col) => (
           <div class="footer-col">
             <h2 class="footer-col-title">{col.heading}</h2>
             <ul>
@@ -49,9 +57,9 @@ const year = new Date().getFullYear();
   <div class="container-page footer-bottom">
     <p class="copyright">© {year} {footer.copyright}</p>
     {
-      footer.legal.length > 0 && (
+      legal.length > 0 && (
         <ul class="legal">
-          {footer.legal.map((link) => (
+          {legal.map((link) => (
             <li>
               <a href={link.href}>{link.label}</a>
             </li>

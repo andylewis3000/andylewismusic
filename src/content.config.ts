@@ -243,7 +243,9 @@ const about = defineCollection({
       .default([])
       .describe('Equipment highlight groups shown on the About page'),
     // Hero + composable sections, mirroring the other pages' options.
-    hero: z.object({ kicker: z.string().optional(), ...sectionStyleShape }).default({}),
+    hero: z
+      .object({ kicker: z.string().optional(), hidden: z.boolean().default(false), ...sectionStyleShape })
+      .default({}),
     sections: z
       .array(
         z.object({

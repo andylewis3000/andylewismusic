@@ -11,7 +11,7 @@
  *  section styling live in that file's frontmatter (see content.config.ts).
  * ─────────────────────────────────────────────────────────────────────────
  */
-import { z } from 'astro:content';
+import { z, getCollection } from 'astro:content';
 
 import homeJson from '../content/settings/home.json';
 import musicJson from '../content/pages/music.json';
@@ -87,6 +87,8 @@ export const pageHeroSchema = z.object({
   kicker: z.string().optional(),
   heading: z.string(),
   intro: z.string().optional(),
+  /** Hidden pages are removed from all nav menus. */
+  hidden: z.boolean().default(false),
   ...styleShape,
 });
 
@@ -144,6 +146,41 @@ export type Tone = z.infer<typeof toneSchema>;
 export type PageSection = z.infer<typeof pageSectionSchema>;
 export type PageHero = z.infer<typeof pageHeroSchema>;
 export type Home = z.infer<typeof homeSchema>;
+
+/* ── Hidden pages → nav filtering ───────────────────────────────────────── */
+const norm = (h: string) => (h.startsWith('/') && !h.endsWith('/') ? `${h}/` : h);
+
+const GENERIC_HREF: Record<string, string> = {
+  music: '/music/',
+  videos: '/videos/',
+  events: '/events/',
+  blog: '/blog/',
+  gear: '/gear/',
+  contact: '/contact/',
+};
+
+/** Hrefs of every page marked hidden (incl. drafted custom pages). */
+export async function getHiddenHrefs(): Promise<Set<string>> {
+  const hidden = new Set<string>();
+  for (const [key, page] of Object.entries(pages)) {
+    if (page.hero.hidden && GENERIC_HREF[key]) hidden.add(GENERIC_HREF[key]);
+  }
+  const about = await getCollection('about');
+  if (about[0]?.data.hero.hidden) hidden.add('/about/');
+  const custom = await getCollection('sitePages');
+  for (const p of custom) if (p.data.draft) hidden.add(norm(`/${p.id}/`));
+  return hidden;
+}
+
+/** True if a link points at a hidden page. */
+export function linkHidden(href: string, hidden: Set<string>): boolean {
+  return hidden.has(norm(href));
+}
+
+/** Drop links that point at hidden pages. */
+export function filterLinks<T extends { href: string }>(links: T[], hidden: Set<string>): T[] {
+  return links.filter((l) => !linkHidden(l.href, hidden));
+}
 
 /** Look up a section's config by id, with sensible defaults if absent. */
 export function findSection(list: PageSection[], id: string): PageSection {

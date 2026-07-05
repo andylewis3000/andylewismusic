@@ -300,6 +300,7 @@ collections:
             name: hero
             widget: object
             fields:
+              - { label: 'Hide this page (removes it from all menus)', name: hidden, widget: boolean, default: false }
               - { label: Kicker, name: kicker, widget: string, required: false, default: About }
               - *f_bg
               - *f_bgimg
@@ -342,6 +343,7 @@ collections:
             name: hero
             widget: object
             fields:
+              - { label: 'Hide this page (removes it from all menus)', name: hidden, widget: boolean, default: false }
               - { label: Kicker, name: kicker, widget: string, required: false }
               - { label: Heading, name: heading, widget: string }
               - { label: Intro, name: intro, widget: text, required: false }
