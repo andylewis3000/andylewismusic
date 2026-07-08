@@ -82,8 +82,18 @@ const effectiveTone = hasImage ? 'dark' : tone;
   .ph-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(10, 10, 11, 0.6), rgba(10, 10, 11, 0.72));
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0.3), rgba(10, 10, 11, 0.48));
     pointer-events: none;
+  }
+  /* Over a hero image, text is white on the (lightened) scrim. */
+  .has-bg .page-title {
+    color: #fff;
+  }
+  .has-bg .page-intro {
+    color: rgba(255, 255, 255, 0.9);
+  }
+  .has-bg :global(.kicker) {
+    color: rgba(255, 255, 255, 0.85);
   }
   .ph-inner {
     position: relative;

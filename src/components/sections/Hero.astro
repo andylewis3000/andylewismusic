@@ -9,10 +9,8 @@ import Button from '@components/ui/Button.astro';
 import { home } from '@lib/pages';
 
 const h = home.hero;
-// Split the heading so the final two words can take the accent gradient.
-const words = h.heading.split(' ');
-const head = words.slice(0, -2).join(' ');
-const tail = words.slice(-2).join(' ');
+// White heading, with the full stops picked out in the accent colour.
+const headingHtml = h.heading.replace(/\./g, '<span class="hero-dot">.</span>');
 ---
 
 <section class="hero" aria-label="Introduction" data-tone="dark">
@@ -31,9 +29,7 @@ const tail = words.slice(-2).join(' ');
 
   <div class="container-page hero-inner">
     {h.kicker && <span class="kicker">{h.kicker}</span>}
-    <h1 class="hero-heading">
-      {head} <span class="text-gradient">{tail}</span>
-    </h1>
+    <h1 class="hero-heading" set:html={headingHtml}></h1>
     <p class="hero-sub">{h.subheading}</p>
     <div class="hero-actions">
       <Button href={h.primaryCta.href} variant="primary" icon="arrow-right">
@@ -84,6 +80,10 @@ const tail = words.slice(-2).join(' ');
   .hero-heading {
     font-size: var(--text-display);
     max-width: 16ch;
+    color: #fff;
+  }
+  .hero-heading :global(.hero-dot) {
+    color: var(--color-accent);
   }
   .hero-sub {
     margin: 0;
