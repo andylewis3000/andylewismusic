@@ -11,25 +11,25 @@
    ═══════════════════════════════════════════════════════════════════════ */
 
 /* 1 ─ Fonts ─────────────────────────────────────────────────────────── */
-/* Self-hosted variable fonts with stable paths so the primary weights can be
-   <link rel=preload>ed (see BaseLayout). Display = Outfit (used heavy at 900);
+/* Self-hosted fonts with stable paths so they can be <link rel=preload>ed (see
+   BaseLayout). Display = Special Gothic Condensed One (used UPPERCASE);
    Text = Inter. font-display:swap avoids invisible text during load. */
 @font-face {
-  font-family: 'Outfit Variable';
+  font-family: 'Special Gothic Condensed One';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url('/fonts/outfit-latin-wght-normal.woff2') format('woff2');
+  font-weight: 400;
+  src: url('/fonts/special-gothic-condensed-one-latin-400-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191,
     U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Outfit Variable';
+  font-family: 'Special Gothic Condensed One';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 900;
-  src: url('/fonts/outfit-latin-ext-wght-normal.woff2') format('woff2');
+  font-weight: 400;
+  src: url('/fonts/special-gothic-condensed-one-latin-ext-400-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
     U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
     U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
@@ -62,39 +62,39 @@
 @custom-variant motion-safe (@media (prefers-reduced-motion: no-preference));
 
 @theme {
-  /* — Color: surfaces (near-black, faintly warm) — */
-  --color-bg: #0a0a0b;
-  --color-bg-elevated: #111114;
-  --color-surface: #16161a;
-  --color-surface-2: #1e1e24;
-  --color-line: rgba(244, 242, 238, 0.09);
-  --color-line-strong: rgba(244, 242, 238, 0.16);
+  /* — Color: surfaces (white primary, light grey) — */
+  --color-bg: #ffffff;
+  --color-bg-elevated: #f7f7f7;
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f1f1;
+  --color-line: rgba(20, 18, 12, 0.12);
+  --color-line-strong: rgba(20, 18, 12, 0.22);
 
-  /* — Color: text (warm off-white → warm grays) — */
-  --color-ink: #f4f2ee;
-  --color-ink-muted: #b8b3ab;
-  /* Raised from #7c776e to clear WCAG AA (4.5:1) for small caption text. */
-  --color-ink-faint: #8b857b;
+  /* — Color: text (near-black → warm grays) — */
+  --color-ink: #17150f;
+  --color-ink-muted: #4e4a42;
+  /* Kept dark enough to clear WCAG AA (4.5:1) for small caption text on grey. */
+  --color-ink-faint: #635e55;
 
-  /* — Color: signature accent (brand lime → bright chartreuse) — */
+  /* — Color: signature accent (brand lime) — */
   --color-accent: #9acd33;
-  --color-accent-hover: #abdb46;
+  --color-accent-hover: #8dbf29;
   --color-accent-ember: #cfe84a;
   --color-accent-contrast: #0a0a0b;
-  --color-accent-soft: rgba(154, 205, 51, 0.14);
-  /* Accent used as *foreground/text*. Lime on dark; overridden to a darker
-     green on light tones (see tone blocks) so it always clears AA contrast. */
-  --color-accent-ink: #9acd33;
+  --color-accent-soft: rgba(154, 205, 51, 0.2);
+  /* Accent used as *foreground/text*. A darker green that clears AA on light;
+     overridden back to lime on the dark tone. */
+  --color-accent-ink: #46660e;
   /* The section's own background; set per tone. Defaults to page background. */
   --tone-bg: transparent;
 
   /* — Color: functional — */
-  --color-focus: #7cc7ff;
-  --color-success: #4ade80;
-  --color-danger: #f87171;
+  --color-focus: #1a56db;
+  --color-success: #2f8f46;
+  --color-danger: #cc2f2f;
 
   /* — Typography families — */
-  --font-display: 'Outfit Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Special Gothic Condensed One', ui-sans-serif, system-ui, sans-serif;
   --font-sans:
     'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 
@@ -116,11 +116,11 @@
   --radius-xl: 1.5rem;
   --radius-2xl: 2rem;
 
-  /* — Elevation (soft, layered, cinematic) — */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
-  --shadow-glow: 0 0 60px -12px rgba(154, 205, 51, 0.4);
+  /* — Elevation (soft, layered) — */
+  --shadow-sm: 0 1px 2px rgba(20, 18, 12, 0.08);
+  --shadow-md: 0 10px 30px -12px rgba(20, 18, 12, 0.16);
+  --shadow-lg: 0 26px 60px -24px rgba(20, 18, 12, 0.2);
+  --shadow-glow: 0 0 55px -14px rgba(154, 205, 51, 0.5);
 
   /* — Motion easings — */
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
@@ -140,8 +140,8 @@
   --dur-slower: 640ms;
 
   /* Glass treatment (used sparingly: sticky nav, overlays) */
-  --glass-bg: rgba(16, 16, 20, 0.6);
-  --glass-border: rgba(244, 242, 238, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(20, 18, 12, 0.1);
   --glass-blur: 14px;
 
   /* Vertical rhythm for page sections */
@@ -151,7 +151,7 @@
   --container: 76rem;
   --container-pad: clamp(1.25rem, 0.5rem + 3vw, 3rem);
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 /* ── Section tones ───────────────────────────────────────────────────────
@@ -159,35 +159,33 @@
    for everything inside it. Components reference the same token names, so they
    adapt automatically. Light tones flip text to dark and swap the accent to a
    darker green (--color-accent-ink) that clears AA contrast on light. */
-[data-tone='dark'] {
-  --tone-bg: var(--color-bg);
-}
-[data-tone='grey'] {
-  --tone-bg: #141418;
-}
-[data-tone='light'],
-[data-tone='white'] {
-  --color-ink: #17160f;
-  --color-ink-muted: #4e4a42;
-  --color-ink-faint: #6d685e;
-  --color-line: rgba(20, 18, 12, 0.12);
-  --color-line-strong: rgba(20, 18, 12, 0.24);
-  --color-bg-elevated: #faf8f4;
-  --color-surface: #ffffff;
-  --color-surface-2: #f1eee7;
-  --color-accent-ink: #46660e;
-  --color-accent-soft: rgba(154, 205, 51, 0.22);
-  --shadow-sm: 0 1px 2px rgba(20, 18, 12, 0.08);
-  --shadow-md: 0 10px 26px -12px rgba(20, 18, 12, 0.2);
-  --shadow-lg: 0 26px 60px -24px rgba(20, 18, 12, 0.25);
-  --shadow-glow: 0 0 50px -14px rgba(154, 205, 51, 0.5);
-  color-scheme: light;
-}
-[data-tone='light'] {
-  --tone-bg: #ece9e1;
-}
+/* The base palette is light. `white`, `light` and `grey` are light shades
+   (text stays dark). `dark` re-scopes to a full dark palette for the occasional
+   bold section and for image heroes (which force a scrim). */
 [data-tone='white'] {
   --tone-bg: #ffffff;
+}
+[data-tone='light'] {
+  --tone-bg: #f1f1f1;
+}
+[data-tone='grey'] {
+  --tone-bg: #e6e6e6;
+}
+[data-tone='dark'] {
+  --tone-bg: #0f0f11;
+  --color-bg-elevated: #16161a;
+  --color-surface: #1a1a1f;
+  --color-surface-2: #24242a;
+  --color-line: rgba(244, 242, 238, 0.1);
+  --color-line-strong: rgba(244, 242, 238, 0.18);
+  --color-ink: #f4f2ee;
+  --color-ink-muted: #bdb8b0;
+  --color-ink-faint: #8f8a80;
+  --color-accent-ink: #9acd33;
+  --color-accent-soft: rgba(154, 205, 51, 0.16);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+  color-scheme: dark;
 }
 [data-tone='accent'] {
   --tone-bg: var(--color-accent);
@@ -197,10 +195,9 @@
   --color-line: rgba(14, 19, 5, 0.16);
   --color-line-strong: rgba(14, 19, 5, 0.28);
   --color-accent-ink: #0e1305;
-  --color-surface: rgba(255, 255, 255, 0.14);
-  --color-surface-2: rgba(255, 255, 255, 0.2);
+  --color-surface: rgba(255, 255, 255, 0.55);
+  --color-surface-2: rgba(255, 255, 255, 0.68);
   --color-accent-soft: rgba(14, 19, 5, 0.1);
-  color-scheme: light;
 }
 /* On an accent (lime) section a lime primary button would disappear — invert it. */
 [data-tone='accent'] .btn-primary {
@@ -242,11 +239,6 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Subtle cinematic vignette so photography sits in atmosphere, not a flat field. */
-    background-image:
-      radial-gradient(120% 80% at 50% -10%, rgba(154, 205, 51, 0.07), transparent 60%),
-      radial-gradient(90% 60% at 100% 0%, rgba(154, 205, 51, 0.04), transparent 55%);
-    background-attachment: fixed;
   }
 
   h1,
@@ -254,9 +246,10 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    font-weight: 900;
-    line-height: 1.04;
-    letter-spacing: -0.03em;
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
     text-wrap: balance;
     margin: 0;
   }
@@ -465,14 +458,14 @@
     font-weight: 600;
   }
   .prose a {
-    color: var(--color-accent);
+    color: var(--color-accent-ink);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
     transition: color var(--dur-base) var(--ease-standard);
   }
   .prose a:hover {
-    color: var(--color-accent-hover);
+    color: var(--color-ink);
   }
   .prose blockquote {
     margin-inline: 0;

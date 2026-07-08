@@ -3,7 +3,7 @@
     "kicker": "Discography",
     "heading": "Music",
     "intro": "Records built around live drums, guitar and analogue texture. Stream anywhere, or dig into the liner notes.",
-    "background": "dark",
+    "background": "white",
     "backgroundImage": "",
     "backgroundAlt": "",
     "parallax": false,
@@ -20,7 +20,7 @@
     {
       "id": "cta",
       "enabled": true,
-      "background": "grey",
+      "background": "light",
       "parallax": false
     }
   ],

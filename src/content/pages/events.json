@@ -3,7 +3,7 @@
     "kicker": "Live",
     "heading": "Events",
     "intro": "Where to catch a performance. New dates are announced here first.",
-    "background": "dark",
+    "background": "white",
     "backgroundImage": "",
     "backgroundAlt": "",
     "parallax": false,
@@ -22,14 +22,14 @@
       "id": "past-events",
       "enabled": true,
       "heading": "Past shows",
-      "background": "grey",
+      "background": "light",
       "parallax": false,
       "limit": 0
     },
     {
       "id": "cta",
       "enabled": true,
-      "background": "dark",
+      "background": "light",
       "parallax": false
     }
   ],

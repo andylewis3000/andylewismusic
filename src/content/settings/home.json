@@ -3,7 +3,7 @@
     "kicker": "Drummer · Guitarist · Composer",
     "heading": "Rhythm with intent. Music with a pulse.",
     "subheading": "Three decades behind the kit and the guitar — stages, sessions and scoring. Available for performances, recording and collaboration.",
-    "background": "dark",
+    "background": "white",
     "backgroundImage": "/src/assets/images/uploads/al-drums-danforth.jpg",
     "backgroundAlt": "Andy Lewis performing drums live, black and white",
     "parallax": false,
@@ -41,7 +41,7 @@
       "subheading": "",
       "limit": 2,
       "body": "",
-      "background": "dark",
+      "background": "light",
       "backgroundAlt": "",
       "parallax": false
     },
@@ -74,7 +74,7 @@
       "subheading": "",
       "limit": null,
       "body": "",
-      "background": "dark",
+      "background": "light",
       "backgroundAlt": "",
       "parallax": false
     },

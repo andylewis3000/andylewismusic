@@ -15,7 +15,7 @@ const head = words.slice(0, -2).join(' ');
 const tail = words.slice(-2).join(' ');
 ---
 
-<section class="hero" aria-label="Introduction">
+<section class="hero" aria-label="Introduction" data-tone="dark">
   <div class="hero-bg">
     <Image
       path={h.backgroundImage}
@@ -57,7 +57,6 @@ const tail = words.slice(-2).join(' ');
     align-items: flex-end;
     min-height: min(88vh, 900px);
     padding-block: clamp(4rem, 2rem + 12vh, 9rem);
-    margin-top: -4.5rem; /* slide under the transparent sticky header */
     overflow: hidden;
   }
   .hero-bg {

@@ -6,7 +6,7 @@
     "kicker": "About",
     "heading": "I've spent twenty years chasing the feel of a great take.",
     "intro": "",
-    "background": "dark",
+    "background": "white",
     "backgroundImage": "",
     "backgroundAlt": "",
     "parallax": false
@@ -20,7 +20,7 @@
     },
     {
       "id": "about-highlights",
-      "background": "dark",
+      "background": "light",
       "backgroundAlt": "",
       "parallax": false
     },
@@ -44,7 +44,7 @@
     },
     {
       "id": "cta",
-      "background": "grey",
+      "background": "light",
       "backgroundAlt": "",
       "parallax": false
     }

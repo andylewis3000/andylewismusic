@@ -3,7 +3,7 @@
     "kicker": "Setup",
     "heading": "Gear",
     "intro": "The instruments and tools behind the sound. Tuned, road-worn and chosen for feel.",
-    "background": "dark",
+    "background": "white",
     "backgroundImage": "",
     "backgroundAlt": "",
     "parallax": false,
@@ -19,7 +19,7 @@
     {
       "id": "cta",
       "enabled": true,
-      "background": "grey",
+      "background": "light",
       "parallax": false
     }
   ],

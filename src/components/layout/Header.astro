@@ -72,24 +72,20 @@ const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigat
     position: sticky;
     top: 0;
     z-index: 50;
-    border-left: 0;
-    border-right: 0;
-    border-top: 0;
+    border: 0;
     border-bottom: 1px solid transparent;
-    background: transparent;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-    transition:
-      background-color var(--dur-base) var(--ease-standard),
-      border-color var(--dur-base) var(--ease-standard),
-      backdrop-filter var(--dur-base) var(--ease-standard);
-  }
-  /* Glass only kicks in once scrolled, so the hero sits flush at the top. */
-  .site-header.is-scrolled {
+    /* Light glass over any content; dark text stays readable. */
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(var(--glass-blur));
     backdrop-filter: blur(var(--glass-blur));
+    transition:
+      border-color var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+  /* Add definition once scrolled. */
+  .site-header.is-scrolled {
     border-bottom-color: var(--color-line);
+    box-shadow: var(--shadow-sm);
   }
 
   .header-inner {
@@ -102,9 +98,10 @@ const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigat
 
   .wordmark {
     font-family: var(--font-display);
-    font-weight: 900;
-    font-size: 1.25rem;
-    letter-spacing: -0.04em;
+    font-weight: 400;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     color: var(--color-ink);
     white-space: nowrap;
   }
