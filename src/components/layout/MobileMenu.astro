@@ -11,6 +11,7 @@
  *  - Fresh markup after each view transition starts closed automatically.
  */
 import './MobileMenu.css';
+import SocialLinks from '@components/ui/SocialLinks.astro';
 import type { Cta } from '@lib/settings';
 
 interface Props {
@@ -49,35 +50,57 @@ const isActive = (href: string) =>
 
   <div class="menu-backdrop" data-menu-backdrop aria-hidden="true"></div>
 
-  <div
-    id="mobile-menu-panel"
-    class="menu-panel"
-    data-menu-panel
-    role="dialog"
-    aria-modal="true"
-    aria-label="Site navigation"
-    inert
-  >
-    <nav aria-label="Mobile">
-      <ul>
-        {
-          links.map((link) => (
-            <li>
-              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-    {
-      cta && (
-        <a class="btn btn-primary menu-cta" href={cta.href}>
-          {cta.label}
-        </a>
-      )
-    }
+  {/* Fixed, viewport-sized clip layer so the closed panel can't be reached by
+      scrolling right. The panel is absolute *inside* it, so its overflow clips. */}
+  <div class="menu-shell" data-menu-shell>
+    <div
+      id="mobile-menu-panel"
+      class="menu-panel"
+      data-menu-panel
+      role="dialog"
+      aria-modal="true"
+      aria-label="Site navigation"
+      inert
+    >
+      <button type="button" class="menu-close" data-menu-close aria-label="Close menu">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
+
+      <nav aria-label="Mobile">
+        <ul>
+          {
+            links.map((link) => (
+              <li>
+                <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <SocialLinks class="menu-social" />
+
+      {
+        cta && (
+          <a class="btn btn-primary menu-cta" href={cta.href}>
+            {cta.label}
+          </a>
+        )
+      }
+    </div>
   </div>
 </div>
 
@@ -90,6 +113,14 @@ const isActive = (href: string) =>
     const toggle = root.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
     const panel = root.querySelector<HTMLElement>('[data-menu-panel]')!;
     const backdrop = root.querySelector<HTMLElement>('[data-menu-backdrop]')!;
+    const shell = root.querySelector<HTMLElement>('[data-menu-shell]')!;
+
+    // The header uses backdrop-filter, which makes it the containing block for
+    // fixed children — trapping the drawer inside the 72px header box. Portal
+    // the backdrop + panel to <body> so they fix to the actual viewport.
+    if (backdrop.parentElement !== document.body) document.body.appendChild(backdrop);
+    if (shell.parentElement !== document.body) document.body.appendChild(shell);
+
     const focusables = () => Array.from(panel.querySelectorAll<HTMLElement>('a, button'));
     const isOpen = () => panel.classList.contains('is-open');
 
@@ -100,7 +131,9 @@ const isActive = (href: string) =>
       document.body.style.overflow = 'hidden';
       toggle.setAttribute('aria-expanded', 'true');
       toggle.setAttribute('aria-label', 'Close menu');
-      focusables()[0]?.focus();
+      // preventScroll: focusing the (still off-screen) panel mid-animation
+      // would otherwise scroll-jump the page sideways.
+      focusables()[0]?.focus({ preventScroll: true });
     }
     function close() {
       panel.classList.remove('is-open');
@@ -113,10 +146,14 @@ const isActive = (href: string) =>
 
     toggle.addEventListener('click', () => (isOpen() ? close() : (open(), true)));
     backdrop.addEventListener('click', close);
+    panel.querySelector<HTMLButtonElement>('[data-menu-close]')?.addEventListener('click', () => {
+      close();
+      toggle.focus({ preventScroll: true });
+    });
     panel.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         close();
-        toggle.focus();
+        toggle.focus({ preventScroll: true });
         return;
       }
       if (e.key !== 'Tab') return;

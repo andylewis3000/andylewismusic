@@ -289,4 +289,26 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { albums, videos, events, posts, gear, about, pages };
+/* ── MENUS — build named menus and publish one to the header or footer ──
+   A menu is a list of groups; each group has an optional heading (used as a
+   footer column) and a list of links (each links to a page or a custom URL).
+   `location` publishes the menu: 'main' → header, 'footer' → footer. */
+const menuLink = z.object({
+  label: optString,
+  page: optString, // a page slug (from the pages collection)
+  url: optString, // or a custom URL — used when no page is chosen
+});
+const menuGroup = z.object({
+  heading: optString,
+  links: z.array(menuLink).default([]),
+});
+const menus = defineCollection({
+  loader: glob({ pattern: '*.json', base: './src/content/menus' }),
+  schema: z.object({
+    title: z.string(),
+    location: z.enum(['none', 'main', 'footer']).default('none'),
+    groups: z.array(menuGroup).default([]),
+  }),
+});
+
+export const collections = { albums, videos, events, posts, gear, about, pages, menus };

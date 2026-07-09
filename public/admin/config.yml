@@ -321,6 +321,54 @@ collections:
           - { label: 'Meta description', name: description, widget: text, required: false }
           - { label: 'Hide from search engines', name: noindex, widget: boolean, default: false }
 
+  # ── MENUS ──────────────────────────────────────────────────────────────
+  - name: menus
+    label: 'Menus'
+    label_singular: 'Menu'
+    folder: 'src/content/menus'
+    create: true
+    delete: true
+    extension: json
+    format: json
+    identifier_field: title
+    slug: '{{slug}}'
+    summary: '{{title}} — {{location}}'
+    fields:
+      - { label: 'Menu name', name: title, widget: string, hint: 'For your reference, e.g. “Main navigation”.' }
+      - label: 'Publish to'
+        name: location
+        widget: select
+        default: none
+        hint: 'Publishing replaces the current menu in that area. Use one menu per area.'
+        options:
+          - { label: 'Unpublished (not shown)', value: none }
+          - { label: 'Main menu (header)', value: main }
+          - { label: 'Footer menu', value: footer }
+      - label: Groups
+        name: groups
+        widget: list
+        label_singular: 'Group'
+        summary: "{{fields.heading | default('Links')}}"
+        hint: 'The header shows every link in one row (group headings are ignored there). The footer shows each group as its own column.'
+        fields:
+          - { label: 'Group heading (footer column title)', name: heading, widget: string, required: false }
+          - label: Links
+            name: links
+            widget: list
+            summary: '{{fields.label}}'
+            fields:
+              - { label: Label, name: label, widget: string, required: false, hint: 'Leave blank to use the page’s title.' }
+              - label: Page
+                name: page
+                widget: relation
+                collection: pages
+                required: false
+                search_fields: [title]
+                value_field: '{{slug}}'
+                display_fields: [title]
+                hint: 'Pick a page — or leave empty and use a custom URL below.'
+              - { label: 'Custom URL', name: url, widget: string, required: false, hint: 'Used only when no page is chosen. External link, /path, #anchor or mailto:' }
+
   # ── SITE SETTINGS ──────────────────────────────────────────────────────
   - name: settings
     label: 'Site Settings'

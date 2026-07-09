@@ -5,16 +5,18 @@
  * All content is CMS-driven via the navigation + site singletons.
  */
 import { navigation, site } from '@lib/settings';
-import { getHiddenHrefs, filterLinks, linkHidden } from '@lib/pages';
+import { getHiddenHrefs, linkHidden } from '@lib/pages';
+import { getMainMenu } from '@lib/menus';
 import Button from '@components/ui/Button.astro';
 import MobileMenu from './MobileMenu.astro';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 
-// Drop links to hidden pages from the nav.
+// The header shows the published "main" menu (falls back to Navigation settings).
+const primaryNav = await getMainMenu();
+// The CTA button still comes from Navigation settings; drop it if hidden.
 const hidden = await getHiddenHrefs();
-const primaryNav = filterLinks(navigation.primary, hidden);
 const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigation.cta : null;
 ---
 

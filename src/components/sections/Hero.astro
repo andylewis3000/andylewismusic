@@ -60,6 +60,13 @@ const headingHtml = h.heading.replace(/\./g, '<span class="hero-dot">.</span>');
     inset: 0;
     z-index: -1;
   }
+  /* The <picture> wrapper must fill the box, otherwise it shrink-wraps to the
+     image's natural height and the img's height:100% resolves against that. */
+  .hero-bg :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
   .hero-bg :global(img),
   .hero-bg :global(.media-placeholder) {
     width: 100%;

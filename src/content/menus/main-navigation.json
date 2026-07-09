@@ -1,0 +1,41 @@
+{
+  "title": "Main navigation",
+  "location": "main",
+  "groups": [
+    {
+      "heading": "",
+      "links": [
+        {
+          "label": "Music",
+          "page": "music",
+          "url": ""
+        },
+        {
+          "label": "Videos",
+          "page": "videos",
+          "url": ""
+        },
+        {
+          "label": "Events",
+          "page": "events",
+          "url": ""
+        },
+        {
+          "label": "News",
+          "page": "blog",
+          "url": ""
+        },
+        {
+          "label": "About",
+          "page": "about",
+          "url": ""
+        },
+        {
+          "label": "Gear",
+          "page": "gear",
+          "url": ""
+        }
+      ]
+    }
+  ]
+}

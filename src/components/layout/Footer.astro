@@ -5,15 +5,15 @@
  */
 import { footer, site } from '@lib/settings';
 import { getHiddenHrefs, filterLinks } from '@lib/pages';
+import { getFooterMenu } from '@lib/menus';
 import SocialLinks from '@components/ui/SocialLinks.astro';
 
 const year = new Date().getFullYear();
 
-// Drop links to hidden pages; drop columns left empty as a result.
+// Columns come from the published "footer" menu (falls back to Footer settings).
+// Hidden/draft pages are already dropped by getFooterMenu().
+const columns = await getFooterMenu();
 const hidden = await getHiddenHrefs();
-const columns = footer.columns
-  .map((col) => ({ ...col, links: filterLinks(col.links, hidden) }))
-  .filter((col) => col.links.length > 0);
 const legal = filterLinks(footer.legal, hidden);
 ---
 

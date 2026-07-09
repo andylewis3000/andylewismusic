@@ -1,0 +1,24 @@
+{
+  "title": "Footer navigation",
+  "location": "footer",
+  "groups": [
+    {
+      "heading": "Explore",
+      "links": [
+        { "label": "About", "page": "about", "url": "" },
+        { "label": "Music", "page": "music", "url": "" },
+        { "label": "Videos", "page": "videos", "url": "" },
+        { "label": "Gear", "page": "gear", "url": "" }
+      ]
+    },
+    {
+      "heading": "Connect",
+      "links": [
+        { "label": "Upcoming Shows", "page": "events", "url": "" },
+        { "label": "News", "page": "blog", "url": "" },
+        { "label": "Booking", "page": "contact", "url": "" },
+        { "label": "RSS Feed", "page": "", "url": "/rss.xml" }
+      ]
+    }
+  ]
+}
