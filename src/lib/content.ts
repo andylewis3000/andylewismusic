@@ -28,6 +28,18 @@ export async function getAlbums(): Promise<Album[]> {
 export async function getFeaturedAlbums(limit = 3): Promise<Album[]> {
   return (await getAlbums()).filter((a) => a.data.featured).slice(0, limit);
 }
+/** Albums that share at least one tag with the given album, most-shared first. */
+export async function getRelatedAlbums(album: Album, limit = 3): Promise<Album[]> {
+  const tags = album.data.tags ?? [];
+  if (tags.length === 0) return [];
+  const others = (await getAlbums()).filter((a) => a.id !== album.id);
+  return others
+    .map((a) => ({ a, score: (a.data.tags ?? []).filter((t) => tags.includes(t)).length }))
+    .filter((s) => s.score > 0)
+    .sort((x, y) => y.score - x.score || +y.a.data.releaseDate - +x.a.data.releaseDate)
+    .slice(0, limit)
+    .map((s) => s.a);
+}
 
 /* ── Videos ────────────────────────────────────────────────────────────── */
 export async function getVideos(): Promise<Video[]> {

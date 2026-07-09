@@ -105,6 +105,8 @@ const albums = defineCollection({
     artist: z.string().default('Andy Lewis'),
     label: z.string().optional(),
     roles: z.array(disciplines).default([]),
+    // Free-form tags used to surface related albums (e.g. "punk", "instrumental").
+    tags: z.array(z.string()).default([]),
     tracklist: z
       .array(
         z.object({

@@ -14,6 +14,7 @@ import Icon from '@components/ui/Icon.astro';
 import SpotifyEmbed from '@components/embeds/SpotifyEmbed.astro';
 import AppleMusicEmbed from '@components/embeds/AppleMusicEmbed.astro';
 import CTASection from '@components/sections/CTASection.astro';
+import RelatedAlbums from '@components/sections/RelatedAlbums.astro';
 import { getAlbums } from '@lib/content';
 import { resolveImage } from '@lib/images';
 import { formatDate, year } from '@lib/format';
@@ -66,7 +67,7 @@ const schemas = [
       <div class="album-info">
         <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
         <h1 class="album-title">{d.title}</h1>
-        <p class="album-artist">{d.artist}</p>
+        <h2 class="album-artist">{d.artist}</h2>
         {
           links.length > 0 && (
             <div class="release-links">
@@ -162,6 +163,8 @@ const schemas = [
     </div>
   </section>
 
+  <RelatedAlbums album={album} tone="grey" kicker="More to hear" heading="Related albums" />
+
   <CTASection />
 </BaseLayout>
 
@@ -230,6 +233,7 @@ const schemas = [
   }
   .album-artist {
     margin: 0;
+    font-size: var(--text-h3);
     color: rgba(255, 255, 255, 0.85);
   }
   .album-hero :global(.kicker) {

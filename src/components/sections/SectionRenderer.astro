@@ -7,6 +7,7 @@
  */
 import HomeFeaturedMusic from './HomeFeaturedMusic.astro';
 import Discography from './Discography.astro';
+import RelatedAlbums from './RelatedAlbums.astro';
 import HomeLatestVideo from './HomeLatestVideo.astro';
 import FeaturedVideos from './FeaturedVideos.astro';
 import VideoArchive from './VideoArchive.astro';
@@ -33,6 +34,7 @@ const { section: s } = Astro.props;
 const map: Record<string, unknown> = {
   'featured-music': HomeFeaturedMusic,
   discography: Discography,
+  'related-albums': RelatedAlbums,
   'latest-video': HomeLatestVideo,
   'featured-videos': FeaturedVideos,
   'video-archive': VideoArchive,

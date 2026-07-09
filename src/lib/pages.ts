@@ -46,6 +46,7 @@ const styleShape = {
 export const SECTION_TYPES = [
   'featured-music',
   'discography',
+  'related-albums',
   'latest-video',
   'featured-videos',
   'video-archive',

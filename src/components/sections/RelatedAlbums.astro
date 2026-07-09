@@ -1,0 +1,57 @@
+---
+/**
+ * Related albums — a tag-based "you might also like" grid.
+ *
+ * On an album page, pass the current `album`; it shows other releases that
+ * share at least one tag (most tags in common first). Used composably on any
+ * other page (no album context), it gracefully falls back to recent releases.
+ * Renders nothing when there's nothing relevant to show.
+ */
+import Section from '@components/layout/Section.astro';
+import SectionHeader from '@components/ui/SectionHeader.astro';
+import MusicCard from '@components/cards/MusicCard.astro';
+import { getAlbums, getRelatedAlbums, type Album } from '@lib/content';
+import { take, type BlockProps } from '@lib/blocks';
+
+interface Props extends BlockProps {
+  /** When rendered on an album page, relate to this album by its tags. */
+  album?: Album;
+}
+const {
+  album,
+  kicker,
+  heading = 'Related albums',
+  subheading,
+  tone = 'grey',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+  limit,
+} = Astro.props as Props;
+
+const max = limit && limit > 0 ? limit : 3;
+const albums = album
+  ? await getRelatedAlbums(album, max)
+  : take(await getAlbums(), max, 0);
+---
+
+{
+  albums.length > 0 && (
+    <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
+      <SectionHeader kicker={kicker} heading={heading} subheading={subheading} srHeading="Related albums" />
+      <div class="grid-cards">
+        {albums.map((a) => (
+          <MusicCard album={a} />
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  .grid-cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  }
+</style>

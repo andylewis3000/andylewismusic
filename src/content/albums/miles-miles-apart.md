@@ -10,6 +10,9 @@ label: State of Mind Recordings
 roles:
   - drums
   - composition
+tags:
+  - precursor
+  - punk
 tracklist:
   - title: Fireworks
     duration: 3:07

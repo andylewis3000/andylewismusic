@@ -10,6 +10,9 @@ label: Black Box Music
 roles:
   - drums
   - composition
+tags:
+  - thefullblast
+  - punk
 tracklist:
   - title: All I Need is a Jetpack and Rollerskates
     duration: 3:50

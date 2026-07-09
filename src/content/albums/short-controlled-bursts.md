@@ -11,6 +11,9 @@ roles:
   - drums
   - composition
   - production
+tags:
+  - thefullblast
+  - punk
 tracklist:
   - title: Spoons, Gats, Prison Tats
     duration: 4:45

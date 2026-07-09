@@ -71,6 +71,12 @@ collections:
           required: false,
           options: [drums, guitar, composition, production, mixing, programming],
         }
+      - label: Tags
+        name: tags
+        widget: list
+        required: false
+        hint: 'e.g. punk, instrumental, live. Albums that share a tag appear in each other’s “Related albums” section.'
+        field: { label: Tag, name: tag, widget: string }
       - label: Tracklist
         name: tracklist
         widget: list
@@ -254,7 +260,7 @@ collections:
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
             fields: &section_fields
-              - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
+              - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, related-albums, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
               - { label: Enabled, name: enabled, widget: boolean, default: true }
               - { label: Kicker, name: kicker, widget: string, required: false, hint: 'Small label above the heading. Leave blank to hide it.' }
               - { label: Heading, name: heading, widget: string, required: false }
