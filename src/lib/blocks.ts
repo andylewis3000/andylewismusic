@@ -6,6 +6,7 @@
 import type { Tone } from './pages';
 
 export interface BlockProps {
+  kicker?: string;
   heading?: string;
   subheading?: string;
   /** Markdown body, used by the rich-text block. */

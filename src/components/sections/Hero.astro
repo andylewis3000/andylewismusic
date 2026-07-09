@@ -70,11 +70,11 @@ const headingHtml = h.heading.replace(/\./g, '<span class="hero-dot">.</span>');
     position: absolute;
     inset: 0;
     background:
-      /* Gradual fade to the page background across the bottom half. */
-      linear-gradient(180deg, transparent 45%, var(--color-bg) 100%),
-      /* Keep the headline legible (top + left darkening). */
-      linear-gradient(180deg, rgba(10, 10, 11, 0.5) 0%, transparent 42%),
-      linear-gradient(90deg, rgba(10, 10, 11, 0.62), transparent 62%);
+      /* Subtle, smooth fade to the page background along the bottom only. */
+      linear-gradient(180deg, transparent 74%, var(--color-bg) 100%),
+      /* Light darkening so the white headline stays legible. */
+      linear-gradient(180deg, rgba(10, 10, 11, 0.4) 0%, transparent 38%),
+      linear-gradient(90deg, rgba(10, 10, 11, 0.48), transparent 58%);
   }
   .hero-inner {
     display: grid;
@@ -92,7 +92,10 @@ const headingHtml = h.heading.replace(/\./g, '<span class="hero-dot">.</span>');
     margin: 0;
     max-width: 46ch;
     font-size: var(--text-lead);
-    color: var(--color-ink-muted);
+    color: rgba(255, 255, 255, 0.92);
+  }
+  .hero-inner :global(.kicker) {
+    color: #fff;
   }
   .hero-actions {
     display: flex;

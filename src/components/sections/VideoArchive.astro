@@ -10,6 +10,7 @@ import { getVideos } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading,
   subheading,
   tone = 'dark',
@@ -28,7 +29,7 @@ const label = (c: string) => c.replace('-', ' ');
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {
         heading || subheading ? (
-          <SectionHeader kicker="Watch" heading={heading} subheading={subheading} />
+          <SectionHeader kicker={kicker} heading={heading} subheading={subheading} />
         ) : (
           <h2 class="sr-only">Videos</h2>
         )

@@ -6,6 +6,7 @@ import { getEvents } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading = 'Upcoming Shows',
   subheading,
   tone = 'dark',
@@ -21,7 +22,7 @@ const shows = take(upcoming, limit, 4);
 <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
   {
     heading || subheading ? (
-      <SectionHeader kicker="Live" heading={heading} subheading={subheading} href="/events/" />
+      <SectionHeader kicker={kicker} heading={heading} subheading={subheading} href="/events/" />
     ) : (
       <h2 class="sr-only">Upcoming shows</h2>
     )

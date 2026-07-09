@@ -68,6 +68,11 @@ const sectionTone = z.enum(['dark', 'grey', 'light', 'white', 'accent']);
 const nz = (v: unknown) => (v === null ? undefined : v);
 const optNumber = z.preprocess(nz, z.number().optional());
 const optString = z.preprocess(nz, z.string().optional());
+// Blank date fields from the CMS arrive as '' — treat those as unset.
+const optDate = z.preprocess(
+  (v) => (v === null || v === '' ? undefined : v),
+  z.coerce.date().optional()
+);
 const sectionStyleShape = {
   background: sectionTone.default('dark'),
   backgroundImage: optString,
@@ -79,6 +84,7 @@ const sectionStyleShape = {
 const pageSectionObject = z.object({
   id: z.string(),
   enabled: z.boolean().default(true),
+  kicker: optString,
   heading: optString,
   subheading: optString,
   limit: optNumber,
@@ -183,7 +189,7 @@ const posts = defineCollection({
     title: z.string(),
     description: z.string().max(200),
     publishDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
+    updatedDate: optDate,
     author: z.string().default('Andy Lewis'),
     category: z
       .enum(['news', 'releases', 'tour', 'studio', 'gear', 'reflections'])
@@ -251,6 +257,7 @@ const about = defineCollection({
         z.object({
           id: z.string(),
           enabled: z.boolean().default(true),
+          kicker: optString,
           heading: optString,
           subheading: optString,
           limit: optNumber,

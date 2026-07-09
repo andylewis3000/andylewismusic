@@ -9,6 +9,7 @@ import { getEvents } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading = 'Past shows',
   subheading,
   tone = 'grey',
@@ -26,7 +27,7 @@ const shows = take(past, limit ?? 0, 0);
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {
         heading || subheading ? (
-          <SectionHeader kicker="Archive" heading={heading} subheading={subheading} />
+          <SectionHeader kicker={kicker} heading={heading} subheading={subheading} />
         ) : (
           <h2 class="sr-only">Past shows</h2>
         )

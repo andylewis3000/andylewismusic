@@ -1,13 +1,15 @@
 {
+  "title": "News",
+  "draft": false,
   "hero": {
-    "kicker": "Journal",
-    "heading": "News",
+    "hidden": false,
+    "kicker": "News",
+    "heading": "The Latest",
     "intro": "Releases, tour updates, studio notes and the occasional tangent.",
-    "background": "white",
+    "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false,
-    "hidden": false
+    "parallax": false
   },
   "sections": [
     {
@@ -16,7 +18,5 @@
       "background": "light",
       "parallax": false
     }
-  ],
-  "title": "News",
-  "draft": false
+  ]
 }

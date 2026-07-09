@@ -1,13 +1,15 @@
 {
+  "title": "Let's work together",
+  "draft": false,
   "hero": {
-    "kicker": "Booking",
+    "hidden": false,
+    "kicker": "Contact",
     "heading": "Let's work together",
     "intro": "Performances, sessions, collaborations, scoring — tell me what you're planning and I'll get back to you personally.",
-    "background": "white",
+    "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false,
-    "hidden": false
+    "parallax": false
   },
   "sections": [
     {
@@ -16,7 +18,5 @@
       "background": "light",
       "parallax": false
     }
-  ],
-  "title": "Let's work together",
-  "draft": false
+  ]
 }

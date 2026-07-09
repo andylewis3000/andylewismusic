@@ -9,6 +9,7 @@ import { getGearByCategory } from '@lib/content';
 import type { BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading,
   subheading,
   tone = 'dark',
@@ -27,7 +28,7 @@ const groups = await getGearByCategory();
       backgroundAlt={backgroundAlt}
       parallax={parallax}
     >
-      {(heading || subheading) && <SectionHeader kicker="Setup" heading={heading} subheading={subheading} />}
+      {(heading || subheading) && <SectionHeader kicker={kicker} heading={heading} subheading={subheading} />}
       {/* Wrapper lives in this component so its scoped grid gap actually applies. */}
       <div class="gear-sections">
         {groups.map((group) => (

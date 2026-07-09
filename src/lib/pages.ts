@@ -68,6 +68,8 @@ const pageSectionSchema = z.object({
   // The section type, chosen from the shared library (SECTION_TYPES).
   id: z.string(),
   enabled: z.boolean().default(true),
+  /** Small label above the heading. Blank hides it. */
+  kicker: optString,
   heading: optString,
   subheading: optString,
   /** Max items for list blocks (featured-music, news, events…). 0 = all. */

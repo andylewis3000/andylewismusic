@@ -11,6 +11,7 @@ import { getVideos } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading = 'Featured Videos',
   subheading,
   tone = 'dark',
@@ -29,7 +30,7 @@ const videos = take(featured.length ? featured : all, limit, 3);
   videos.length > 0 && (
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {heading || subheading ? (
-        <SectionHeader kicker="Watch" heading={heading} subheading={subheading} href="/videos/" />
+        <SectionHeader kicker={kicker} heading={heading} subheading={subheading} href="/videos/" />
       ) : (
         <h2 class="sr-only">Featured videos</h2>
       )}

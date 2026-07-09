@@ -1,15 +1,16 @@
 ---
-title: "Nightshift is out now"
-description: "My new instrumental album Nightshift is available everywhere — here's the story behind it."
+title: Nightshift is out now
+description: My new instrumental album Nightshift is available everywhere — here's the story behind it.
 publishDate: 2025-10-03
+updatedDate: ''
 author: Andy Lewis
 category: releases
 tags:
   - nightshift
   - album
   - release
-heroImage: /src/assets/images/uploads/post-nightshift.jpg
-heroImageAlt: "Andy Lewis in the studio at night, backlit in blue"
+heroImage: /src/assets/images/uploads/gabriel-barletta--lWcaUVJ39Y-unsplash.jpg
+heroImageAlt: Andy Lewis in the studio at night, backlit in blue
 featured: true
 draft: false
 ---

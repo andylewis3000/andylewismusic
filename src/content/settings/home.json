@@ -26,6 +26,7 @@
     {
       "id": "featured-music",
       "enabled": true,
+      "kicker": "",
       "heading": "Featured Music",
       "subheading": "Recent releases & selected work",
       "limit": 2,
@@ -37,6 +38,7 @@
     {
       "id": "featured-videos",
       "enabled": true,
+      "kicker": "",
       "heading": "Featured Videos",
       "subheading": "",
       "limit": 2,
@@ -48,6 +50,7 @@
     {
       "id": "upcoming-events",
       "enabled": true,
+      "kicker": "",
       "heading": "Upcoming Shows",
       "subheading": "Catch a performance live",
       "limit": null,
@@ -59,6 +62,7 @@
     {
       "id": "news",
       "enabled": true,
+      "kicker": "",
       "heading": "Latest News",
       "subheading": "",
       "limit": null,
@@ -70,7 +74,8 @@
     {
       "id": "instagram",
       "enabled": true,
-      "heading": "On the Road",
+      "kicker": "",
+      "heading": "Instagram",
       "subheading": "",
       "limit": null,
       "body": "",
@@ -81,6 +86,7 @@
     {
       "id": "cta",
       "enabled": true,
+      "kicker": "",
       "heading": "",
       "subheading": "",
       "limit": null,

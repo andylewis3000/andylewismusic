@@ -256,6 +256,7 @@ collections:
             fields: &section_fields
               - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
               - { label: Enabled, name: enabled, widget: boolean, default: true }
+              - { label: Kicker, name: kicker, widget: string, required: false, hint: 'Small label above the heading. Leave blank to hide it.' }
               - { label: Heading, name: heading, widget: string, required: false }
               - { label: Subheading, name: subheading, widget: string, required: false }
               - { label: 'Item limit (0 = all)', name: limit, widget: number, required: false, value_type: int }

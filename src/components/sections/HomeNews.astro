@@ -6,6 +6,7 @@ import { getPosts } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading = 'Latest News',
   subheading,
   tone = 'dark',
@@ -26,7 +27,7 @@ const posts = take(base, limit, 3);
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {
         heading || subheading ? (
-          <SectionHeader kicker="Journal" heading={heading} subheading={subheading} href="/blog/" />
+          <SectionHeader kicker={kicker} heading={heading} subheading={subheading} href="/blog/" />
         ) : (
           <h2 class="sr-only">News</h2>
         )

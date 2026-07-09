@@ -14,6 +14,7 @@ import { home } from '@lib/pages';
 import type { Tone } from '@lib/pages';
 
 interface Props {
+  kicker?: string;
   heading?: string;
   tone?: Tone;
   backgroundImage?: string;
@@ -21,6 +22,7 @@ interface Props {
   parallax?: boolean;
 }
 const {
+  kicker,
   heading = home.instagram.heading,
   tone = 'dark',
   backgroundImage,
@@ -66,7 +68,7 @@ const tiles = Array.from({ length: 6 });
 
 <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
   <SectionHeader
-    kicker="Instagram"
+    kicker={kicker}
     heading={heading}
     subheading={handle ? `@${handle}` : undefined}
     href={profileUrl}

@@ -23,18 +23,15 @@ const {
   body = home.cta.body,
   primary = home.cta.primaryCta,
   secondary = home.cta.secondaryCta ?? null,
-  tone = 'grey',
   backgroundImage,
   backgroundAlt,
   parallax = false,
 } = Astro.props;
 
-// The lime glow only reads on dark tones.
-const showGlow = (tone === 'dark' || tone === 'grey') && !backgroundImage;
+// CTA bands are always the accent (green) colour.
 ---
 
-<Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax} class="cta-section">
-  {showGlow && <div class="cta-glow" aria-hidden="true"></div>}
+<Section tone="accent" backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax} class="cta-section">
   <div class="cta-inner" data-reveal>
     <h2 class="cta-heading">{heading}</h2>
     <p class="cta-body">{body}</p>

@@ -54,6 +54,8 @@ const map: Record<string, unknown> = {
 const Block = map[s.id] as (props: Record<string, unknown>) => unknown;
 // Treat blank CMS fields as "unset" so each block's own defaults apply.
 const blockProps = {
+  // A blank kicker hides it; when unset the section keeps no kicker.
+  kicker: s.kicker || undefined,
   heading: s.heading || undefined,
   subheading: s.subheading || undefined,
   body: s.body || undefined,

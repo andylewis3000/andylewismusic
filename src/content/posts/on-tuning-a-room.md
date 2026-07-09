@@ -1,16 +1,17 @@
 ---
-title: "On tuning a room, not just a drum"
-description: "A few thoughts on how the space you record in shapes the sound more than the kit ever could."
+title: On tuning a room, not just a drum
+description: A few thoughts on how the space you record in shapes the sound more than the kit ever could.
 publishDate: 2026-02-18
+updatedDate: ''
 author: Andy Lewis
 category: studio
 tags:
   - recording
   - drums
   - studio
-heroImage: /src/assets/images/uploads/post-room.jpg
-heroImageAlt: "A vintage drum kit in a warmly lit wooden studio room"
-featured: false
+heroImage: /src/assets/images/uploads/matthijs-smit-bRG2C0FAQEY-unsplash.jpg
+heroImageAlt: A vintage drum kit in a warmly lit wooden studio room
+featured: true
 draft: false
 ---
 

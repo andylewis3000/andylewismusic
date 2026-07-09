@@ -3,7 +3,7 @@
     "kicker": "Watch",
     "heading": "Videos",
     "intro": "Live sessions, drum playthroughs and music videos — click any thumbnail to play.",
-    "background": "white",
+    "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
     "parallax": false,
@@ -15,14 +15,16 @@
       "enabled": true,
       "heading": "Featured",
       "background": "light",
-      "parallax": false
+      "parallax": false,
+      "kicker": "Watch"
     },
     {
       "id": "video-archive",
       "enabled": true,
       "heading": "All videos",
       "background": "white",
-      "parallax": false
+      "parallax": false,
+      "kicker": "Watch"
     },
     {
       "id": "cta",

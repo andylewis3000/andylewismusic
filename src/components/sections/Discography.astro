@@ -10,6 +10,7 @@ import { getAlbums } from '@lib/content';
 import { take, type BlockProps } from '@lib/blocks';
 
 const {
+  kicker,
   heading = 'Music',
   subheading,
   tone = 'dark',
@@ -26,7 +27,7 @@ const albums = take(await getAlbums(), limit ?? 0, 0);
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
       {
         heading || subheading ? (
-          <SectionHeader kicker="Discography" heading={heading} subheading={subheading} />
+          <SectionHeader kicker={kicker} heading={heading} subheading={subheading} />
         ) : (
           <h2 class="sr-only">Music</h2>
         )

@@ -7,11 +7,13 @@ import Icon from './Icon.astro';
 
 interface Props {
   kicker?: string;
-  heading: string;
+  heading?: string;
   subheading?: string;
   href?: string;
   linkLabel?: string;
   as?: 'h1' | 'h2' | 'h3';
+  /** Accessible heading text used when `heading` is blank (kept sr-only). */
+  srHeading?: string;
   class?: string;
 }
 const {
@@ -21,26 +23,40 @@ const {
   href,
   linkLabel = 'View all',
   as = 'h2',
+  srHeading,
   class: className,
 } = Astro.props as Props;
 const Heading = as;
+// The header only takes up space when something visible is set. When the
+// heading itself is blank we still emit an sr-only heading so the document
+// outline stays intact (h1 → h2 → h3).
+const hasVisible = Boolean(kicker || heading || subheading);
+const accessibleName = heading || srHeading || kicker || 'Section';
 ---
 
-<div class:list={['section-header', className]} data-reveal>
-  <div class="section-header-text">
-    {kicker && <span class="kicker">{kicker}</span>}
-    <Heading class="section-heading">{heading}</Heading>
-    {subheading && <p class="section-sub">{subheading}</p>}
-  </div>
-  {
-    href && (
-      <a class="section-link" href={href}>
-        {linkLabel}
-        <Icon name="arrow-right" size={18} />
-      </a>
-    )
-  }
-</div>
+{
+  hasVisible ? (
+    <div class:list={['section-header', className]} data-reveal>
+      <div class="section-header-text">
+        {kicker && <span class="kicker">{kicker}</span>}
+        {heading ? (
+          <Heading class="section-heading">{heading}</Heading>
+        ) : (
+          <Heading class="sr-only">{accessibleName}</Heading>
+        )}
+        {subheading && <p class="section-sub">{subheading}</p>}
+      </div>
+      {href && (
+        <a class="section-link" href={href}>
+          {linkLabel}
+          <Icon name="arrow-right" size={18} />
+        </a>
+      )}
+    </div>
+  ) : (
+    <Heading class="sr-only">{accessibleName}</Heading>
+  )
+}
 
 <style>
   .section-header {

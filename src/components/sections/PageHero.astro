@@ -85,14 +85,8 @@ const effectiveTone = hasImage ? 'dark' : tone;
     background: linear-gradient(180deg, rgba(10, 10, 11, 0.3), rgba(10, 10, 11, 0.48));
     pointer-events: none;
   }
-  /* Over a hero image, text is white on the (lightened) scrim. */
-  .has-bg .page-title {
-    color: #fff;
-  }
-  .has-bg .page-intro {
-    color: rgba(255, 255, 255, 0.9);
-  }
-  .has-bg :global(.kicker) {
+  /* Page heroes are dark (or an image with a scrim) — all text is white. */
+  .page-hero :global(.kicker) {
     color: rgba(255, 255, 255, 0.85);
   }
   .ph-inner {
@@ -107,11 +101,12 @@ const effectiveTone = hasImage ? 'dark' : tone;
   }
   .page-title {
     font-size: var(--text-h1);
+    color: #fff;
   }
   .page-intro {
     margin: 0;
     max-width: 60ch;
     font-size: var(--text-lead);
-    color: var(--color-ink-muted);
+    color: rgba(255, 255, 255, 0.9);
   }
 </style>

@@ -1,38 +1,52 @@
 {
+  "title": "Events",
+  "draft": false,
   "hero": {
-    "kicker": "Live",
-    "heading": "Events",
+    "hidden": false,
+    "kicker": "Events",
+    "heading": "Live Shows",
     "intro": "Where to catch a performance. New dates are announced here first.",
-    "background": "white",
+    "background": "dark",
     "backgroundImage": "",
     "backgroundAlt": "",
-    "parallax": false,
-    "hidden": false
+    "parallax": false
   },
   "sections": [
     {
       "id": "upcoming-events",
       "enabled": true,
+      "kicker": "",
       "heading": "Upcoming",
+      "subheading": "",
+      "limit": 0,
+      "body": "",
       "background": "light",
-      "parallax": false,
-      "limit": 0
+      "backgroundAlt": "",
+      "parallax": false
     },
     {
       "id": "past-events",
       "enabled": true,
+      "kicker": "",
       "heading": "Past shows",
+      "subheading": "",
+      "limit": 0,
+      "body": "",
       "background": "light",
-      "parallax": false,
-      "limit": 0
+      "backgroundAlt": "",
+      "parallax": false
     },
     {
       "id": "cta",
       "enabled": true,
+      "kicker": "",
+      "heading": "",
+      "subheading": "",
+      "limit": null,
+      "body": "",
       "background": "light",
+      "backgroundAlt": "",
       "parallax": false
     }
-  ],
-  "title": "Events",
-  "draft": false
+  ]
 }
