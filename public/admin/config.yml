@@ -15,7 +15,7 @@
 
 backend:
   name: github
-  repo: andylewis/andylewismusic # ← update to the real GitHub owner/repo
+  repo: andylewis3000/andylewismusic
   branch: main
   # Sveltia handles GitHub OAuth via its hosted auth, or your own — see docs.
 
