@@ -11,8 +11,6 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Image from '@components/media/Image.astro';
 import Button from '@components/ui/Button.astro';
 import Icon from '@components/ui/Icon.astro';
-import SpotifyEmbed from '@components/embeds/SpotifyEmbed.astro';
-import AppleMusicEmbed from '@components/embeds/AppleMusicEmbed.astro';
 import CTASection from '@components/sections/CTASection.astro';
 import RelatedAlbums from '@components/sections/RelatedAlbums.astro';
 import { getAlbums } from '@lib/content';
@@ -68,33 +66,9 @@ const schemas = [
         <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
         <h1 class="album-title">{d.title}</h1>
         <h2 class="album-artist">{d.artist}</h2>
-        {
-          links.length > 0 && (
-            <div class="release-links">
-              {links.map((l) => (
-                <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
-                  {l.label}
-                </Button>
-              ))}
-            </div>
-          )
-        }
       </div>
     </div>
   </header>
-
-  {
-    (d.links.spotify || d.links.appleMusic) && (
-      <section class="section-tight players">
-        <div class="container-page player-grid">
-          {d.links.spotify && <SpotifyEmbed url={d.links.spotify} title={`${d.title} on Spotify`} />}
-          {d.links.appleMusic && (
-            <AppleMusicEmbed url={d.links.appleMusic} title={`${d.title} on Apple Music`} />
-          )}
-        </div>
-      </section>
-    )
-  }
 
   <section class="section-tight">
     <div class="container-page detail-cols">
@@ -128,7 +102,20 @@ const schemas = [
       </div>
 
       <div class="detail-side">
-        <p class="album-desc">{d.description}</p>
+        <div class="release-intro">
+          {
+            links.length > 0 && (
+              <div class="release-links">
+                {links.map((l) => (
+                  <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
+                    {l.label}
+                  </Button>
+                ))}
+              </div>
+            )
+          }
+          <p class="album-desc">{d.description}</p>
+        </div>
         <dl class="release-facts">
           <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
           {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
@@ -249,18 +236,7 @@ const schemas = [
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 0.75rem;
-  }
-
-  .player-grid {
-    display: grid;
-    gap: 1.5rem;
-  }
-  @media (min-width: 820px) {
-    .player-grid {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
-    }
+    margin: 0 0 1.1rem;
   }
 
   .detail-cols {

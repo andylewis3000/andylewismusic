@@ -1,7 +1,8 @@
 ---
 /**
  * Discography block — the full release grid (albums, EPs, singles).
- * `limit` caps the count; default shows all.
+ * `limit` caps the count; default shows all. Includes a client-side sort
+ * control (newest/oldest/A–Z/Z–A); the default order is newest first.
  */
 import Section from '@components/layout/Section.astro';
 import SectionHeader from '@components/ui/SectionHeader.astro';
@@ -19,32 +20,126 @@ const {
   parallax = false,
   limit,
 } = Astro.props as BlockProps;
-const albums = take(await getAlbums(), limit ?? 0, 0);
+
+// Default view: newest first (matches the sort control's default).
+const albums = take(
+  [...(await getAlbums())].sort((a, b) => +b.data.releaseDate - +a.data.releaseDate),
+  limit ?? 0,
+  0
+);
 ---
 
 {
   albums.length > 0 && (
     <Section tone={tone} backgroundImage={backgroundImage} backgroundAlt={backgroundAlt} parallax={parallax}>
-      {
-        heading || subheading ? (
-          <SectionHeader kicker={kicker} heading={heading} subheading={subheading} />
-        ) : (
-          <h2 class="sr-only">Music</h2>
-        )
-      }
-      <div class="grid-cards">
-        {albums.map((album) => (
-          <MusicCard album={album} />
-        ))}
+      <div class="disco" data-disco>
+        <div class="disco-head">
+          {heading || subheading ? (
+            <SectionHeader kicker={kicker} heading={heading} subheading={subheading} class="disco-header" />
+          ) : (
+            <h2 class="sr-only">Music</h2>
+          )}
+          {albums.length > 1 && (
+            <select class="sort-select" data-album-sort aria-label="Sort releases">
+              <option value="newest">Newest to oldest</option>
+              <option value="oldest">Oldest to newest</option>
+              <option value="artist-az">Artist A–Z</option>
+              <option value="artist-za">Artist Z–A</option>
+              <option value="title-az">Album title A–Z</option>
+              <option value="title-za">Album title Z–A</option>
+            </select>
+          )}
+        </div>
+
+        <div class="grid-cards" data-album-grid>
+          {albums.map((album) => (
+            <MusicCard album={album} />
+          ))}
+        </div>
       </div>
     </Section>
   )
 }
 
+<script>
+  type SortValue = 'newest' | 'oldest' | 'artist-az' | 'artist-za' | 'title-az' | 'title-za';
+
+  function bindDiscographySort() {
+    document.querySelectorAll<HTMLElement>('[data-disco]').forEach((root) => {
+      if (root.dataset.sortBound) return;
+      root.dataset.sortBound = '1';
+
+      const select = root.querySelector<HTMLSelectElement>('[data-album-sort]');
+      const grid = root.querySelector<HTMLElement>('[data-album-grid]');
+      if (!select || !grid) return;
+
+      const cards = Array.from(grid.children) as HTMLElement[];
+      const title = (el: HTMLElement) => el.dataset.title ?? '';
+      const artist = (el: HTMLElement) => el.dataset.artist ?? '';
+      const date = (el: HTMLElement) => Number(el.dataset.date ?? 0);
+
+      select.addEventListener('change', () => {
+        const v = select.value as SortValue;
+        const sorted = [...cards].sort((a, b) => {
+          if (v === 'artist-az') return artist(a).localeCompare(artist(b)) || date(b) - date(a);
+          if (v === 'artist-za') return artist(b).localeCompare(artist(a)) || date(b) - date(a);
+          if (v === 'title-az') return title(a).localeCompare(title(b));
+          if (v === 'title-za') return title(b).localeCompare(title(a));
+          if (v === 'oldest') return date(a) - date(b);
+          return date(b) - date(a); // newest (default)
+        });
+        // Re-append in the new order (moves the existing nodes, no re-render).
+        sorted.forEach((card) => grid.appendChild(card));
+      });
+    });
+  }
+
+  bindDiscographySort();
+  document.addEventListener('astro:page-load', bindDiscographySort);
+</script>
+
 <style>
+  .disco-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+  .disco-head :global(.disco-header) {
+    margin-bottom: 0;
+    flex: 1 1 auto;
+  }
+  .sort-select {
+    flex: none;
+    font: inherit;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    padding: 0.5rem 2rem 0.5rem 0.8rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 1.05rem) 55%, calc(100% - 0.75rem) 55%;
+    background-size: 0.32rem 0.32rem, 0.32rem 0.32rem;
+    background-repeat: no-repeat;
+    transition: border-color var(--dur-base) var(--ease-standard);
+  }
+  .sort-select:hover {
+    border-color: var(--color-accent);
+  }
+  .sort-select:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
   .grid-cards {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+    margin-top: clamp(1.75rem, 1rem + 2vw, 3rem);
   }
 </style>

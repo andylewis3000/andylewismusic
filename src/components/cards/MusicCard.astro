@@ -11,11 +11,18 @@ interface Props {
   album: Album;
 }
 const { album } = Astro.props;
-const { title, type, releaseDate, cover, coverAlt } = album.data;
+const { title, type, releaseDate, cover, coverAlt, artist } = album.data;
 const typeLabel = type === 'ep' ? 'EP' : type.charAt(0).toUpperCase() + type.slice(1);
 ---
 
-<a class="card music-card" href={`/music/${album.id}/`} data-reveal>
+<a
+  class="card music-card"
+  href={`/music/${album.id}/`}
+  data-reveal
+  data-title={title.toLowerCase()}
+  data-artist={artist.toLowerCase()}
+  data-date={+releaseDate}
+>
   <div class="music-cover">
     <Image
       path={cover}
