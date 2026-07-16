@@ -149,7 +149,7 @@ collections:
       - { label: Title, name: title, widget: string }
       - { label: Venue, name: venue, widget: string }
       - { label: City, name: city, widget: string }
-      - { label: Country, name: country, widget: string, default: 'United Kingdom' }
+      - { label: Country, name: country, widget: string, default: 'Canada' }
       - { label: 'Date & time', name: date, widget: datetime, hint: 'Show start time, local timezone' }
       - { label: 'Doors label', name: doorsTime, widget: string, required: false, hint: 'e.g. Doors 7:30pm' }
       - { label: 'Andy’s role', name: role, widget: string, required: false }
