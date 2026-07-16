@@ -53,7 +53,25 @@ export default defineConfig({
   vite: {
     // Cast: Tailwind's Vite plugin is typed against its own copy of Vite, which
     // trips a harmless structural mismatch with Astro's bundled Vite types.
-    plugins: [/** @type {any} */ (tailwindcss())],
+    plugins: [
+      /** @type {any} */ (tailwindcss()),
+      // Dev-only: the dev server doesn't resolve a directory request like
+      // `/admin/` to its `index.html` (Apache does this in production via
+      // DirectoryIndex). Rewrite it so http://localhost:4321/admin/ works
+      // locally, matching the production URL. No effect on the build.
+      {
+        name: 'serve-admin-index',
+        apply: 'serve',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            if (req.url === '/admin' || req.url === '/admin/') {
+              req.url = '/admin/index.html';
+            }
+            next();
+          });
+        },
+      },
+    ],
   },
   // View Transitions are enabled per-layout via <ClientRouter /> (see Phase 4).
   prefetch: {
