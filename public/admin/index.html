@@ -12,7 +12,232 @@
       Loads directly from the CDN; no build step, no server, no database.
       All editing happens in the browser and commits to the GitHub repo,
       which triggers a rebuild + redeploy. Config lives in ./config.yml.
+
+      The second module below registers on-brand live preview templates so the
+      editor's preview pane resembles the real site (see ./preview.css). It is
+      written defensively: if the CMS build ever changes its preview API, the
+      registrations are skipped and the editor still loads normally.
     -->
     <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+
+    <script type="module">
+      // The standalone bundle above auto-initializes (reads ./config.yml) and
+      // synchronously exposes these globals. Module scripts run in document
+      // order, so they're available here. Bail out gracefully if not.
+      const CMS = window.CMS;
+      const h = window.h;
+      const createClass = window.createClass;
+      if (!CMS || !h || !createClass) {
+        console.warn('[preview] Custom preview templates unavailable — editor loads without them.');
+      } else {
+        try {
+          CMS.registerPreviewStyle('/admin/preview.css');
+
+          // ── Helpers ──────────────────────────────────────────────────────
+          // Plain-object view of an entry's fields (handles Immutable or POJO).
+          const data = (entry) => {
+            try {
+              const d = entry && entry.get ? entry.get('data') : entry && entry.data;
+              return d && d.toJS ? d.toJS() : d || {};
+            } catch {
+              return {};
+            }
+          };
+          // Resolve a stored image path to a displayable URL, or ''.
+          const asset = (getAsset, path) => {
+            if (!path) return '';
+            try {
+              const a = getAsset(path);
+              return a ? a.url || String(a) : '';
+            } catch {
+              return '';
+            }
+          };
+          // Friendly date (e.g. "12 September 2026"); passes through on failure.
+          const fmtDate = (v) => {
+            if (!v) return '';
+            const d = new Date(v);
+            if (isNaN(+d)) return String(v);
+            return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+          };
+          const join = (parts) => parts.filter(Boolean).join(' · ');
+
+          // Immersive hero shared by posts + albums.
+          const hero = (bg, kicker, title, meta) =>
+            h(
+              'div',
+              {
+                className: 'pv-hero' + (bg ? '' : ' pv-hero--plain'),
+                style: bg ? { backgroundImage: 'url(' + bg + ')' } : undefined,
+              },
+              h('div', { className: 'pv-hero-scrim' }),
+              h(
+                'div',
+                { className: 'pv-hero-inner' },
+                kicker && h('span', { className: 'pv-kicker' }, kicker),
+                h('h1', { className: 'pv-title' }, title || 'Untitled'),
+                meta && h('p', { className: 'pv-meta' }, meta)
+              )
+            );
+
+          // ── News / Blog ───────────────────────────────────────────────────
+          CMS.registerPreviewTemplate(
+            'posts',
+            createClass({
+              render() {
+                const { entry, widgetFor, getAsset } = this.props;
+                const d = data(entry);
+                return h(
+                  'article',
+                  { className: 'pv-wrap' },
+                  hero(
+                    asset(getAsset, d.heroImage),
+                    d.category,
+                    d.title,
+                    join([fmtDate(d.publishDate), d.author])
+                  ),
+                  d.description && h('p', { className: 'pv-lead' }, d.description),
+                  h('div', { className: 'pv-body' }, widgetFor('body')),
+                  Array.isArray(d.tags) &&
+                    d.tags.length > 0 &&
+                    h(
+                      'div',
+                      { className: 'pv-tags' },
+                      d.tags.map((t, i) => h('span', { className: 'pv-tag', key: i }, '#' + t))
+                    )
+                );
+              },
+            })
+          );
+
+          // ── Discography ───────────────────────────────────────────────────
+          CMS.registerPreviewTemplate(
+            'albums',
+            createClass({
+              render() {
+                const { entry, widgetFor, getAsset } = this.props;
+                const d = data(entry);
+                const cover = asset(getAsset, d.cover);
+                const type =
+                  d.type === 'ep' ? 'EP' : d.type ? d.type[0].toUpperCase() + d.type.slice(1) : 'Single';
+                const upcoming = d.releaseDate && new Date(d.releaseDate) > new Date();
+                const tracks = Array.isArray(d.tracklist) ? d.tracklist : [];
+                return h(
+                  'article',
+                  { className: 'pv-wrap' },
+                  h(
+                    'span',
+                    { className: 'pv-kicker' },
+                    join([type, (upcoming ? 'Out ' : '') + fmtDate(d.releaseDate)])
+                  ),
+                  h('h1', { className: 'pv-title' }, d.title),
+                  d.artist && h('p', { className: 'pv-meta' }, d.artist),
+                  cover && h('img', { className: 'pv-media', src: cover, alt: d.coverAlt || '' }),
+                  d.description && h('p', { className: 'pv-lead' }, d.description),
+                  tracks.length > 0 &&
+                    h(
+                      'ol',
+                      { className: 'pv-tracklist' },
+                      tracks.map((t, i) =>
+                        h(
+                          'li',
+                          { key: i },
+                          h('span', { className: 'n' }, String(i + 1).padStart(2, '0')),
+                          h('span', {}, t.title),
+                          t.duration && h('span', { className: 'd' }, t.duration)
+                        )
+                      )
+                    ),
+                  h('div', { className: 'pv-body' }, widgetFor('body'))
+                );
+              },
+            })
+          );
+
+          // ── Events ────────────────────────────────────────────────────────
+          CMS.registerPreviewTemplate(
+            'events',
+            createClass({
+              render() {
+                const { entry, getAsset } = this.props;
+                const d = data(entry);
+                const img = asset(getAsset, d.image);
+                return h(
+                  'article',
+                  { className: 'pv-wrap' },
+                  img && h('img', { className: 'pv-media pv-media--wide', src: img, alt: d.imageAlt || '' }),
+                  h('span', { className: 'pv-kicker' }, fmtDate(d.date)),
+                  h('h1', { className: 'pv-title' }, d.title),
+                  h('p', { className: 'pv-meta' }, join([d.venue, d.city, d.country])),
+                  (d.soldOut || d.cancelled) &&
+                    h(
+                      'div',
+                      { className: 'pv-badges' },
+                      d.cancelled && h('span', { className: 'pv-badge pv-badge--danger' }, 'Cancelled'),
+                      d.soldOut && h('span', { className: 'pv-badge pv-badge--danger' }, 'Sold out')
+                    ),
+                  h(
+                    'div',
+                    { className: 'pv-facts' },
+                    d.doorsTime && h('div', {}, h('b', {}, 'Doors'), d.doorsTime),
+                    d.role && h('div', {}, h('b', {}, 'Role'), d.role),
+                    d.price && h('div', {}, h('b', {}, 'Price'), d.price),
+                    d.ticketUrl && h('div', {}, h('b', {}, 'Tickets'), d.ticketUrl)
+                  ),
+                  d.description && h('p', {}, d.description)
+                );
+              },
+            })
+          );
+
+          // ── Videos ────────────────────────────────────────────────────────
+          CMS.registerPreviewTemplate(
+            'videos',
+            createClass({
+              render() {
+                const { entry, getAsset } = this.props;
+                const d = data(entry);
+                const thumb =
+                  asset(getAsset, d.thumbnail) ||
+                  (d.youtubeId ? 'https://img.youtube.com/vi/' + d.youtubeId + '/hqdefault.jpg' : '');
+                return h(
+                  'article',
+                  { className: 'pv-wrap' },
+                  thumb &&
+                    h('img', { className: 'pv-media pv-media--wide', src: thumb, alt: d.thumbnailAlt || '' }),
+                  d.category && h('span', { className: 'pv-kicker' }, d.category),
+                  h('h1', { className: 'pv-title' }, d.title),
+                  d.date && h('p', { className: 'pv-meta' }, fmtDate(d.date)),
+                  d.description && h('p', { className: 'pv-lead' }, d.description)
+                );
+              },
+            })
+          );
+
+          // ── Gear ──────────────────────────────────────────────────────────
+          CMS.registerPreviewTemplate(
+            'gear',
+            createClass({
+              render() {
+                const { entry, getAsset } = this.props;
+                const d = data(entry);
+                const img = asset(getAsset, d.image);
+                return h(
+                  'article',
+                  { className: 'pv-wrap' },
+                  img && h('img', { className: 'pv-media', src: img, alt: d.imageAlt || '' }),
+                  d.category && h('span', { className: 'pv-kicker' }, d.category),
+                  h('h1', { className: 'pv-title' }, d.name),
+                  d.brand && h('p', { className: 'pv-meta' }, d.brand),
+                  d.description && h('p', { className: 'pv-lead' }, d.description)
+                );
+              },
+            })
+          );
+        } catch (err) {
+          console.warn('[preview] Failed to register preview templates:', err);
+        }
+      }
+    </script>
   </body>
 </html>

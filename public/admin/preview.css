@@ -1,0 +1,245 @@
+/* ─────────────────────────────────────────────────────────────────────────
+ *  CMS preview styles — Andy Lewis Music
+ * ─────────────────────────────────────────────────────────────────────────
+ *  Injected into the Sveltia CMS editor preview pane via
+ *  CMS.registerPreviewStyle('/admin/preview.css') in index.html. It mirrors
+ *  the site's design tokens (fonts, colours, type scale) so previews look
+ *  on-brand without depending on Astro's hashed build output. The preview
+ *  markup lives in index.html and uses `pv-` class names.
+ * ───────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Special Gothic Condensed One';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/special-gothic-condensed-one-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('/fonts/inter-latin-wght-normal.woff2') format('woff2');
+}
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface-2: #f1f1f1;
+  --color-line: rgba(20, 18, 12, 0.12);
+  --color-line-strong: rgba(20, 18, 12, 0.22);
+  --color-ink: #17150f;
+  --color-ink-muted: #4e4a42;
+  --color-ink-faint: #635e55;
+  --color-accent: #9acd33;
+  --color-accent-ink: #46660e;
+  --color-danger: #cc2f2f;
+  --font-display: 'Special Gothic Condensed One', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 1rem;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pv-wrap {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.pv-kicker {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+h1,
+h2,
+h3,
+.pv-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+}
+.pv-title {
+  font-size: clamp(2.2rem, 1.6rem + 3vw, 3.6rem);
+  margin: 0.4rem 0;
+}
+.pv-meta {
+  margin: 0;
+  color: var(--color-ink-muted);
+  font-size: 0.9375rem;
+}
+.pv-lead {
+  font-size: 1.2rem;
+  color: var(--color-ink-muted);
+  margin: 1.5rem 0;
+}
+
+/* Immersive hero (posts + albums) */
+.pv-hero {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  padding: clamp(2.5rem, 2rem + 6vw, 5rem) 1.75rem;
+  background: #23231f center / cover no-repeat;
+  margin-bottom: 1.5rem;
+}
+.pv-hero--plain {
+  background: #1a1a1f;
+}
+.pv-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 11, 0.35), rgba(10, 10, 11, 0.7));
+}
+.pv-hero-inner {
+  position: relative;
+}
+.pv-hero .pv-kicker,
+.pv-hero .pv-meta {
+  color: rgba(255, 255, 255, 0.8);
+}
+.pv-hero .pv-title {
+  color: #fff;
+}
+
+/* Cover / thumbnail media */
+.pv-media {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-line);
+  margin-bottom: 1.5rem;
+}
+.pv-media--wide {
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+/* Tags — button style, #f1f1f1 */
+.pv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+.pv-tag {
+  display: inline-flex;
+  padding: 0.45em 0.9em;
+  background: var(--color-surface-2);
+  color: var(--color-ink-muted);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+/* Facts / meta rows */
+.pv-facts {
+  display: grid;
+  gap: 0.4rem;
+  margin: 1.5rem 0;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  font-size: 0.9375rem;
+}
+.pv-facts b {
+  color: var(--color-ink-faint);
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* Tracklist */
+.pv-tracklist {
+  list-style: none;
+  margin: 1.5rem 0;
+  padding: 0;
+}
+.pv-tracklist li {
+  display: flex;
+  gap: 1rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--color-line);
+}
+.pv-tracklist li:first-child {
+  border-top: 0;
+}
+.pv-tracklist .n {
+  color: var(--color-accent-ink);
+  font-family: var(--font-display);
+  min-width: 2rem;
+}
+.pv-tracklist .d {
+  margin-left: auto;
+  color: var(--color-ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Badges */
+.pv-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+.pv-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  color: var(--color-ink-muted);
+}
+.pv-badge--danger {
+  background: rgba(204, 47, 47, 0.12);
+  color: var(--color-danger);
+}
+.pv-badge--accent {
+  background: rgba(154, 205, 51, 0.18);
+  color: var(--color-accent-ink);
+}
+
+/* Rendered markdown body */
+.pv-body {
+  margin-top: 1.5rem;
+}
+.pv-body h2 {
+  font-size: 1.6rem;
+  margin: 2rem 0 0.75rem;
+}
+.pv-body p {
+  margin: 0 0 1.1rem;
+}
+.pv-body a {
+  color: var(--color-accent-ink);
+  text-decoration: underline;
+}
+.pv-body img {
+  max-width: 100%;
+  border-radius: var(--radius-lg);
+}
+
+.pv-empty {
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
