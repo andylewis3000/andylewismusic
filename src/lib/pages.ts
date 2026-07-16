@@ -55,6 +55,7 @@ export const SECTION_TYPES = [
   'news',
   'instagram',
   'gear',
+  'newsletter',
   'contact-form',
   'about-bio',
   'about-highlights',

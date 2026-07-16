@@ -1,0 +1,209 @@
+---
+/**
+ * Newsletter block — a compact email capture that turns the site into a
+ * list-builder. Posts to `forms.newsletterAction` (or the shared PHP endpoint
+ * when that's blank). Works without JS; enhanced with inline success/error
+ * states, a honeypot and optional Turnstile — mirroring the contact form.
+ *
+ * Carries a stable `id="newsletter"` so "Notify me on release" buttons on
+ * upcoming album pages can deep-link here with `/#newsletter`.
+ */
+import Section from '@components/layout/Section.astro';
+import Icon from '@components/ui/Icon.astro';
+import { site } from '@lib/settings';
+import type { BlockProps } from '@lib/blocks';
+
+const {
+  tone = 'accent',
+  kicker,
+  heading = 'Never miss a release',
+  subheading = 'New music, shows and studio notes — straight to your inbox, no spam.',
+  backgroundImage,
+  backgroundAlt,
+  parallax = false,
+} = Astro.props as BlockProps;
+
+const action = site.forms.newsletterAction || site.forms.endpoint;
+const turnstileKey = site.forms.turnstileSiteKey;
+---
+
+{turnstileKey && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer is:inline />}
+
+<Section
+  id="newsletter"
+  tone={tone}
+  backgroundImage={backgroundImage}
+  backgroundAlt={backgroundAlt}
+  parallax={parallax}
+>
+  <div class="news-wrap">
+    <div class="news-copy">
+      {kicker && <span class="kicker">{kicker}</span>}
+      <h2 class="news-h">{heading}</h2>
+      {subheading && <p class="news-sub">{subheading}</p>}
+    </div>
+
+    <form class="news-form" method="POST" action={action} data-newsletter-form novalidate>
+      <input type="hidden" name="form" value="newsletter" />
+      <div class="news-field">
+        <label class="sr-only" for="news-email">Email address</label>
+        <input
+          id="news-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          placeholder="you@email.com"
+          required
+        />
+        <button type="submit" class="btn btn-primary news-submit">
+          <span class="submit-label">Subscribe</span>
+          <Icon name="arrow-right" size={18} />
+        </button>
+      </div>
+
+      <div class="hp" aria-hidden="true">
+        <label for="news-company">Company (leave blank)</label>
+        <input id="news-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      {turnstileKey && <div class="cf-turnstile" data-sitekey={turnstileKey} />}
+
+      <p class="news-status" data-status role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</Section>
+
+<script>
+  function initNewsletterForm() {
+    const forms = document.querySelectorAll<HTMLFormElement>('[data-newsletter-form]');
+    forms.forEach((form) => {
+      if (form.dataset.bound) return;
+      form.dataset.bound = '1';
+      const status = form.querySelector<HTMLElement>('[data-status]');
+      const submit = form.querySelector<HTMLButtonElement>('.news-submit');
+      const label = form.querySelector<HTMLElement>('.submit-label');
+
+      const setStatus = (msg: string, kind: 'success' | 'error' | '') => {
+        if (!status) return;
+        status.textContent = msg;
+        status.dataset.kind = kind;
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+        if (submit) submit.disabled = true;
+        if (label) label.textContent = 'Subscribing…';
+        setStatus('', '');
+        try {
+          const res = await fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error(String(res.status));
+          form.reset();
+          setStatus("You're in — thanks for subscribing.", 'success');
+          if (label) label.textContent = 'Subscribed';
+        } catch {
+          setStatus('Something went wrong. Please try again in a moment.', 'error');
+          if (submit) submit.disabled = false;
+          if (label) label.textContent = 'Subscribe';
+        }
+      });
+    });
+  }
+  initNewsletterForm();
+  document.addEventListener('astro:after-swap', initNewsletterForm);
+</script>
+
+<style>
+  .news-wrap {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (min-width: 860px) {
+    .news-wrap {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 3.5rem;
+    }
+  }
+  .news-copy {
+    display: grid;
+    gap: 0.9rem;
+  }
+  .news-h {
+    font-size: var(--text-h2);
+    max-width: 18ch;
+  }
+  .news-sub {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-lead);
+    max-width: 46ch;
+  }
+
+  .news-form {
+    display: grid;
+    gap: 1rem;
+  }
+  .news-field {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .news-field input[type='email'] {
+    flex: 1 1 16rem;
+    padding: 0.85em 1em;
+    font: inherit;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-md);
+    transition:
+      border-color var(--dur-base) var(--ease-standard),
+      box-shadow var(--dur-base) var(--ease-standard);
+  }
+  .news-field input[type='email']:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-soft);
+  }
+  .news-submit {
+    flex: 0 0 auto;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .news-status {
+    margin: 0;
+    font-size: var(--text-small);
+    min-height: 1.2em;
+  }
+  .news-status[data-kind='success'] {
+    color: var(--color-success);
+  }
+  .news-status[data-kind='error'] {
+    color: var(--color-danger);
+  }
+</style>

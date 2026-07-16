@@ -103,6 +103,7 @@ collections:
           - { label: Bandcamp, name: bandcamp, widget: string, required: false }
           - { label: YouTube, name: youtube, widget: string, required: false }
           - { label: SoundCloud, name: soundcloud, widget: string, required: false }
+      - { label: 'Pre-save / pre-order link', name: preSaveUrl, widget: string, required: false, hint: 'Shown as a “Pre-save” button while the release date is in the future (e.g. a Feature.fm or Show.co link).' }
       - { label: 'Feature on homepage', name: featured, widget: boolean, default: false }
       - { label: 'Sort order', name: order, widget: number, default: 0, value_type: int }
       - { label: Draft, name: draft, widget: boolean, default: false }
@@ -260,7 +261,7 @@ collections:
             widget: list
             summary: '{{fields.id}} · {{fields.background}}'
             fields: &section_fields
-              - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, related-albums, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
+              - { label: 'Section type', name: id, widget: select, options: [featured-music, discography, related-albums, latest-video, featured-videos, video-archive, upcoming-events, past-events, news, instagram, gear, newsletter, contact-form, about-bio, about-highlights, about-experience, about-influences, about-equipment, rich-text, cta] }
               - { label: Enabled, name: enabled, widget: boolean, default: true }
               - { label: Kicker, name: kicker, widget: string, required: false, hint: 'Small label above the heading. Leave blank to hide it.' }
               - { label: Heading, name: heading, widget: string, required: false }
@@ -420,6 +421,7 @@ collections:
             fields:
               - { label: 'Form endpoint', name: endpoint, widget: string, default: '/form.php' }
               - { label: 'Turnstile site key', name: turnstileSiteKey, widget: string, required: false }
+              - { label: 'Newsletter form action', name: newsletterAction, widget: string, required: false, hint: 'Where newsletter sign-ups are sent. Leave blank to use the form endpoint above, or paste a Mailchimp/Buttondown form action URL.' }
 
       # ---- Navigation ----
       - name: navigation

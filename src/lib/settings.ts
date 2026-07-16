@@ -52,8 +52,12 @@ const siteSchema = z.object({
     .object({
       endpoint: z.string().default('/form.php'),
       turnstileSiteKey: z.string().default(''),
+      // Where newsletter sign-ups POST. Blank falls back to `endpoint`
+      // (the PHP handler); set to a Mailchimp/Buttondown/etc. form action to
+      // send subscribers straight to a provider.
+      newsletterAction: z.string().default(''),
     })
-    .default({ endpoint: '/form.php', turnstileSiteKey: '' }),
+    .default({ endpoint: '/form.php', turnstileSiteKey: '', newsletterAction: '' }),
 });
 
 /* ── Homepage composition ──────────────────────────────────────────────── */

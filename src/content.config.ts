@@ -130,6 +130,9 @@ const albums = defineCollection({
         soundcloud: optionalUrl,
       })
       .default({}),
+    // Pre-save / pre-order link (e.g. Feature.fm, Show.co) shown while the
+    // release date is still in the future.
+    preSaveUrl: optionalUrl,
     featured: z.boolean().default(false),
     order: z.number().default(0),
     draft: z.boolean().default(false),

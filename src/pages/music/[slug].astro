@@ -30,6 +30,9 @@ const { Content } = await render(album);
 const typeLabel = d.type === 'ep' ? 'EP' : d.type.charAt(0).toUpperCase() + d.type.slice(1);
 const hasBody = (album.body ?? '').trim().length > 0;
 
+// An unreleased record shows pre-save / notify CTAs instead of streaming links.
+const isUpcoming = +d.releaseDate > Date.now();
+
 const linkDefs: { key: keyof typeof d.links; label: string; icon: IconName }[] = [
   { key: 'spotify', label: 'Spotify', icon: 'spotify' },
   { key: 'appleMusic', label: 'Apple Music', icon: 'appleMusic' },
@@ -63,7 +66,9 @@ const schemas = [
         <Icon name="arrow-right" size={16} class="flip" /> All music
       </a>
       <div class="album-info">
-        <span class="kicker">{typeLabel} · {year(d.releaseDate)}</span>
+        <span class="kicker">
+          {isUpcoming ? `${typeLabel} · Out ${formatDate(d.releaseDate)}` : `${typeLabel} · ${year(d.releaseDate)}`}
+        </span>
         <h1 class="album-title">{d.title}</h1>
         <h2 class="album-artist">{d.artist}</h2>
       </div>
@@ -104,20 +109,33 @@ const schemas = [
       <div class="detail-side">
         <div class="release-intro">
           {
-            links.length > 0 && (
+            isUpcoming ? (
               <div class="release-links">
-                {links.map((l) => (
-                  <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
-                    {l.label}
+                {d.preSaveUrl && (
+                  <Button href={d.preSaveUrl} variant="primary" icon="spotify" iconPosition="start">
+                    Pre-save
                   </Button>
-                ))}
+                )}
+                <Button href="/#newsletter" variant="secondary" icon="arrow-right" iconPosition="end">
+                  Notify me on release
+                </Button>
               </div>
+            ) : (
+              links.length > 0 && (
+                <div class="release-links">
+                  {links.map((l) => (
+                    <Button href={d.links[l.key]} variant="secondary" icon={l.icon} iconPosition="start">
+                      {l.label}
+                    </Button>
+                  ))}
+                </div>
+              )
             )
           }
           <p class="album-desc">{d.description}</p>
         </div>
         <dl class="release-facts">
-          <div><dt>Released</dt><dd>{formatDate(d.releaseDate)}</dd></div>
+          <div><dt>{isUpcoming ? 'Releases' : 'Released'}</dt><dd>{formatDate(d.releaseDate)}</dd></div>
           {d.label && <div><dt>Label</dt><dd>{d.label}</dd></div>}
           {d.roles.length > 0 && (
             <div><dt>Andy plays</dt><dd>{d.roles.join(', ')}</dd></div>

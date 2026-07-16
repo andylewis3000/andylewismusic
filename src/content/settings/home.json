@@ -84,6 +84,18 @@
       "parallax": false
     },
     {
+      "id": "newsletter",
+      "enabled": true,
+      "kicker": "Newsletter",
+      "heading": "Never miss a release",
+      "subheading": "New music, shows and studio notes — straight to your inbox, no spam.",
+      "limit": null,
+      "body": "",
+      "background": "grey",
+      "backgroundAlt": "",
+      "parallax": false
+    },
+    {
       "id": "cta",
       "enabled": true,
       "kicker": "",
