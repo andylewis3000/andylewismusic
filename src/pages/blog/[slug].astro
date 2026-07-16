@@ -5,11 +5,12 @@
  */
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import Image from '@components/media/Image.astro';
 import Icon from '@components/ui/Icon.astro';
 import BlogCard from '@components/cards/BlogCard.astro';
 import { getPosts, getRelatedPosts } from '@lib/content';
+import { resolveImage } from '@lib/images';
 import { formatDate, isoDate, readingTime } from '@lib/format';
 import { articleSchema, breadcrumbSchema, resolveImageUrl } from '@lib/seo';
 
@@ -23,6 +24,10 @@ const d = post.data;
 const { Content } = await render(post);
 const related = await getRelatedPosts(post, 3);
 const minutes = readingTime(post.body ?? '');
+
+// Sharp hero image used as an immersive, scrimmed banner behind the title.
+const heroMeta = resolveImage(d.heroImage);
+const heroBg = heroMeta ? (await getImage({ src: heroMeta, width: 1600, format: 'webp' })).src : undefined;
 
 const heroUrl = await resolveImageUrl(d.heroImage);
 const schemas = [
@@ -45,8 +50,10 @@ const schemas = [
   schemas={schemas}
 >
   <article class="post" data-pagefind-body>
-    <header class="post-head section-tight">
-      <div class="container-page post-head-inner">
+    <header class="post-hero" data-tone="dark" data-has-image={heroBg ? 'true' : undefined}>
+      {heroBg && <div class="post-hero-bg" style={`background-image:url('${heroBg}')`} aria-hidden="true" />}
+      <div class="post-hero-scrim" aria-hidden="true"></div>
+      <div class="container-page post-hero-inner">
         <nav class="crumbs" aria-label="Breadcrumb">
           <a href="/blog/"><Icon name="arrow-right" size={14} class="flip" /> News</a>
           <span aria-hidden="true">/</span>
@@ -63,25 +70,7 @@ const schemas = [
       </div>
     </header>
 
-    {
-      d.heroImage && (
-        <div class="container-page">
-          <div class="post-hero">
-            <Image
-              path={d.heroImage}
-              alt={d.heroImageAlt ?? d.title}
-              aspect="16/9"
-              sizes="(max-width: 1024px) 100vw, 960px"
-              loading="eager"
-              fetchpriority="high"
-              placeholderLabel="News"
-            />
-          </div>
-        </div>
-      )
-    }
-
-    <div class="container-page">
+    <div class="container-page section-tight">
       <div class="post-body prose">
         <Content />
       </div>
@@ -117,16 +106,44 @@ const schemas = [
 </BaseLayout>
 
 <style>
-  .post-head-inner {
+  /* Immersive hero — sharp image banner with a scrim and white text,
+     mirroring the album detail hero. */
+  .post-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(3rem, 2rem + 6vw, 6rem);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--tone-bg);
+  }
+  .post-hero[data-has-image] {
+    padding-block: clamp(4rem, 3rem + 10vw, 9rem);
+  }
+  .post-hero-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+  .post-hero-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 11, 0.35), rgba(10, 10, 11, 0.68));
+    z-index: 0;
+  }
+  .post-hero-inner {
+    position: relative;
+    z-index: 1;
     display: grid;
+    justify-items: start;
     gap: 1rem;
-    max-width: 60rem;
+    text-align: left;
   }
   .crumbs {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    color: var(--color-ink-muted);
+    color: rgba(255, 255, 255, 0.75);
     font-size: var(--text-small);
   }
   .crumbs a {
@@ -136,7 +153,7 @@ const schemas = [
     text-transform: capitalize;
   }
   .crumbs a:hover {
-    color: var(--color-accent-ink);
+    color: #fff;
   }
   .flip {
     transform: rotate(180deg);
@@ -144,47 +161,44 @@ const schemas = [
   .post-title {
     font-size: var(--text-h1);
     max-width: 20ch;
+    color: #fff;
   }
   .post-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     margin: 0;
-    color: var(--color-ink-muted);
+    color: rgba(255, 255, 255, 0.75);
     font-size: var(--text-small);
   }
-  .post-hero {
-    max-width: 60rem;
-    margin: 0 auto 3rem;
-  }
-  .post-hero :global(img),
-  .post-hero :global(.media-placeholder) {
-    width: 100%;
-    border-radius: var(--radius-xl);
-    border: 1px solid var(--color-line);
-  }
+  /* Body spans the full page container rather than a narrow reading column. */
   .post-body {
-    margin-inline: auto;
+    max-width: none;
   }
   .post-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    max-width: 68ch;
-    margin: 3rem auto 0;
+    margin: 3rem 0 0;
     padding-top: 1.75rem;
     border-top: 1px solid var(--color-line);
   }
   .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5em 1em;
+    background: var(--color-surface-2);
     color: var(--color-ink-muted);
     font-size: var(--text-small);
-    transition: color var(--dur-base) var(--ease-standard);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition:
+      background-color var(--dur-base) var(--ease-standard),
+      color var(--dur-base) var(--ease-standard);
   }
   .tag:hover {
-    color: var(--color-accent-ink);
-  }
-  .related {
-    border-top: 1px solid var(--color-line);
+    color: var(--color-ink);
+    background: var(--color-line);
   }
   .related-h {
     font-size: var(--text-h3);

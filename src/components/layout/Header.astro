@@ -7,8 +7,14 @@
 import { navigation, site } from '@lib/settings';
 import { getHiddenHrefs, linkHidden } from '@lib/pages';
 import { getMainMenu } from '@lib/menus';
+import { hasImage } from '@lib/images';
+import Image from '@components/media/Image.astro';
 import Button from '@components/ui/Button.astro';
 import MobileMenu from './MobileMenu.astro';
+
+// A logo replaces the text wordmark when one is uploaded in Site Settings.
+const showLogo = hasImage(site.headerLogo);
+const logoWidth = site.headerLogoWidth;
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
@@ -22,8 +28,32 @@ const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigat
 
 <header class="site-header glass" data-header>
   <div class="container-page header-inner">
-    <a href="/" class="wordmark" aria-label={`${site.name} — home`}>
-      {site.name}<span class="wordmark-dot" aria-hidden="true">.</span>
+    <a
+      href="/"
+      class:list={['brand', { wordmark: !showLogo }]}
+      aria-label={`${site.name} — home`}
+      style={showLogo ? `--logo-w:${logoWidth}px` : undefined}
+    >
+      {
+        showLogo ? (
+          <Image
+            path={site.headerLogo}
+            alt={site.name}
+            class="brand-logo"
+            widths={[logoWidth, logoWidth * 2]}
+            sizes={`${logoWidth}px`}
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
+          <>
+            {site.name}
+            <span class="wordmark-dot" aria-hidden="true">
+              .
+            </span>
+          </>
+        )
+      }
     </a>
 
     <nav class="primary-nav" aria-label="Primary">
@@ -98,6 +128,10 @@ const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigat
     height: 4.5rem;
   }
 
+  .brand {
+    display: inline-flex;
+    align-items: center;
+  }
   .wordmark {
     font-family: var(--font-display);
     font-weight: 400;
@@ -109,6 +143,12 @@ const cta = navigation.cta && !linkHidden(navigation.cta.href, hidden) ? navigat
   }
   .wordmark-dot {
     color: var(--color-accent);
+  }
+  /* Uploaded logo: width is CMS-controlled, height stays proportional. */
+  .brand :global(.brand-logo) {
+    display: block;
+    width: var(--logo-w);
+    height: auto;
   }
 
   .primary-nav {

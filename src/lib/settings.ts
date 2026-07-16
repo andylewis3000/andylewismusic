@@ -35,6 +35,10 @@ const siteSchema = z.object({
   phone: z.string().optional(),
   defaultOgImage: imagePath,
   logo: imagePath.optional(),
+  headerLogo: imagePath.optional(),
+  headerLogoWidth: z.number().default(160),
+  footerLogo: imagePath.optional(),
+  footerLogoWidth: z.number().default(160),
   themeColor: z.string().default('#0a0a0b'),
   founder: z.object({
     name: z.string(),

@@ -194,7 +194,7 @@ const posts = defineCollection({
     updatedDate: optDate,
     author: z.string().default('Andy Lewis'),
     category: z
-      .enum(['news', 'releases', 'tour', 'studio', 'gear', 'reflections'])
+      .enum(['news', 'releases', 'tour', 'studio', 'lessons', 'reflections'])
       .default('news'),
     tags: z.array(z.string()).default([]),
     heroImage: imagePath.optional(),

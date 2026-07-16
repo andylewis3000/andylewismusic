@@ -6,9 +6,15 @@
 import { footer, site } from '@lib/settings';
 import { getHiddenHrefs, filterLinks } from '@lib/pages';
 import { getFooterMenu } from '@lib/menus';
+import { hasImage } from '@lib/images';
+import Image from '@components/media/Image.astro';
 import SocialLinks from '@components/ui/SocialLinks.astro';
 
 const year = new Date().getFullYear();
+
+// A logo replaces the text wordmark when one is uploaded in Site Settings.
+const showLogo = hasImage(site.footerLogo);
+const logoWidth = site.footerLogoWidth;
 
 // Columns come from the published "footer" menu (falls back to Footer settings).
 // Hidden/draft pages are already dropped by getFooterMenu().
@@ -20,8 +26,30 @@ const legal = filterLinks(footer.legal, hidden);
 <footer class="site-footer">
   <div class="container-page footer-grid">
     <div class="footer-brand">
-      <a href="/" class="wordmark" aria-label={`${site.name} — home`}>
-        {site.name}<span class="wordmark-dot" aria-hidden="true">.</span>
+      <a
+        href="/"
+        class:list={['brand', { wordmark: !showLogo }]}
+        aria-label={`${site.name} — home`}
+        style={showLogo ? `--logo-w:${logoWidth}px` : undefined}
+      >
+        {
+          showLogo ? (
+            <Image
+              path={site.footerLogo}
+              alt={site.name}
+              class="brand-logo"
+              widths={[logoWidth, logoWidth * 2]}
+              sizes={`${logoWidth}px`}
+            />
+          ) : (
+            <>
+              {site.name}
+              <span class="wordmark-dot" aria-hidden="true">
+                .
+              </span>
+            </>
+          )
+        }
       </a>
       <p class="footer-blurb">{footer.blurb}</p>
       <SocialLinks />
@@ -92,6 +120,11 @@ const legal = filterLinks(footer.legal, hidden);
     gap: 1.1rem;
     max-width: 32ch;
   }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+  }
   .wordmark {
     font-family: var(--font-display);
     font-weight: 900;
@@ -101,6 +134,12 @@ const legal = filterLinks(footer.legal, hidden);
   }
   .wordmark-dot {
     color: var(--color-accent);
+  }
+  /* Uploaded logo: width is CMS-controlled, height stays proportional. */
+  .brand :global(.brand-logo) {
+    display: block;
+    width: var(--logo-w);
+    height: auto;
   }
   .footer-blurb {
     margin: 0;

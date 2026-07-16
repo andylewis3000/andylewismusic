@@ -186,7 +186,7 @@ collections:
           label: Category,
           name: category,
           widget: select,
-          options: [news, releases, tour, studio, gear, reflections],
+          options: [news, releases, tour, studio, lessons, reflections],
           default: news,
         }
       - { label: Tags, name: tags, widget: list, required: false, field: { label: Tag, name: tag, widget: string } }
@@ -396,7 +396,11 @@ collections:
           - { label: 'Booking email', name: bookingEmail, widget: string }
           - { label: Phone, name: phone, widget: string, required: false }
           - { label: 'Default social image', name: defaultOgImage, widget: image }
-          - { label: Logo, name: logo, widget: image, required: false }
+          - { label: 'Logo (for search engines / structured data)', name: logo, widget: image, required: false }
+          - { label: 'Header logo', name: headerLogo, widget: image, required: false, hint: 'Shown in the header in place of the site name. Leave empty to show the site name text.' }
+          - { label: 'Header logo width (px)', name: headerLogoWidth, widget: number, required: false, value_type: int, default: 160, min: 20, hint: 'Height scales automatically to keep the logo’s proportions.' }
+          - { label: 'Footer logo', name: footerLogo, widget: image, required: false, hint: 'Shown in the footer in place of the site name. Leave empty to show the site name text.' }
+          - { label: 'Footer logo width (px)', name: footerLogoWidth, widget: number, required: false, value_type: int, default: 160, min: 20, hint: 'Height scales automatically to keep the logo’s proportions.' }
           - { label: 'Theme colour', name: themeColor, widget: color, default: '#0a0a0b' }
           - label: Founder
             name: founder
